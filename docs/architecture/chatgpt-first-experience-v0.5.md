@@ -6,7 +6,7 @@
 
 QRVAI must function **first as an invoked ChatGPT plugin** via the installed plugin selector/composer, with natural-language answers and continued follow-ups. Interactive workbenches, web dashboards and local radio hardware are optional additional surfaces, not prerequisites.
 
-**Working interpretation:** the owner's most recent sentence ends after "να λειτουργεί πρώτα με το από @". Here it is provisionally interpreted as invocation by an @ mention such as **@QRVAI**. The sentence is incomplete; this assumption needs owner confirmation. Furthermore, exact availability and composer spelling can only be proven with the real installed plugin and host version, not inferred from a display name or this spec.
+**Confirmed by owner (2026-10-14):** the required primary interaction is invoking **@QRVAI inside an already-open ChatGPT conversation**, like invoking other installed plugins. This is a product requirement, not proof that the target host/client supports the exact @ mention after installation. Furthermore, exact availability and composer spelling can only be proven with the real installed plugin and host version, not inferred from a display name or this spec.
 
 ## 2. Two distinct @ mechanisms
 
@@ -64,3 +64,10 @@ QRVAI must function **first as an invoked ChatGPT plugin** via the installed plu
 **Sources reviewed:** https://github.com/openai/mcp-extensions/blob/main/docs/spec.md ; https://github.com/modelcontextprotocol/ext-apps/blob/main/docs/overview.md ; installed Plugin Creator package/Skills docs (2026-10-14).
 
 **Evidence:** product spec only. No plugin created, no host test executed.
+
+
+## 8. 2026-10-14 platform implementation clarification
+
+The official OpenAI MCP Extensions changelog [v0.2.0, 2026-10-10](https://github.com/openai/mcp-extensions/blob/main/CHANGELOG.md) adds `openai/mentions: { searchTool: string }` server capability and describes the older per-tool `_meta["openai/extensions"]["mentions/search"]` as deprecated fallback. This concerns mentions of **resources within** a plugin, **not** the simple plugin-level `@QRVAI` invocation. Consequently **no mentions/search MCP tool belongs in V0**, and new resource-mention features later must use the current versioned capability and host tests.
+
+The [V0 clean-install design v0.7](../superpowers/specs/2026-10-14-qrvai-v0-clean-install-design.md) supersedes speculative packaging/install details in older high-level roadmaps. The full owner-specified clean-install gate, new backend identity and zero old-source reuse take precedence.
