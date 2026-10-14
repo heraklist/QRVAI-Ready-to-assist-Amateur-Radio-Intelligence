@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-14  
 **Status:** PROPOSED; **not** a detailed engineering implementation plan. Milestones and dependencies are estimates of scope, not delivery dates.  
-**Inputs:** [Master Capability Design](../superpowers/specs/2026-10-14-qrvai-capability-design.md), [Interactive Catalog](../architecture/interactive-tools-catalog.md).
+**Inputs:** [Master Capability Design](../superpowers/specs/2026-10-14-qrvai-capability-design.md), [Domain & Orchestration Design v0.4](../superpowers/specs/2026-10-14-qrvai-domain-orchestration-design.md), [Interactive Catalog](../architecture/interactive-tools-catalog.md).
 
 ## Mission
 
@@ -14,7 +14,7 @@ Prioritize **small, independently verifiable value slices**. UI is a first-class
 
 ### M0 — Product architecture and design sign-off (current)
 
-**Deliverables:** 24-domain capability spec; 36-widget catalog; source/provider register; hybrid-MCP architecture decision; staged scope and verification gates.
+**Deliverables:** 24-domain capability spec; 36-widget catalog; source/provider register; hybrid-MCP architecture decision; selective domain orchestration spec; staged scope and verification gates.
 
 **Exit gate:** product owner reviews and approves spec, resolves priority of first slice and usage/license approach. No runtime is implied by completion.
 
