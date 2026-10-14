@@ -22,3 +22,25 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install -r requirements-v0-dev.txt
       - run: python -m unittest discover -s tests/v0 -p 'test_*.py' -v
+      - name: Audit Skills and build clean draft archive
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          from scripts.v0.audit_content import audit_catalog
+          from scripts.v0.build_archive import build_archive, validate_archive
+          issues = audit_catalog(Path("qrvai"))["violations"]
+          if issues:
+              raise SystemExit("catalog invalid: " + "; ".join(issues))
+          zip_path = build_archive(Path("qrvai"), Path("dist/qrvai-v0-0.1.0.zip"))
+          assert validate_archive(zip_path) == []
+          print("CLEAN_V0_ARCHIVE_SHA256=" + sha256(zip_path.read_bytes()).hexdigest())
+          print("CLEAN_V0_ARCHIVE_FILES=12")
+          PY
+      - name: Preserve review-only V0 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: qrvai-v0-clean-draft-not-installed
+          path: dist/qrvai-v0-0.1.0.zip
+          if-no-files-found: error
+          retention-days: 7
