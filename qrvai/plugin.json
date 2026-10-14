@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "qrvai",
+  "version": "0.1.0",
+  "description": "Greek and English amateur radio guidance with honest feature and safety boundaries.",
+  "author": {
+    "name": "heraklist"
+  },
+  "repository": "https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "QRVAI",
+        "shortDescription": "Amateur radio guidance",
+        "longDescription": "Chat-first radio education, operating, engineering and safety guidance. V0 has Skills only: no live radio data, calculations engine, transmit permissions or device controls.",
+        "developerName": "QRVAI",
+        "category": "Education",
+        "capabilities": [],
+        "defaultPrompt": "@QRVAI Βοήθησέ με με έναν ερασιτεχνικό ασύρματο."
+      }
+    }
+  }
+}
