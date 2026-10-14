@@ -4,7 +4,7 @@
 
 ## Start here
 
-**Latest: [V0 Existing-plugin Migration Design](superpowers/specs/2026-10-14-qrvai-v0-in-place-migration-design.md)** — read-only audit of the actual existing private QRVAI 0.1.0-preview.2 (21 Skills, Academy private assets); proposal for identity-preserving migration, not yet an installed update.
+**Current V0 plan: [NEW QRVAI Clean-Slate Installation Design](superpowers/specs/2026-10-14-qrvai-v0-clean-install-design.md)** — owner explicitly rejected old-package migration. Build one independent plugin with fresh Skills and no legacy data. The previous [in-place proposal](superpowers/specs/2026-10-14-qrvai-v0-in-place-migration-design.md) is **SUPERSEDED, DO NOT IMPLEMENT**.
 
 
 1. [v0.5 Architecture Audit and Research](reviews/2026-10-14-architecture-audit-v0.5.md) — gaps in v0.3–v0.4, severity, verified official references and remediation priorities.
