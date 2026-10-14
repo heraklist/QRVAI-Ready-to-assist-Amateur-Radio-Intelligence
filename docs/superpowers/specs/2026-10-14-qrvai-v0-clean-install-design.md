@@ -1,7 +1,7 @@
 # QRVAI V0 — Clean-Slate ChatGPT Plugin Design v0.7
 
 **Date:** 2026-10-14  
-**State:** WRITTEN SPEC — architectural owner-review gate; no package created or new plugin installed.  
+**State:** OWNER-APPROVED FOR IMPLEMENTATION PLANNING (2026-10-14) — actual implementation plan and execution method still require separate owner review; no package created or new plugin installed.  
 **Owner directive:** **FULLY abandon in-place migration**. Uninstall/delete the legacy QRVAI, then build a **completely new, independent QRVAI ChatGPT plugin** using only the approved QRVAI v0.5 capability/orchestration architecture. **Do not inherit the old plugin's backend ID, releases, package artifacts, Skills, exam question bank, images, scripts, manifests, private data or configurations.**
 
 ## Owner confirmation and current implementation gate (2026-10-14)
@@ -128,11 +128,11 @@ No legacy overlay, no W01–W21 files, no `assets/w21`, no `scripts/w21_bank.py`
 
 ## 7. Timing and approval boundary
 
-The owner has **selected clean replacement rather than migration**. This is a new *architectural* V0 design, not an approval to skip written-spec review and test-first implementation-plan acceptance.
+The owner explicitly **approved this written V0 v0.7 clean-install design** on 2026-10-14, allowing a detailed test-first implementation plan to be written. This is **not approval to skip the subsequent plan review or the user's selection of an execution method**; no package creation, merge or installation is authorized by the design approval alone.
 
 **Work permitted now:** cancel/supersede old V0 in-place design and tracking issue, record true old plugin installation state, author this replacement spec and update the GitHub plan.  
 **Not permitted/possible yet:** claim total deletion of owner-created old source, create a new plugin with ambiguous `qrvai` slug, publish new private release, merge, or activate tools before plan/review and D1/D2 gates.
 
-**Owner review request:** verify the new 5-Skill ChatGPT-first V0 strategy and clean deletion/no-legacy rule. Once the owner approves this actual document, create a detailed test-first implementation plan and select its execution mode. V1 remains the separately approved deterministic RF workbench.
+**Owner review outcome:** accepted new five-Skill ChatGPT-first V0 strategy and clean deletion/no-legacy rule. [Implementation Plan](../plans/2026-10-14-qrvai-v0-clean-slate-foundation.md) has been written and is **awaiting separate owner review and execution-method selection**. V1 remains the separately approved deterministic RF workbench.
 
 **References:** [v0.5 architectural index](../../README.md) · [Capability Register](../../architecture/capability-register-v0.5.md) · [Orchestrator Contracts](../../architecture/orchestrator-control-contracts-v0.5.md) · [ChatGPT-first](../../architecture/chatgpt-first-experience-v0.5.md).
