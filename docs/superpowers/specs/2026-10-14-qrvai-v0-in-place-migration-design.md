@@ -1,7 +1,7 @@
 # QRVAI V0 — Existing Plugin In-place Migration Design v0.6
 
 **Date:** 2026-10-14  
-**Stage:** WRITTEN DESIGN — owner review required prior to writing an implementation plan or updating the installed release.  
+**Stage:** **SUPERSEDED / REJECTED BY OWNER (2026-10-14) — DO NOT IMPLEMENT.** See [the replacement clean-install spec](2026-10-14-qrvai-v0-clean-install-design.md). Earlier written migration suggestions are retained solely for audit history.  
 **Primary product intent:** Upgrade the EXISTING private @QRVAI installation into the new ChatGPT-first QRVAI while preserving its plugin identity, existing 21 specialist Skills, Academy intellectual property and any host connections. **Do not create a second QRVAI plugin.**  
 **Owner-selected initial milestone:** V0 (conversational invocation/routing and honest advertised features). V1 deterministic RF/MCP tools follows separately.
 
