@@ -52,3 +52,28 @@ def validate_manifest(path: Path) -> list[str]:
     except (OSError, ValueError) as exc:
         return [f"manifest unreadable: {type(exc).__name__}"]
     return validate_manifest_data(data)
+
+def validate_skill(skill_path: Path) -> list[str]:
+    """Validate a portable Skills frontmatter entrypoint, without evaluating content."""
+    try:
+        text = skill_path.read_text(encoding="utf-8")
+    except OSError:
+        return [f"missing Skill file: {skill_path}"]
+    if not text.startswith("---\n") or "\n---\n" not in text[4:]:
+        return ["Skill YAML frontmatter missing"]
+    import yaml
+    header = text.split("\n---\n", 1)[0][4:]
+    try:
+        data = yaml.safe_load(header)
+    except yaml.YAMLError as exc:
+        return [f"invalid YAML frontmatter: {type(exc).__name__}"]
+    if not isinstance(data, dict):
+        return ["Skill frontmatter must be mapping"]
+    errors: list[str] = []
+    if data.get("name") != skill_path.parent.name:
+        errors.append("Skill name must match folder slug")
+    if not isinstance(data.get("description"), str) or not data["description"].strip():
+        errors.append("Skill description must be nonblank string")
+    if len(text.encode("utf-8")) > 1_048_576:
+        errors.append("Skill exceeds 1 MiB")
+    return errors
