@@ -37,6 +37,10 @@ ChatGPT/host → Skills orchestrate → MCP permission gate → typed engine/ada
 - High-risk physical actions are entirely excluded from initial scopes.
 - Host-specific UI affordances are optional; all critical results must be readable as text.
 
+## Selective domain orchestration
+
+The [Domain & Orchestration Design v0.4](../superpowers/specs/2026-10-14-qrvai-domain-orchestration-design.md) defines how 24 capabilities route through simple Skills/Tools, stateful workflows, and only four candidate specialized orchestrators (RF Engineering, Equipment Diagnostics, Regulatory Compliance and EmComm Training). This is **not** a commitment to 24 agents or one agent per module. The preferred default is a deterministic tool or workflow; model-driven specialists require explicit later performance and safety justification.
+
 ## Trade-offs and consequences
 
 **Benefits:** correct-by-construction numerical primitives; reusable widgets; provider independence; explicit permissions; domain expansion without duplication; ChatGPT-first UX.
