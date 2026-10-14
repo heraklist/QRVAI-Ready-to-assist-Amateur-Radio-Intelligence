@@ -26,9 +26,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-A01-1` — Preparedness Baseline | inventory go-bags, batteries, frequencies and volunteers; identify unverified legal assumptions | `skills/civil-protection/references/1-first.md` |
-| `SS-A01-2` — Resilience Design | compare station and power backups; explicitly mark simulated outages | `skills/civil-protection/references/2-second.md` |
-| `SS-A01-3` — Exercise Review | produce measurable exercise checks and after-action recommendations | `skills/civil-protection/references/3-third.md` |
+| `SS-A01-1` — Preparedness Baseline | inventory go-bags, batteries, frequencies and volunteers; identify unverified legal assumptions | `skills/civil-protection/references/1-preparedness-baseline.md` |
+| `SS-A01-2` — Resilience Design | compare station and power backups; explicitly mark simulated outages | `skills/civil-protection/references/2-resilience-design.md` |
+| `SS-A01-3` — Exercise Review | produce measurable exercise checks and after-action recommendations | `skills/civil-protection/references/3-exercise-review.md` |
 
 ### SK-A02 — `emcomm-traffic`
 **Skill entrypoint:** `skills/emcomm-traffic/SKILL.md` (planned, not present).  
@@ -39,9 +39,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-A02-1` — Net Role Training | teach NCS/check-in procedures and distinct message roles | `skills/emcomm-traffic/references/1-first.md` |
-| `SS-A02-2` — Message Integrity Drill | validate structured message headers, repeats, acknowledgements and timestamps | `skills/emcomm-traffic/references/2-second.md` |
-| `SS-A02-3` — Fallback Traffic Simulation | run exercise-only failure and alternative path plan | `skills/emcomm-traffic/references/3-third.md` |
+| `SS-A02-1` — Net Role Training | teach NCS/check-in procedures and distinct message roles | `skills/emcomm-traffic/references/1-net-role-training.md` |
+| `SS-A02-2` — Message Integrity Drill | validate structured message headers, repeats, acknowledgements and timestamps | `skills/emcomm-traffic/references/2-message-integrity-drill.md` |
+| `SS-A02-3` — Fallback Traffic Simulation | run exercise-only failure and alternative path plan | `skills/emcomm-traffic/references/3-fallback-traffic-simulation.md` |
 
 ### SK-A03 — `frequency-intelligence`
 **Skill entrypoint:** `skills/frequency-intelligence/SKILL.md` (planned, not present).  
@@ -52,9 +52,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-A03-1` — Allocation Lookup | retrieve effective national frequency allocation and its legal status | `skills/frequency-intelligence/references/1-first.md` |
-| `SS-A03-2` — Band Plan Overlay | overlay IARU recommendations distinctly from binding law | `skills/frequency-intelligence/references/2-second.md` |
-| `SS-A03-3` — Channel/Repeater Reference | filter source-verified repeater/beacon/channel metadata with freshness | `skills/frequency-intelligence/references/3-third.md` |
+| `SS-A03-1` — Allocation Lookup | retrieve effective national frequency allocation and its legal status | `skills/frequency-intelligence/references/1-allocation-lookup.md` |
+| `SS-A03-2` — Band Plan Overlay | overlay IARU recommendations distinctly from binding law | `skills/frequency-intelligence/references/2-band-plan-overlay.md` |
+| `SS-A03-3` — Channel/Repeater Reference | filter source-verified repeater/beacon/channel metadata with freshness | `skills/frequency-intelligence/references/3-channelrepeater-reference.md` |
 
 ### SK-A04 — `regulatory-licensing`
 **Skill entrypoint:** `skills/regulatory-licensing/SKILL.md` (planned, not present).  
@@ -65,9 +65,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-A04-1` — Licence Context | determine credential, class, privileges and portability requirements | `skills/regulatory-licensing/references/1-first.md` |
-| `SS-A04-2` — Transmission Rule Evaluation | apply versioned legal rules to a fully specified operating scenario | `skills/regulatory-licensing/references/2-second.md` |
-| `SS-A04-3` — Cross-border Explanation | separate domestic law, CEPT/HAREC mechanisms and recommendations | `skills/regulatory-licensing/references/3-third.md` |
+| `SS-A04-1` — Licence Context | determine credential, class, privileges and portability requirements | `skills/regulatory-licensing/references/1-licence-context.md` |
+| `SS-A04-2` — Transmission Rule Evaluation | apply versioned legal rules to a fully specified operating scenario | `skills/regulatory-licensing/references/2-transmission-rule-evaluation.md` |
+| `SS-A04-3` — Cross-border Explanation | separate domestic law, CEPT/HAREC mechanisms and recommendations | `skills/regulatory-licensing/references/3-crossborder-explanation.md` |
 
 ### SK-A05 — `rf-safety-emc`
 **Skill entrypoint:** `skills/rf-safety-emc/SKILL.md` (planned, not present).  
@@ -78,9 +78,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-A05-1` — RF Exposure Worksheet | calculate conservative input-dependent exposure screening, cite local threshold | `skills/rf-safety-emc/references/1-first.md` |
-| `SS-A05-2` — Interference Troubleshooting | systematically isolate RFI symptom patterns without unsafe procedures | `skills/rf-safety-emc/references/2-second.md` |
-| `SS-A05-3` — Installation Risk Review | flag lightning, grounding and mains-electrical situations for qualified personnel | `skills/rf-safety-emc/references/3-third.md` |
+| `SS-A05-1` — RF Exposure Worksheet | calculate conservative input-dependent exposure screening, cite local threshold | `skills/rf-safety-emc/references/1-rf-exposure-worksheet.md` |
+| `SS-A05-2` — Interference Troubleshooting | systematically isolate RFI symptom patterns without unsafe procedures | `skills/rf-safety-emc/references/2-interference-troubleshooting.md` |
+| `SS-A05-3` — Installation Risk Review | flag lightning, grounding and mains-electrical situations for qualified personnel | `skills/rf-safety-emc/references/3-installation-risk-review.md` |
 
 ### SK-B06 — `equipment-manuals`
 **Skill entrypoint:** `skills/equipment-manuals/SKILL.md` (planned, not present).  
@@ -91,9 +91,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B06-1` — Versioned Manual Retrieval | identify permitted official/user manuals by model/revision and quote narrowly | `skills/equipment-manuals/references/1-first.md` |
-| `SS-B06-2` — Configuration Walkthrough | guide model-specific front-panel/menu/port settings with evidence | `skills/equipment-manuals/references/2-second.md` |
-| `SS-B06-3` — Safe Troubleshooting | test likely causes in reversible, observable steps | `skills/equipment-manuals/references/3-third.md` |
+| `SS-B06-1` — Versioned Manual Retrieval | identify permitted official/user manuals by model/revision and quote narrowly | `skills/equipment-manuals/references/1-versioned-manual-retrieval.md` |
+| `SS-B06-2` — Configuration Walkthrough | guide model-specific front-panel/menu/port settings with evidence | `skills/equipment-manuals/references/2-configuration-walkthrough.md` |
+| `SS-B06-3` — Safe Troubleshooting | test likely causes in reversible, observable steps | `skills/equipment-manuals/references/3-safe-troubleshooting.md` |
 
 ### SK-B07 — `rf-engineering`
 **Skill entrypoint:** `skills/rf-engineering/SKILL.md` (planned, not present).  
@@ -104,9 +104,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B07-1` — RF Unit Algebra | convert W/dBm/dBW and dBi/dBd correctly with exact references | `skills/rf-engineering/references/1-first.md` |
-| `SS-B07-2` — Link Budget Analysis | calculate transmit chain, path attenuation and receiver margin | `skills/rf-engineering/references/2-second.md` |
-| `SS-B07-3` — Mismatch and Noise Metrics | compute SWR/return loss, noise figure and sensitivity within assumptions | `skills/rf-engineering/references/3-third.md` |
+| `SS-B07-1` — RF Unit Algebra | convert W/dBm/dBW and dBi/dBd correctly with exact references | `skills/rf-engineering/references/1-rf-unit-algebra.md` |
+| `SS-B07-2` — Link Budget Analysis | calculate transmit chain, path attenuation and receiver margin | `skills/rf-engineering/references/2-link-budget-analysis.md` |
+| `SS-B07-3` — Mismatch and Noise Metrics | compute SWR/return loss, noise figure and sensitivity within assumptions | `skills/rf-engineering/references/3-mismatch-and-noise-metrics.md` |
 
 ### SK-B08 — `antenna-feedline`
 **Skill entrypoint:** `skills/antenna-feedline/SKILL.md` (planned, not present).  
@@ -117,9 +117,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B08-1` — Antenna Geometry | estimate physical geometry and expose ground/velocity caveats | `skills/antenna-feedline/references/1-first.md` |
-| `SS-B08-2` — Matching/Smith Chart | evaluate impedance locus and matching-network feasibility | `skills/antenna-feedline/references/2-second.md` |
-| `SS-B08-3` — Feedline Performance | calculate attenuation, delivered power and mismatch assumptions | `skills/antenna-feedline/references/3-third.md` |
+| `SS-B08-1` — Antenna Geometry | estimate physical geometry and expose ground/velocity caveats | `skills/antenna-feedline/references/1-antenna-geometry.md` |
+| `SS-B08-2` — Matching/Smith Chart | evaluate impedance locus and matching-network feasibility | `skills/antenna-feedline/references/2-matchingsmith-chart.md` |
+| `SS-B08-3` — Feedline Performance | calculate attenuation, delivered power and mismatch assumptions | `skills/antenna-feedline/references/3-feedline-performance.md` |
 
 ### SK-B09 — `rf-electronics`
 **Skill entrypoint:** `skills/rf-electronics/SKILL.md` (planned, not present).  
@@ -130,9 +130,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B09-1` — Filter Modeling | calculate cutoff, Q and transfer response for supported topologies | `skills/rf-electronics/references/1-first.md` |
-| `SS-B09-2` — RF Chain Explanation | trace mixer, oscillator, gain stage and linearity limitations | `skills/rf-electronics/references/2-second.md` |
-| `SS-B09-3` — Component Selection Checks | compare ratings, tolerances and thermal/voltage conditions from datasheets | `skills/rf-electronics/references/3-third.md` |
+| `SS-B09-1` — Filter Modeling | calculate cutoff, Q and transfer response for supported topologies | `skills/rf-electronics/references/1-filter-modeling.md` |
+| `SS-B09-2` — RF Chain Explanation | trace mixer, oscillator, gain stage and linearity limitations | `skills/rf-electronics/references/2-rf-chain-explanation.md` |
+| `SS-B09-3` — Component Selection Checks | compare ratings, tolerances and thermal/voltage conditions from datasheets | `skills/rf-electronics/references/3-component-selection-checks.md` |
 
 ### SK-B10 — `rf-measurements`
 **Skill entrypoint:** `skills/rf-measurements/SKILL.md` (planned, not present).  
@@ -143,9 +143,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B10-1` — VNA Trace Interpretation | parse S11/S21, reference impedance and marker readings | `skills/rf-measurements/references/1-first.md` |
-| `SS-B10-2` — Spectrum/Test Setup | explain safe analyzer/scope/attenuator configuration and limits | `skills/rf-measurements/references/2-second.md` |
-| `SS-B10-3` — Measurement Reconciliation | compare expected and observed metrics with uncertainty | `skills/rf-measurements/references/3-third.md` |
+| `SS-B10-1` — VNA Trace Interpretation | parse S11/S21, reference impedance and marker readings | `skills/rf-measurements/references/1-vna-trace-interpretation.md` |
+| `SS-B10-2` — Spectrum/Test Setup | explain safe analyzer/scope/attenuator configuration and limits | `skills/rf-measurements/references/2-spectrumtest-setup.md` |
+| `SS-B10-3` — Measurement Reconciliation | compare expected and observed metrics with uncertainty | `skills/rf-measurements/references/3-measurement-reconciliation.md` |
 
 ### SK-B11 — `station-integration`
 **Skill entrypoint:** `skills/station-integration/SKILL.md` (planned, not present).  
@@ -156,9 +156,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B11-1` — Signal Path Mapping | trace CAT, audio, power, tuner and interlocks in the station | `skills/station-integration/references/1-first.md` |
-| `SS-B11-2` — Compatibility Check | match ports, drivers, protocols and versioned settings | `skills/station-integration/references/2-second.md` |
-| `SS-B11-3` — Read-only Telemetry | retrieve authorized rig state with connected-device fault handling | `skills/station-integration/references/3-third.md` |
+| `SS-B11-1` — Signal Path Mapping | trace CAT, audio, power, tuner and interlocks in the station | `skills/station-integration/references/1-signal-path-mapping.md` |
+| `SS-B11-2` — Compatibility Check | match ports, drivers, protocols and versioned settings | `skills/station-integration/references/2-compatibility-check.md` |
+| `SS-B11-3` — Read-only Telemetry | retrieve authorized rig state with connected-device fault handling | `skills/station-integration/references/3-readonly-telemetry.md` |
 
 ### SK-B12 — `power-infrastructure`
 **Skill entrypoint:** `skills/power-infrastructure/SKILL.md` (planned, not present).  
@@ -169,9 +169,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B12-1` — Power Budget | sum station loads with duty cycle and conversions | `skills/power-infrastructure/references/1-first.md` |
-| `SS-B12-2` — Battery Runtime | estimate usable capacity and autonomy with degradation range | `skills/power-infrastructure/references/2-second.md` |
-| `SS-B12-3` — Backup Scenario | compare backup topology and resilience under loss scenarios | `skills/power-infrastructure/references/3-third.md` |
+| `SS-B12-1` — Power Budget | sum station loads with duty cycle and conversions | `skills/power-infrastructure/references/1-power-budget.md` |
+| `SS-B12-2` — Battery Runtime | estimate usable capacity and autonomy with degradation range | `skills/power-infrastructure/references/2-battery-runtime.md` |
+| `SS-B12-3` — Backup Scenario | compare backup topology and resilience under loss scenarios | `skills/power-infrastructure/references/3-backup-scenario.md` |
 
 ### SK-B13 — `sdr-dsp`
 **Skill entrypoint:** `skills/sdr-dsp/SKILL.md` (planned, not present).  
@@ -182,9 +182,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-B13-1` — Sampling Foundations | check Nyquist, aliasing, sample rate and decimation | `skills/sdr-dsp/references/1-first.md` |
-| `SS-B13-2` — Spectrum/FFT Visualization | transform authorized IQ into labeled spectral estimates | `skills/sdr-dsp/references/2-second.md` |
-| `SS-B13-3` — DSP Filter Analysis | compare digital filtering and demodulation behavior | `skills/sdr-dsp/references/3-third.md` |
+| `SS-B13-1` — Sampling Foundations | check Nyquist, aliasing, sample rate and decimation | `skills/sdr-dsp/references/1-sampling-foundations.md` |
+| `SS-B13-2` — Spectrum/FFT Visualization | transform authorized IQ into labeled spectral estimates | `skills/sdr-dsp/references/2-spectrumfft-visualization.md` |
+| `SS-B13-3` — DSP Filter Analysis | compare digital filtering and demodulation behavior | `skills/sdr-dsp/references/3-dsp-filter-analysis.md` |
 
 ### SK-C14 — `operating-dx`
 **Skill entrypoint:** `skills/operating-dx/SKILL.md` (planned, not present).  
@@ -195,9 +195,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C14-1` — Operating Procedure | teach SSB/CW, calling, split, pileups and etiquette | `skills/operating-dx/references/1-first.md` |
-| `SS-C14-2` — DX Observation Reading | distinguish verified spot data from predictions | `skills/operating-dx/references/2-second.md` |
-| `SS-C14-3` — Operating Scenario Plan | recommend permissible time/band strategies with uncertainty | `skills/operating-dx/references/3-third.md` |
+| `SS-C14-1` — Operating Procedure | teach SSB/CW, calling, split, pileups and etiquette | `skills/operating-dx/references/1-operating-procedure.md` |
+| `SS-C14-2` — DX Observation Reading | distinguish verified spot data from predictions | `skills/operating-dx/references/2-dx-observation-reading.md` |
+| `SS-C14-3` — Operating Scenario Plan | recommend permissible time/band strategies with uncertainty | `skills/operating-dx/references/3-operating-scenario-plan.md` |
 
 ### SK-C15 — `propagation`
 **Skill entrypoint:** `skills/propagation/SKILL.md` (planned, not present).  
@@ -208,9 +208,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C15-1` — Space Weather Reading | retrieve timestamped solar/geomagnetic measurements and interpretation | `skills/propagation/references/1-first.md` |
-| `SS-C15-2` — Propagation Scenario | run bounded path prediction with explicit model assumptions | `skills/propagation/references/2-second.md` |
-| `SS-C15-3` — Observation Correlation | compare modeled forecasts with actual authenticated reception reports | `skills/propagation/references/3-third.md` |
+| `SS-C15-1` — Space Weather Reading | retrieve timestamped solar/geomagnetic measurements and interpretation | `skills/propagation/references/1-space-weather-reading.md` |
+| `SS-C15-2` — Propagation Scenario | run bounded path prediction with explicit model assumptions | `skills/propagation/references/2-propagation-scenario.md` |
+| `SS-C15-3` — Observation Correlation | compare modeled forecasts with actual authenticated reception reports | `skills/propagation/references/3-observation-correlation.md` |
 
 ### SK-C16 — `digital-modes`
 **Skill entrypoint:** `skills/digital-modes/SKILL.md` (planned, not present).  
@@ -221,9 +221,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C16-1` — Mode Basics | explain FT8/FT4/RTTY/PSK/JS8/SSTV and constraints | `skills/digital-modes/references/1-first.md` |
-| `SS-C16-2` — Audio/CAT Diagnostics | trace interfaces, sound devices and handshake checks | `skills/digital-modes/references/2-second.md` |
-| `SS-C16-3` — Software Version Guidance | resolve software-specific configuration using official docs | `skills/digital-modes/references/3-third.md` |
+| `SS-C16-1` — Mode Basics | explain FT8/FT4/RTTY/PSK/JS8/SSTV and constraints | `skills/digital-modes/references/1-mode-basics.md` |
+| `SS-C16-2` — Audio/CAT Diagnostics | trace interfaces, sound devices and handshake checks | `skills/digital-modes/references/2-audiocat-diagnostics.md` |
+| `SS-C16-3` — Software Version Guidance | resolve software-specific configuration using official docs | `skills/digital-modes/references/3-software-version-guidance.md` |
 
 ### SK-C17 — `packet-networks`
 **Skill entrypoint:** `skills/packet-networks/SKILL.md` (planned, not present).  
@@ -234,9 +234,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C17-1` — Packet Frame/Routing | explain AX.25/TNC, digipeat and packet path behavior | `skills/packet-networks/references/1-first.md` |
-| `SS-C17-2` — APRS/Location Ethics | interpret packet paths and privacy limits | `skills/packet-networks/references/2-second.md` |
-| `SS-C17-3` — Winlink/Mesh Planning | assess authorized infrastructure and link dependencies | `skills/packet-networks/references/3-third.md` |
+| `SS-C17-1` — Packet Frame/Routing | explain AX.25/TNC, digipeat and packet path behavior | `skills/packet-networks/references/1-packet-framerouting.md` |
+| `SS-C17-2` — APRS/Location Ethics | interpret packet paths and privacy limits | `skills/packet-networks/references/2-aprslocation-ethics.md` |
+| `SS-C17-3` — Winlink/Mesh Planning | assess authorized infrastructure and link dependencies | `skills/packet-networks/references/3-winlinkmesh-planning.md` |
 
 ### SK-C18 — `repeaters-dvoice`
 **Skill entrypoint:** `skills/repeaters-dvoice/SKILL.md` (planned, not present).  
@@ -247,9 +247,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C18-1` — Analog Repeater Settings | calculate split/offset/CTCSS/DCS with source | `skills/repeaters-dvoice/references/1-first.md` |
-| `SS-C18-2` — Digital Voice Profiles | explain DMR/D-STAR/C4FM, hotspot and codeplug constraints | `skills/repeaters-dvoice/references/2-second.md` |
-| `SS-C18-3` — Directory Discovery | filter actual verified repeater metadata and freshness | `skills/repeaters-dvoice/references/3-third.md` |
+| `SS-C18-1` — Analog Repeater Settings | calculate split/offset/CTCSS/DCS with source | `skills/repeaters-dvoice/references/1-analog-repeater-settings.md` |
+| `SS-C18-2` — Digital Voice Profiles | explain DMR/D-STAR/C4FM, hotspot and codeplug constraints | `skills/repeaters-dvoice/references/2-digital-voice-profiles.md` |
+| `SS-C18-3` — Directory Discovery | filter actual verified repeater metadata and freshness | `skills/repeaters-dvoice/references/3-directory-discovery.md` |
 
 ### SK-C19 — `satellites-weak-signal`
 **Skill entrypoint:** `skills/satellites-weak-signal/SKILL.md` (planned, not present).  
@@ -260,9 +260,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C19-1` — Satellite Metadata | retrieve amateur spacecraft frequency/mode data and date | `skills/satellites-weak-signal/references/1-first.md` |
-| `SS-C19-2` — Pass/Doppler Calculation | calculate AOS/LOS/doppler using current appropriate orbit model | `skills/satellites-weak-signal/references/2-second.md` |
-| `SS-C19-3` — Weak-signal Workflow | teach EME, meteor scatter and VHF propagation limitations | `skills/satellites-weak-signal/references/3-third.md` |
+| `SS-C19-1` — Satellite Metadata | retrieve amateur spacecraft frequency/mode data and date | `skills/satellites-weak-signal/references/1-satellite-metadata.md` |
+| `SS-C19-2` — Pass/Doppler Calculation | calculate AOS/LOS/doppler using current appropriate orbit model | `skills/satellites-weak-signal/references/2-passdoppler-calculation.md` |
+| `SS-C19-3` — Weak-signal Workflow | teach EME, meteor scatter and VHF propagation limitations | `skills/satellites-weak-signal/references/3-weaksignal-workflow.md` |
 
 ### SK-C20 — `logbook-awards`
 **Skill entrypoint:** `skills/logbook-awards/SKILL.md` (planned, not present).  
@@ -273,9 +273,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C20-1` — ADIF Integrity | parse and round-trip version-aware ADIF with provenance | `skills/logbook-awards/references/1-first.md` |
-| `SS-C20-2` — QSO Analytics | summarize contact statistics while preserving privacy | `skills/logbook-awards/references/2-second.md` |
-| `SS-C20-3` — Award/QSL Assessment | compare confirmations to current award criteria and services | `skills/logbook-awards/references/3-third.md` |
+| `SS-C20-1` — ADIF Integrity | parse and round-trip version-aware ADIF with provenance | `skills/logbook-awards/references/1-adif-integrity.md` |
+| `SS-C20-2` — QSO Analytics | summarize contact statistics while preserving privacy | `skills/logbook-awards/references/2-qso-analytics.md` |
+| `SS-C20-3` — Award/QSL Assessment | compare confirmations to current award criteria and services | `skills/logbook-awards/references/3-awardqsl-assessment.md` |
 
 ### SK-C21 — `contests-portable`
 **Skill entrypoint:** `skills/contests-portable/SKILL.md` (planned, not present).  
@@ -286,9 +286,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-C21-1` — Contest Rule Preparation | interpret sourced rule revision, category and scoring | `skills/contests-portable/references/1-first.md` |
-| `SS-C21-2` — Portable Activation Planning | plan antennas/power and access/permission requirements | `skills/contests-portable/references/2-second.md` |
-| `SS-C21-3` — Field Operations Review | assess log quality and activity outcome without external writes | `skills/contests-portable/references/3-third.md` |
+| `SS-C21-1` — Contest Rule Preparation | interpret sourced rule revision, category and scoring | `skills/contests-portable/references/1-contest-rule-preparation.md` |
+| `SS-C21-2` — Portable Activation Planning | plan antennas/power and access/permission requirements | `skills/contests-portable/references/2-portable-activation-planning.md` |
+| `SS-C21-3` — Field Operations Review | assess log quality and activity outcome without external writes | `skills/contests-portable/references/3-field-operations-review.md` |
 
 ### SK-D22 — `radio-academy`
 **Skill entrypoint:** `skills/radio-academy/SKILL.md` (planned, not present).  
@@ -299,9 +299,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-D22-1` — Theory Curriculum | teach syllabus-aligned electrical/RF/regulatory concepts | `skills/radio-academy/references/1-first.md` |
-| `SS-D22-2` — CW Practice | provide timing/speed drills and reproducible scoring | `skills/radio-academy/references/2-second.md` |
-| `SS-D22-3` — Knowledge Assessment | ask and explain structured questions with source links | `skills/radio-academy/references/3-third.md` |
+| `SS-D22-1` — Theory Curriculum | teach syllabus-aligned electrical/RF/regulatory concepts | `skills/radio-academy/references/1-theory-curriculum.md` |
+| `SS-D22-2` — CW Practice | provide timing/speed drills and reproducible scoring | `skills/radio-academy/references/2-cw-practice.md` |
+| `SS-D22-3` — Knowledge Assessment | ask and explain structured questions with source links | `skills/radio-academy/references/3-knowledge-assessment.md` |
 
 ### SK-D23 — `radio-maker`
 **Skill entrypoint:** `skills/radio-maker/SKILL.md` (planned, not present).  
@@ -312,9 +312,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-D23-1` — Microcontroller Integration | develop station-adjacent Arduino/ESP32/RPi project guidance | `skills/radio-maker/references/1-first.md` |
-| `SS-D23-2` — Software Interoperability | review open-source radio interfaces and test strategy | `skills/radio-maker/references/2-second.md` |
-| `SS-D23-3` — Experimental RF Prototyping | build a safe bounded research plan with measurement checks | `skills/radio-maker/references/3-third.md` |
+| `SS-D23-1` — Microcontroller Integration | develop station-adjacent Arduino/ESP32/RPi project guidance | `skills/radio-maker/references/1-microcontroller-integration.md` |
+| `SS-D23-2` — Software Interoperability | review open-source radio interfaces and test strategy | `skills/radio-maker/references/2-software-interoperability.md` |
+| `SS-D23-3` — Experimental RF Prototyping | build a safe bounded research plan with measurement checks | `skills/radio-maker/references/3-experimental-rf-prototyping.md` |
 
 ### SK-D24 — `clubs-mentoring`
 **Skill entrypoint:** `skills/clubs-mentoring/SKILL.md` (planned, not present).  
@@ -325,9 +325,9 @@ A real Skill is a discoverable package with a `skills/<slug>/SKILL.md` entrypoin
 **Procedure:** validate intent/context → choose exactly one or more of the named Sub-skills → call approved tools or primary references → validate result → answer and optionally render interactive UI.
 | Sub-skill (internal procedure) | Required specific responsibility | Proposed reference file |
 |---|---|---|
-| `SS-D24-1` — Member Onboarding | prepare skill-based progression for new operators | `skills/clubs-mentoring/references/1-first.md` |
-| `SS-D24-2` — Training/Event Planning | coordinate authorized workshops and activity calendars | `skills/clubs-mentoring/references/2-second.md` |
-| `SS-D24-3` — Asset/Mentor Governance | maintain consent-based equipment/mentor availability records | `skills/clubs-mentoring/references/3-third.md` |
+| `SS-D24-1` — Member Onboarding | prepare skill-based progression for new operators | `skills/clubs-mentoring/references/1-member-onboarding.md` |
+| `SS-D24-2` — Training/Event Planning | coordinate authorized workshops and activity calendars | `skills/clubs-mentoring/references/2-trainingevent-planning.md` |
+| `SS-D24-3` — Asset/Mentor Governance | maintain consent-based equipment/mentor availability records | `skills/clubs-mentoring/references/3-assetmentor-governance.md` |
 
 ## Packaging and activation validation
 
