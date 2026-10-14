@@ -58,23 +58,3 @@ Guidance includes learning paths and independently written practice, open projec
 | `SC-D24-1` — Member Onboarding | prepare skill-based progression for new operators | `SS-D24-1` |
 | `SC-D24-2` — Training/Event Planning | coordinate authorized workshops and activity calendars | `SS-D24-2` |
 | `SC-D24-3` — Asset/Mentor Governance | maintain consent-based equipment/mentor availability records | `SS-D24-3` |
-
-## 3. Taxonomy and ownership rules
-
-- **Capabilities** describe value and decision boundaries; **Sub-capabilities** enumerate bounded functions; **Skills** activate conditional guidance; **sub-skills** are the procedural sections that implement a sub-capability after the parent Skill is selected.
-- Every `SC-Xnn-i` has exactly one primary owner `SK-Xnn` and procedural definition `SS-Xnn-i`. Other domains MAY reuse underlying computational and data engines without duplicating them.
-- **Cross-domain orchestration:** simple task → direct Skill + MCP tool; complex task → bounded workflow; orchestrators only when needed.
-- **Provenance:** legal outputs include jurisdiction, effective date, primary source and condition status; live observations include observed_at/fetched_at; equations include engine revision and units.
-- **Access:** information and simulation tools must not upgrade to data writes or device control. No PTT/transmission in approved design scope.
-- **Implementation status:** none of these 24 Skills or 72 sub-skills has been packaged or tested.
-
-## 4. Registry consistency gates
-
-1. Exactly four family IDs A/B/C/D and distinct module IDs A01–A05, B06–B13, C14–C21, D22–D24.
-2. Each module has **three** bounded Sub-capabilities SC-Xnn-1/2/3 with matching SS-Xnn-1/2/3 and an owner SK-Xnn; no orphan IDs.
-3. Every module has explicit mission, required context, deliverable and stop boundary.
-4. Every tool introduced later must map to at least one SC, and every SC intended for executable behavior must eventually map to a justified tool or documented manual-only workflow.
-5. In no case may source citation alone be interpreted as validated legal permission, a measured RF quantity or government/agency authority.
-
-**Cross references:** [Skill Registry](skill-and-subskill-registry-v0.5.md) · [Engine/MCP Tool Contracts](engine-and-mcp-tool-contracts-v0.5.md) · [Review Audit](../reviews/2026-10-14-architecture-audit-v0.5.md).
-
