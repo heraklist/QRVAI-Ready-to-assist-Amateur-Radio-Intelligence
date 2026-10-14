@@ -4,6 +4,12 @@
 **State:** WRITTEN SPEC — architectural owner-review gate; no package created or new plugin installed.  
 **Owner directive:** **FULLY abandon in-place migration**. Uninstall/delete the legacy QRVAI, then build a **completely new, independent QRVAI ChatGPT plugin** using only the approved QRVAI v0.5 capability/orchestration architecture. **Do not inherit the old plugin's backend ID, releases, package artifacts, Skills, exam question bank, images, scripts, manifests, private data or configurations.**
 
+## Owner confirmation and current implementation gate (2026-10-14)
+
+The owner explicitly confirmed that `@QRVAI` **inside any pre-existing ChatGPT conversation** is the product's primary entrypoint, matching the manner in which other installed plugins are invoked when the host supports it. User authorization to **begin V0** triggers design-readiness and implementation planning review; it must not be mistaken for approval of this already-written exact V0 spec, an implementation plan, account/plugin creation, merge or deployment. The [GitHub issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) tracks the blocked full-deletion prerequisite.
+
+**Fresh read-only status:** Plugin Creator still lists the old personal/private account record `plugins_6acf47f502dc8191bf542fe040d484d8`, version `0.1.0-preview.2`, current release `pluginrel_6acf81d87b588191b6e41839785357aa`. Metadata lookup on that exact ID also succeeds. This establishes that **the saved old record is not yet removed** despite an earlier `not_installed` result for the active-install state. Do not issue `create_plugin` until this identity/namespace gate and owner-approved written plan are satisfied.
+
 ## 1. Product purpose and user-visible requirement
 
 QRVAI is a ChatGPT-first, Greek/English Amateur Radio Intelligence assistant. The primary user action is selecting/mentioning the **new @QRVAI** inside an existing ChatGPT conversation. A separate app/dashboard is not required for V0. The plugin must explain and guide the four capability families and 24 domains through bounded, honest, versioned instruction Skills. V0 must never claim that the 38 proposed MCP methods, RF calculators, live regulation engine, 36 MCP Apps or local rig control exist before implementation and host verification.
