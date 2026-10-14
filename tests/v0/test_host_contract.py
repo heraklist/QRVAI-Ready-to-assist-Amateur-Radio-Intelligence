@@ -47,5 +47,18 @@ class TestHostContract(unittest.TestCase):
         self.assertEqual(validate_host_report(sample(), {"legal", "mention"}), [])
 
 
+    def test_blocked_overall_outcome_must_not_validate_as_release_pass(self):
+        report = sample()
+        report["actual_outcome"] = "BLOCKED"
+        errors = validate_host_report(report, {"legal", "mention"})
+        self.assertTrue(any("actual_outcome" in e for e in errors))
+
+    def test_empty_expected_case_set_is_not_release_evidence(self):
+        report = sample()
+        report["cases"] = []
+        errors = validate_host_report(report, set())
+        self.assertTrue(any("expected_case_ids" in e for e in errors))
+
+
 if __name__ == "__main__":
     unittest.main()
