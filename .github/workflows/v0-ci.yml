@@ -1,0 +1,24 @@
+name: QRVAI V0 Tests
+on:
+  push:
+    branches:
+      - feat/qrvai-v0-native-reviewed
+  pull_request:
+    paths:
+      - 'qrvai/**'
+      - 'tests/v0/**'
+      - 'scripts/v0/**'
+      - 'requirements-v0-dev.txt'
+      - '.github/workflows/v0-ci.yml'
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements-v0-dev.txt
+      - run: python -m unittest discover -s tests/v0 -p 'test_*.py' -v
