@@ -28,6 +28,8 @@ def validate_host_report(report: dict, expected_case_ids: set[str]) -> list[str]
         errors.append("execution_status: NOT_EXECUTED cannot pass host acceptance")
     if report.get("actual_outcome") not in STATES:
         errors.append("actual_outcome invalid")
+    elif report.get("actual_outcome") != "PASS":
+        errors.append("actual_outcome must be PASS for release acceptance")
     try:
         seen_at = datetime.fromisoformat(str(report.get("observed_at")).replace("Z", "+00:00"))
         if seen_at.tzinfo is None:
@@ -37,6 +39,8 @@ def validate_host_report(report: dict, expected_case_ids: set[str]) -> list[str]
     cases = report.get("cases")
     if not isinstance(cases, list):
         return errors + ["cases must be list"]
+    if not expected_case_ids:
+        errors.append("expected_case_ids must be non-empty for release acceptance")
     seen: set[str] = set()
     for case in cases:
         if not isinstance(case, dict):
