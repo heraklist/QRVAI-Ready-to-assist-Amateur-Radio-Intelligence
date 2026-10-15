@@ -16,15 +16,24 @@
 | H3 — ZIP checks for tampered links and malformed reference encoding | `b092da5` · [RED #38686339586](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38686339586) | `fbad866` · [GREEN #38686455377](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38686455377), 36 tests | [Review](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/5#issuecomment-6185076874); fixture corrected to real invalid bytes, ZIP checks without extraction |
 | H4 — Malformed/unreviewed bilingual QA fields and CI guard | `8d92a5e` · [RED #38686558507](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38686558507) | `35ead99` · [GREEN #38686748298](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38686748298), 38 tests | [Review](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/5#issuecomment-6185118122); typed prompts/claims, known risk classes, QA file changes trigger CI |
 
+## Pre-merge code review regression (H5)
+
+A second, focused review found a **fail-closed bug**: `urllib.parse.urlsplit('https://[')` raises `ValueError`. Both the checked source reference validator and the ZIP reference validator previously let that exception escape instead of reporting a validation error.
+
+- Tests added first in `e44f26f` and `da04f09`; [RED GitHub Actions #38687408565](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38687408565) confirmed **two actual errors** (`Invalid IPv6 URL`).
+- Fixes `e7bd172` and `7a4ddfe` catch malformed URL parsing and collect explicit reference errors.
+- [GREEN GitHub Actions #38687466161](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38687466161): **40/40 tests passed**, `CLEAN_V0_QA_CORPUS=PASS`, clean ZIP SHA unchanged.
+- **Review nature:** verified author follow-up, NOT an independent reviewer. No plugin account creation or host E2E was performed.
+
 ## Final repeatable acceptance
 
-**Verified run:** [GitHub Actions #38686748298](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38686748298).
+**Verified run:** [GitHub Actions #38687466161](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38687466161).
 
-- 38/38 unit tests PASS under Python 3.11.
+- 40/40 unit tests PASS under Python 3.11 after the pre-merge regression fix.
 - `CLEAN_V0_QA_CORPUS=PASS`: check actual QA data before build, independent of a unit fixture.
 - Clean ZIP generated from exactly 12 allowlisted V0 source files, no MCP integration and no old data. **SHA-256:** `eb2fb505e1e2ad24b4b5a0aea07137a7e56a8b4888c33017055cb103aba6fe7f`. Its SHA has not changed during hardening, as expected because all modifications are development validators and tests.
 - Actual RED evidence exists for each gate, including interim regression failures corrected before moving ahead.
-- Four author second-pass review comments. **Independent reviewer not executed**.
+- Four original author second-pass review comments and a pre-merge follow-up regression review. **Independent reviewer not executed**.
 
 ## Known limits and release gate (not an approval to install)
 
