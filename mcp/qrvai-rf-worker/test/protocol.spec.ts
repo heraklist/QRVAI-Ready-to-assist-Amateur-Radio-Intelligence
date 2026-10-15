@@ -45,7 +45,7 @@ test("review: successful MCP responses never enable wildcard browser CORS", asyn
   try {
     await client.connect(transport);
     const list = await client.listTools();
-    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget"]);
+    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance"]);
     assert.ok(cors.length>0);
     assert.ok(cors.every(header=>header!=="*"),"MCP handler must not allow arbitrary browser origins");
   } finally { await client.close(); }
