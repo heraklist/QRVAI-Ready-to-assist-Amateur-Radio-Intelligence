@@ -23,4 +23,5 @@ jobs:
         run: |
           cd mcp/qrvai-rf-worker
           npm ci --ignore-scripts
+          npm run typecheck
           npm test
