@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-strip-types --test test/*.spec.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:worker": "vitest run --config vitest.worker.config.ts"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -18,6 +19,9 @@
   "devDependencies": {
     "@modelcontextprotocol/client": "2.3.1",
     "@types/node": "22.15.30",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "@cloudflare/vitest-plugin": "1.4.2",
+    "vitest": "4.1.0",
+    "wrangler": "4.135.0"
   }
 }

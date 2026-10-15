@@ -25,3 +25,4 @@ jobs:
           npm ci --ignore-scripts
           npm run typecheck
           npm test
+          npm run test:worker
