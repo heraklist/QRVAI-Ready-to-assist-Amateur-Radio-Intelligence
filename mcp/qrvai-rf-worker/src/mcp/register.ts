@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {digitalSetupGuide,repeaterChannelPreview,contestPlan,makerProjectReview,clubWorkshopPlan} from "../rf/wave3.ts";
 import {stationSignalPath,packetRoutePreview,emcommDrill,emcommReadiness,academyExercise} from "../rf/wave2.ts";
 import {describeWave1,antennaGeometry,antennaMatching,filterResponse,powerAutonomy,geoBearing} from "../rf/wave1.ts";
 import { convertPower, PowerInputError } from "../rf/power.ts";
@@ -231,6 +232,42 @@ export function createServer(): McpServer {
     outputSchema:z.strictObject({topic:z.enum(["rf_power","antenna_basics"]),locale:z.enum(["el","en"]),question:z.string(),options:z.array(z.string()).length(3),correct:z.boolean().optional(),formula_revision:z.literal("M36-v1"),disclaimer:z.string()}),
     annotations:w2ro
   },async(args)=>{try{return w2response(academyExercise(args))}catch(e){return w2error(e)}});
+
+
+  const w3ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const w3positive=z.number().finite().positive();
+  function w3response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w3error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("digital_setup_guide",{
+    title:"Offline digital receive guide",description:"Fixed receive-only or simulated FT8/APRS classroom checklist. No hardware control or transmission.",
+    inputSchema:z.strictObject({mode:z.enum(["FT8","APRS"]),locale:z.enum(["el","en"])}),
+    outputSchema:z.strictObject({mode:z.enum(["FT8","APRS"]),locale:z.enum(["el","en"]),steps:z.array(z.string()),simulated:z.literal(true),disclaimer:z.string(),formula_revision:z.literal("M28-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(digitalSetupGuide(args))}catch(e){return w3error(e)}});
+  server.registerTool("repeater_channel_preview",{
+    title:"Unverified repeater offset arithmetic",description:"User-supplied RX and signed offset to hypothetical TX frequency; no regulatory authorization.",
+    inputSchema:z.strictObject({rx_frequency_hz:w3positive.max(1e12),offset_hz:z.number().finite().min(-1e10).max(1e10)}),
+    outputSchema:z.strictObject({rx_frequency_hz:w3positive,tx_frequency_hz:w3positive,offset_hz:z.number().finite(),verified:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M30-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(repeaterChannelPreview(args))}catch(e){return w3error(e)}});
+  server.registerTool("contest_plan",{
+    title:"User-supplied contest planning slots",description:"Sort UTC time/band slots without claiming verified contest event dates, schedules or regulations.",
+    inputSchema:z.strictObject({slots:z.array(z.strictObject({utc:z.string().regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/),band:z.string().min(1).max(48)})).min(1).max(24)}),
+    outputSchema:z.strictObject({slots:z.array(z.strictObject({utc:z.string(),band:z.string()})),official_schedule:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M33-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(contestPlan(args))}catch(e){return w3error(e)}});
+  server.registerTool("maker_project_review",{
+    title:"Low-voltage educational project checklist",description:"Review supplied low-voltage component labels; never certifies electrical or RF safety.",
+    inputSchema:z.strictObject({project_name:z.string().min(1).max(48),supply_voltage_v:w3positive.max(30),components:z.array(z.string().min(1).max(48)).min(1).max(24)}),
+    outputSchema:z.strictObject({project_name:z.string(),supply_voltage_v:w3positive,components:z.array(z.string()),certified:z.literal(false),warnings:z.array(z.string()),formula_revision:z.literal("M37-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(makerProjectReview(args))}catch(e){return w3error(e)}});
+  server.registerTool("club_workshop_plan",{
+    title:"Offline amateur radio workshop template",description:"Generate agenda from topic, count and minutes; no roster, scheduling or accreditation.",
+    inputSchema:z.strictObject({topic:z.enum(["antenna_basics","digital_modes"]),participants:z.number().int().min(1).max(100),duration_minutes:z.number().int().min(30).max(240)}),
+    outputSchema:z.strictObject({topic:z.enum(["antenna_basics","digital_modes"]),participants:z.number().int(),agenda:z.array(z.strictObject({section:z.string(),minutes:z.number().int().nonnegative()})),simulated:z.literal(true),disclaimer:z.string(),formula_revision:z.literal("M38-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(clubWorkshopPlan(args))}catch(e){return w3error(e)}});
 
   return server;
 }
