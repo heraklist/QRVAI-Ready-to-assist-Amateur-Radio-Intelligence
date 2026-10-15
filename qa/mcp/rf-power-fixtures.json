@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "purpose": "pure RF conversion regression fixtures",
+    "status": "source-fixtures-only-not-deployed",
+    "relativeErrorTolerance": 1e-12
+  },
+  "reference": [
+    {
+      "input": {
+        "value": 100,
+        "unit": "W"
+      },
+      "expect": {
+        "W": 100,
+        "mW": 100000,
+        "dBm": 50,
+        "dBW": 20
+      }
+    },
+    {
+      "input": {
+        "value": 1,
+        "unit": "W"
+      },
+      "expect": {
+        "W": 1,
+        "mW": 1000,
+        "dBm": 30,
+        "dBW": 0
+      }
+    },
+    {
+      "input": {
+        "value": 1,
+        "unit": "mW"
+      },
+      "expect": {
+        "W": 0.001,
+        "mW": 1,
+        "dBm": 0,
+        "dBW": -30
+      }
+    },
+    {
+      "input": {
+        "value": -270,
+        "unit": "dBm"
+      },
+      "expect": {
+        "dBm": -270,
+        "dBW": -300
+      }
+    },
+    {
+      "input": {
+        "value": 270,
+        "unit": "dBm"
+      },
+      "expect": {
+        "dBm": 270,
+        "dBW": 240
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "value": 0,
+      "unit": "W"
+    },
+    {
+      "value": -1,
+      "unit": "mW"
+    },
+    {
+      "value": 100,
+      "unit": "invalid"
+    }
+  ]
+}
