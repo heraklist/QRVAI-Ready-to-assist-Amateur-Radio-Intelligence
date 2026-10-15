@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 const secret="protocol-test-only-secure-token-123456789";
 const names=["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"];
-async function fetchMcp(url: URL|string, init: RequestInit): Promise<Response> {
+async function fetchMcp(url: URL|string, init?: RequestInit): Promise<Response> {
   const {default:handler}=await import("../api/mcp.ts");
   const request=new Request(url,init);
   request.headers.set("authorization","Bearer "+secret);
