@@ -29,3 +29,24 @@ test("unknown Worker route returns 404",async()=>{
   const response=await worker.fetch(new Request("https://test.local/unknown"),{},{} as never);
   assert.equal(response.status,404);
 });
+
+
+test("review: successful MCP responses never enable wildcard browser CORS", async () => {
+  const {default:worker} = await import("../src/index.ts");
+  const cors: Array<string|null> = [];
+  const transport = new StreamableHTTPClientTransport(new URL("https://qrvai.test/mcp"),{
+    fetch: async (url,init) => {
+      const result = await worker.fetch(new Request(url,init),{},{} as never);
+      cors.push(result.headers.get("access-control-allow-origin"));
+      return result;
+    }
+  });
+  const client = new Client({name:"review-cors-test",version:"0.1.0"},{versionNegotiation:{mode:"auto"}});
+  try {
+    await client.connect(transport);
+    const list = await client.listTools();
+    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert"]);
+    assert.ok(cors.length>0);
+    assert.ok(cors.every(header=>header!=="*"),"MCP handler must not allow arbitrary browser origins");
+  } finally { await client.close(); }
+});
