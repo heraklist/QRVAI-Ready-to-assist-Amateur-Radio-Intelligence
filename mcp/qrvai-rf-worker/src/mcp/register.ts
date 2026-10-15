@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {digitalSetupGuide,repeaterChannelPreview,contestPlan,makerProjectReview,clubWorkshopPlan} from "../rf/wave3.ts";
 import {stationSignalPath,packetRoutePreview,emcommDrill,emcommReadiness,academyExercise} from "../rf/wave2.ts";
 import {describeWave1,antennaGeometry,antennaMatching,filterResponse,powerAutonomy,geoBearing} from "../rf/wave1.ts";
 import { convertPower, PowerInputError } from "../rf/power.ts";
@@ -159,7 +160,7 @@ export function createServer(): McpServer {
   function response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
   function failed(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
   server.registerTool("core_capabilities",{
-    title:"Implemented QRVAI MCP tools",description:"Discover ten implemented read-only RF/core MCP tools; never claims unimplemented candidates.",
+    title:"Implemented QRVAI MCP tools",description:"Discover twenty implemented read-only RF/core and educational MCP tools; never claims unimplemented candidates.",
     inputSchema:z.strictObject({}),
     outputSchema:z.strictObject({tools:z.array(z.strictObject({candidate_id:z.string(),name:z.string(),scope:z.string()})),implemented_count:z.number().int().positive()}),
     annotations:ro
@@ -231,6 +232,49 @@ export function createServer(): McpServer {
     outputSchema:z.strictObject({topic:z.enum(["rf_power","antenna_basics"]),locale:z.enum(["el","en"]),question:z.string(),options:z.array(z.string()).length(3),correct:z.boolean().optional(),formula_revision:z.literal("M36-v1"),disclaimer:z.string()}),
     annotations:w2ro
   },async(args)=>{try{return w2response(academyExercise(args))}catch(e){return w2error(e)}});
+
+
+  const w3ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const title=z.string().regex(/^[A-Za-z0-9_][A-Za-z0-9_ .-]{0,63}$/);
+  const w3number=z.number().finite();
+  const w3list=z.array(z.string());
+  function w3response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w3error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("digital_setup_guide",{
+    title:"Generic read-only digital interface checklist",
+    description:"Offline device-UNVERIFIED CAT/audio educational checklist. No actual rig commands, manufacturer facts, PTT or external manuals.",
+    inputSchema:z.strictObject({rig:title,software:title,os:z.enum(["linux","windows","macos"])}),
+    outputSchema:z.strictObject({rig:title,software:title,os:z.enum(["linux","windows","macos"]),steps:w3list,manual_citations:w3list,verified_for_device:z.literal(false),warnings:w3list,formula_revision:z.literal("M28-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(digitalSetupGuide(args))}catch(e){return w3error(e)}});
+  server.registerTool("repeater_channel_preview",{
+    title:"User-supplied channel frequency preview",
+    description:"No directory lookup, transmit permission determination, CAT/radio programming or device access. From explicit operator-provided channel only.",
+    inputSchema:z.strictObject({frequency_hz:w3number.int().min(100_000).max(10_000_000_000),offset_hz:w3number.int().min(-100_000_000).max(100_000_000),tone_hz:w3number.min(0).max(300)}),
+    outputSchema:z.strictObject({rx_frequency_hz:w3number,tx_frequency_hz:w3number,offset_hz:w3number,tone_hz:w3number,verified_directory:z.literal(false),programmed:z.literal(false),warnings:w3list,formula_revision:z.literal("M30-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(repeaterChannelPreview(args))}catch(e){return w3error(e)}});
+  server.registerTool("contest_plan",{
+    title:"Generic hypothetical contest session schedule",
+    description:"Only user-given event title and UTC window; no rules retrieval, licensing or official contest schedule assertion.",
+    inputSchema:z.strictObject({event_name:title,start_utc:z.string().regex(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/),duration_minutes:z.number().int().min(30).max(1440)}),
+    outputSchema:z.strictObject({event_name:title,blocks:z.array(z.strictObject({start_utc:z.string(),end_utc:z.string(),activity:z.string()})).length(3),rules_verified:z.literal(false),warnings:w3list,formula_revision:z.literal("M33-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(contestPlan(args))}catch(e){return w3error(e)}});
+  server.registerTool("maker_project_review",{
+    title:"Unverified maker BOM learning checklist",
+    description:"Offline educational review of user-supplied components, no electrical certification, powered operations or radio control.",
+    inputSchema:z.strictObject({goal:title,components:z.array(z.strictObject({name:title,quantity:z.number().int().min(1).max(1000)})).min(1).max(24)}),
+    outputSchema:z.strictObject({goal:title,components:z.array(z.strictObject({name:title,quantity:z.number().int()})),component_count:z.number().int().positive(),verified_safe:z.literal(false),test_plan:w3list,warnings:w3list,formula_revision:z.literal("M37-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(makerProjectReview(args))}catch(e){return w3error(e)}});
+  server.registerTool("club_workshop_plan",{
+    title:"Privacy-safe offline workshop agenda",
+    description:"Generic educational club workshop template; no club member information, inventory retrieval or private records.",
+    inputSchema:z.strictObject({topic:title,participants:z.number().int().min(1).max(100),locale:z.enum(["el","en"])}),
+    outputSchema:z.strictObject({topic:title,participants:z.number().int().min(1).max(100),locale:z.enum(["el","en"]),agenda:w3list,materials:w3list,club_inventory_accessed:z.literal(false),privacy_notes:w3list,formula_revision:z.literal("M38-v1")}),
+    annotations:w3ro
+  },async(args)=>{try{return w3response(clubWorkshopPlan(args))}catch(e){return w3error(e)}});
 
   return server;
 }
