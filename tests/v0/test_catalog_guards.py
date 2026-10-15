@@ -1,4 +1,6 @@
 import json
+import shutil
+import tempfile
 from pathlib import Path
 import unittest
 from scripts.v0.audit_content import audit_catalog, validate_qa_cases
@@ -32,6 +34,30 @@ class TestCatalogGuards(unittest.TestCase):
         self.assertTrue(all(c["prompt_el"] and c["expected_family"] and c["must_not_claim"] for c in cases))
         self.assertTrue({"legal", "manual_injection", "missing_engine", "legacy", "mention"} <=
                         {c["risk_class"] for c in cases})
+
+
+    def test_rejects_missing_internal_skill_reference(self):
+        with tempfile.TemporaryDirectory() as work:
+            staged = Path(work) / "qrvai"
+            shutil.copytree(ROOT / "qrvai", staged)
+            core = staged / "skills/qrvai-core/SKILL.md"
+            core.write_text(core.read_text(encoding="utf-8").replace(
+                "references/routing.md", "references/does-not-exist.md"
+            ), encoding="utf-8")
+            issues = audit_catalog(staged)["violations"]
+            self.assertTrue(any("does-not-exist.md" in error for error in issues), issues)
+
+    def test_rejects_escaping_or_unsafe_skill_reference(self):
+        for unsafe in ("../../private.md", "%2e%2e/%2e%2e/old-academy.json", "javascript:alert(1)"):
+            with self.subTest(reference=unsafe), tempfile.TemporaryDirectory() as work:
+                staged = Path(work) / "qrvai"
+                shutil.copytree(ROOT / "qrvai", staged)
+                core = staged / "skills/qrvai-core/SKILL.md"
+                core.write_text(core.read_text(encoding="utf-8").replace(
+                    "references/routing.md", unsafe
+                ), encoding="utf-8")
+                issues = audit_catalog(staged)["violations"]
+                self.assertTrue(any("reference" in error.lower() for error in issues), issues)
 
 
 if __name__ == "__main__":
