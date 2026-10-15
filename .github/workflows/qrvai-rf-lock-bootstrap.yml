@@ -2,7 +2,7 @@ name: One-time RF MCP Vitest lock (NO deployment)
 on:
   push:
     branches: [feat/qrvai-rf-mcp-native-tdd]
-    paths: ['mcp/qrvai-rf-worker/package.json']
+    paths: ['mcp/qrvai-rf-worker/package.json', '.github/workflows/qrvai-rf-lock-bootstrap.yml']
 permissions:
   contents: write
 jobs:
@@ -16,6 +16,8 @@ jobs:
       - name: Pin npm lock only, never deploy
         run: |
           cd mcp/qrvai-rf-worker
+          npm install -g npm@11 --no-audit --no-fund
+          npm --version
           npm install --package-lock-only --ignore-scripts --no-audit --no-fund
           cd ../..
           git config user.name "github-actions[bot]"
