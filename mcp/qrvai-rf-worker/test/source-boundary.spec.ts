@@ -60,3 +60,9 @@ test("host report cannot pretend successful account installation",()=>{
   assert.equal(report.hostInvocationObserved.passed,false);
   assert.equal(existsSync(file("qrvai/mcp.json")),false);
 });
+
+
+test("review: MCP CI remains active for future source merges into main",()=>{
+  const yaml=readFileSync(file(".github/workflows/qrvai-rf-mcp-ci.yml"),"utf8");
+  assert.match(yaml,/push:\s*\n\s+branches:\s*\n\s+- main(?:\n|$)/);
+});
