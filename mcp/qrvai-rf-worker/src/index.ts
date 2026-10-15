@@ -11,6 +11,7 @@ export default {
     }
     const checked = await limitMcpRequest(request);
     if (checked instanceof Response) return checked;
-    return createMcpHandler(createServer)(checked, env, ctx as never);
+    // No browser integration in the first private-plugin slice; do not advertise wildcard CORS.
+    return createMcpHandler(createServer, { corsOptions: false })(checked, env, ctx as never);
   }
 };
