@@ -8,9 +8,11 @@ export type PowerConversion = {
   precisionNote: string;
 };
 export class PowerInputError extends Error {
-  constructor(message: string, readonly code: "INVALID_INPUT" | "OUT_OF_RANGE") {
+  readonly code: "INVALID_INPUT" | "OUT_OF_RANGE";
+  constructor(message: string, code: "INVALID_INPUT" | "OUT_OF_RANGE") {
     super(message);
     this.name = "PowerInputError";
+    this.code = code;
   }
 }
 
