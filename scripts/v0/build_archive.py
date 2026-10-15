@@ -84,6 +84,22 @@ def validate_archive(archive: Path) -> list[str]:
                 errors.append("archive symlink")
             if any(x.file_size > MAX_FILE for x in members) or sum(x.file_size for x in members) > 5 * MAX_FILE:
                 errors.append("archive size limit exceeded")
+            # Fail closed on ALL ZIP metadata before reading/decompressing any member.
+            # This is necessary even if only one member is over the bound.
+            if any(x.compress_type != zipfile.ZIP_DEFLATED for x in members):
+                errors.append("unsupported ZIP compression method")
+            if any(x.flag_bits & 0x1 for x in members):
+                errors.append("encrypted ZIP members not supported")
+            if any(x.file_size > 0 and x.compress_size <= 0 for x in members):
+                errors.append("invalid ZIP compressed size")
+            if any(
+                x.file_size > 0 and x.compress_size > 0
+                and x.file_size / x.compress_size > 200
+                for x in members
+            ):
+                errors.append("archive compression ratio limit exceeded")
+            if errors:
+                return errors  # No z.read() permitted after a failed preflight.
             if "qrvai/plugin.json" in actual:
                 try:
                     manifest = json.loads(z.read("qrvai/plugin.json"))
