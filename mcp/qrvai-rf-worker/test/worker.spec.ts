@@ -17,7 +17,7 @@ describe("actual workerd stateless MCP runtime",()=>{
       const budget = await client.callTool({name:"rf_link_budget",arguments:{tx_w:100,tx_gain_dbi:2,tx_loss_db:1,path_loss_db:100,rx_gain_dbi:3,rx_loss_db:1,rx_sensitivity_dbm:-105}});
       expect((budget.structuredContent as {rx_dbm:number}).rx_dbm).toBe(-47);
       const impedance = await client.callTool({name:"rf_impedance",arguments:{r_ohm:100,x_ohm:0,z0_ohm:50}});
-      expect((impedance.structuredContent as {vswr:number}).vswr).toBe(2);
+      expect((impedance.structuredContent as {vswr:number}).vswr).toBeCloseTo(2,12);
     } finally {await client.close();}
   });
   it("unknown path is 404", async()=>{
