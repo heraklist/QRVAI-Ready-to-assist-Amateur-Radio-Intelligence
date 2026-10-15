@@ -1,0 +1,63 @@
+{
+  "status": "SYNTHETIC_TEST_DATA_ONLY",
+  "license": "Original synthetic numerical fixture, not manufacturer measurements",
+  "cases": [
+    {
+      "id": "log-midpoint",
+      "input": {
+        "profile": {
+          "id": "synthetic-coax",
+          "revision": "fixture-1",
+          "points": [
+            {
+              "frequency_hz": 10000000,
+              "loss_db_per_100m": 4
+            },
+            {
+              "frequency_hz": 1000000000,
+              "loss_db_per_100m": 8
+            }
+          ]
+        },
+        "frequency_hz": 100000000,
+        "length_m": 20,
+        "connector_loss_db": 0.5,
+        "interpolation_method": "log_frequency"
+      },
+      "expected": {
+        "interpolated_loss_db_per_100m": 6,
+        "cable_loss_db": 1.2,
+        "attenuation_db": 1.7,
+        "delivered_ratio": 0.6760829753919818,
+        "profile_trust": "USER_SUPPLIED_UNVERIFIED"
+      }
+    },
+    {
+      "id": "zero-length",
+      "input": {
+        "profile": {
+          "id": "synthetic-coax",
+          "revision": "fixture-1",
+          "points": [
+            {
+              "frequency_hz": 10000000,
+              "loss_db_per_100m": 4
+            },
+            {
+              "frequency_hz": 1000000000,
+              "loss_db_per_100m": 8
+            }
+          ]
+        },
+        "frequency_hz": 100000000,
+        "length_m": 0,
+        "connector_loss_db": 0,
+        "interpolation_method": "log_frequency"
+      },
+      "expected": {
+        "attenuation_db": 0,
+        "delivered_ratio": 1
+      }
+    }
+  ]
+}
