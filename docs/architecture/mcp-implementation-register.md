@@ -1,4 +1,4 @@
- SOURCE IMPLEMENTED IN DRAFT | `academy_exercise` | SOURCE IMPLEMENTED IN DRAFT | `emcomm_readiness` | SOURCE IMPLEMENTED IN DRAFT | `emcomm_drill` | SOURCE IMPLEMENTED IN DRAFT | `packet_route_preview` | SOURCE IMPLEMENTED IN DRAFT | `geo_bearing` | SOURCE IMPLEMENTED IN DRAFT | `power_autonomy` | SOURCE IMPLEMENTED IN DRAFT | `station_signal_path` | SOURCE IMPLEMENTED IN DRAFT | `rf_filter_response` | SOURCE IMPLEMENTED IN DRAFT | `antenna_matching` | SOURCE IMPLEMENTED IN DRAFT | `antenna_geometry` | SOURCE IMPLEMENTED IN DRAFT | `core_capabilities` |# QRVAI MCP implementation register — 2026-10-15
+# QRVAI MCP implementation register — 2026-10-15
 
 **Runtime policy:** Vercel Node.js Functions only; no Cloudflare runtime, fallback or connector.
 
@@ -8,7 +8,7 @@
 
 | Candidate ID | Concept method | Engine | Access class | Implementation | Registered MCP name |
 |---|---|---|---|---|---|
-| M01 | `qrvai.core.capabilities` | E18 | public | NOT IMPLEMENTED | — |
+| M01 | `qrvai.core.capabilities` | E18 | public | SOURCE IMPLEMENTED IN DRAFT | `core_capabilities` |
 | M02 | `qrvai.source.lookup` | E06/E18 | public | NOT IMPLEMENTED | — |
 | M03 | `qrvai.station.get_profile` | E18 | profile.read | NOT IMPLEMENTED | — |
 | M04 | `qrvai.regulatory.check_operation` | E01 | public | NOT IMPLEMENTED | — |
@@ -18,32 +18,32 @@
 | M08 | `qrvai.rf.link_budget` | E03 | public | SOURCE IMPLEMENTED | `rf_link_budget` |
 | M09 | `qrvai.rf.feedline_loss` | E03 | public | SOURCE IMPLEMENTED | `rf_feedline_loss` |
 | M10 | `qrvai.rf.impedance` | E03 | public | SOURCE IMPLEMENTED | `rf_impedance` |
-| M11 | `qrvai.antenna.geometry` | E04 | public | NOT IMPLEMENTED | — |
-| M12 | `qrvai.antenna.matching` | E03 | public | NOT IMPLEMENTED | — |
-| M13 | `qrvai.rf.filter_response` | E03 | public | NOT IMPLEMENTED | — |
+| M11 | `qrvai.antenna.geometry` | E04 | public | SOURCE IMPLEMENTED IN DRAFT | `antenna_geometry` |
+| M12 | `qrvai.antenna.matching` | E03 | public | SOURCE IMPLEMENTED IN DRAFT | `antenna_matching` |
+| M13 | `qrvai.rf.filter_response` | E03 | public | SOURCE IMPLEMENTED IN DRAFT | `rf_filter_response` |
 | M14 | `qrvai.rf.exposure_screen` | E01/E03 | public | NOT IMPLEMENTED | — |
 | M15 | `qrvai.measurements.inspect_trace` | E05 | user.file.read | NOT IMPLEMENTED | — |
 | M16 | `qrvai.sdr.inspect_iq` | E05 | user.file.read | NOT IMPLEMENTED | — |
 | M17 | `qrvai.manual.find` | E06 | public | NOT IMPLEMENTED | — |
 | M18 | `qrvai.manual.answer_cited` | E06 | public/user.file.read | NOT IMPLEMENTED | — |
 | M19 | `qrvai.equipment.diagnose` | E06/E07 | public | NOT IMPLEMENTED | — |
-| M20 | `qrvai.station.signal_path` | E07 | public | NOT IMPLEMENTED | — |
+| M20 | `qrvai.station.signal_path` | E07 | public | SOURCE IMPLEMENTED IN DRAFT | `station_signal_path` |
 | M21 | `qrvai.station.read_status` | E07 | device.read | NOT IMPLEMENTED | — |
-| M22 | `qrvai.power.autonomy` | E08 | public | NOT IMPLEMENTED | — |
+| M22 | `qrvai.power.autonomy` | E08 | public | SOURCE IMPLEMENTED IN DRAFT | `power_autonomy` |
 | M23 | `qrvai.spaceweather.indices` | E11 | public | NOT IMPLEMENTED | — |
 | M24 | `qrvai.propagation.path` | E09/E10 | public | NOT IMPLEMENTED | — |
-| M25 | `qrvai.geo.bearing` | E09 | public | NOT IMPLEMENTED | — |
+| M25 | `qrvai.geo.bearing` | E09 | public | SOURCE IMPLEMENTED IN DRAFT | `geo_bearing` |
 | M26 | `qrvai.satellite.pass` | E13 | public | NOT IMPLEMENTED | — |
 | M27 | `qrvai.dx.reception_reports` | E11 | public/provider.auth | NOT IMPLEMENTED | — |
 | M28 | `qrvai.digital.setup_guide` | E07/E12 | public | NOT IMPLEMENTED | — |
-| M29 | `qrvai.packet.route_preview` | E12 | public | NOT IMPLEMENTED | — |
+| M29 | `qrvai.packet.route_preview` | E12 | public | SOURCE IMPLEMENTED IN DRAFT | `packet_route_preview` |
 | M30 | `qrvai.repeater.channel_preview` | E02/E12 | public | NOT IMPLEMENTED | — |
 | M31 | `qrvai.log.adif_validate` | E14 | user.file.read | NOT IMPLEMENTED | — |
 | M32 | `qrvai.log.award_progress` | E14 | logs.read | NOT IMPLEMENTED | — |
 | M33 | `qrvai.contest.plan` | E14/E08 | public | NOT IMPLEMENTED | — |
-| M34 | `qrvai.emcomm.drill` | E15 | public | NOT IMPLEMENTED | — |
-| M35 | `qrvai.emcomm.readiness` | E15/E08 | public | NOT IMPLEMENTED | — |
-| M36 | `qrvai.academy.exercise` | E16 | public | NOT IMPLEMENTED | — |
+| M34 | `qrvai.emcomm.drill` | E15 | public | SOURCE IMPLEMENTED IN DRAFT | `emcomm_drill` |
+| M35 | `qrvai.emcomm.readiness` | E15/E08 | public | SOURCE IMPLEMENTED IN DRAFT | `emcomm_readiness` |
+| M36 | `qrvai.academy.exercise` | E16 | public | SOURCE IMPLEMENTED IN DRAFT | `academy_exercise` |
 | M37 | `qrvai.maker.project_review` | E17/E03 | public | NOT IMPLEMENTED | — |
 | M38 | `qrvai.club.workshop_plan` | E17 | public/club.data.read | NOT IMPLEMENTED | — |
 
