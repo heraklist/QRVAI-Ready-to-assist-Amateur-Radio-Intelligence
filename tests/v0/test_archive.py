@@ -75,7 +75,7 @@ class TestArchive(unittest.TestCase):
                 for entry in source.infolist():
                     blob = source.read(entry.filename)
                     if entry.filename == "qrvai/skills/qrvai-core/references/routing.md":
-                        blob = b"\\xff\\xfe"
+                        blob = bytes([0xff, 0xfe])
                     target.writestr(entry, blob)
             errors = validate_archive(altered)
             self.assertTrue(any("utf-8" in x.lower() for x in errors), errors)
