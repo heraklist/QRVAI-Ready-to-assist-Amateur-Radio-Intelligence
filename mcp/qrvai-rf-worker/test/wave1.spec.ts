@@ -1,7 +1,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {describeWave1, antennaGeometry, antennaMatching, filterResponse, powerAutonomy, geoBearing} from "../src/rf/wave1.ts";
-test("M01 catalog reports precisely fifteen implemented tools",()=>{const v=describeWave1();assert.equal(v.length,15);assert.equal(new Set(v.map(x=>x.name)).size,10);assert.equal(v.find(x=>x.candidate_id==="M25")?.name,"geo_bearing")});
+test("M01 catalog reports precisely fifteen implemented tools",()=>{const v=describeWave1();assert.equal(v.length,15);assert.equal(new Set(v.map(x=>x.name)).size,15);assert.equal(v.find(x=>x.candidate_id==="M25")?.name,"geo_bearing")});
 test("M11 ideal free-space halfwave dipole at 100 MHz",()=>{const v=antennaGeometry({kind:"halfwave_dipole",frequency_hz:100e6,velocity_factor:1});assert.ok(Math.abs(v.total_length_m-1.49896229)<1e-7);assert.ok(Math.abs(v.element_length_m-.749481145)<1e-7)});
 test("M12 ideal transformer for 50 and 200 ohm real loads",()=>{const v=antennaMatching({source_resistance_ohm:50,load_resistance_ohm:200,frequency_hz:100e6,velocity_factor:1});assert.equal(v.transformer_z0_ohm,100);assert.ok(Math.abs(v.quarter_wave_length_m-.749481145)<1e-7)});
 test("M13 one-pole lowpass magnitude at cutoff equals -3.0103 dB",()=>{const v=filterResponse({kind:"lowpass",frequency_hz:1/(2*Math.PI*.001),resistance_ohm:1000,capacitance_f:1e-6});assert.ok(Math.abs(v.magnitude-1/Math.sqrt(2))<1e-12);assert.ok(Math.abs(v.gain_db+3.0102999566)<1e-7)});
