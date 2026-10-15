@@ -1,0 +1,12 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {sourceLookup,regulatoryCheckOperation,spectrumBandSegments,spectrumFindRepeaters,manualFind} from "../src/rf/wave4.ts";
+test("M02 returns only matching user supplied citations",()=>{const v=sourceLookup({query:"antenna",sources:[{id:"a1",title:"User note",excerpt:"An antenna receives radio waves"},{id:"a2",title:"Unrelated",excerpt:"Battery safety"}]});assert.deepEqual(v.matches.map(x=>x.id),["a1"]);assert.equal(v.provenance,"USER_SUPPLIED_UNVERIFIED");});
+test("M02 rejects oversized entries",()=>assert.throws(()=>sourceLookup({query:"test",sources:[{id:"s",title:"T",excerpt:"a".repeat(5000)}]})));
+test("M04 rules are unverified even when input range passes",()=>{const v=regulatoryCheckOperation({frequency_hz:145500000,regions:[{id:"r1",jurisdiction:"Sample",minimum_hz:144000000,maximum_hz:146000000,rule:"example authorization text"}]});assert.equal(v.matches.length,1);assert.equal(v.authorized,false);});
+test("M04 invalid range rejected",()=>assert.throws(()=>regulatoryCheckOperation({frequency_hz:146000000,regions:[{id:"r1",jurisdiction:"Sample",minimum_hz:146000000,maximum_hz:144000000,rule:"text"}]})));
+test("M05 returns matching user-provided segments only",()=>{const v=spectrumBandSegments({frequency_hz:7100000,segments:[{id:"x",minimum_hz:7000000,maximum_hz:7200000,label:"sample",source_revision:"user-v1"}]});assert.equal(v.matches[0].id,"x");assert.equal(v.verified,false);});
+test("M06 filters user supplied repeater records",()=>{const v=spectrumFindRepeaters({minimum_hz:144000000,maximum_hz:146000000,repeaters:[{id:"a",frequency_hz:145650000,location_label:"Sample location"},{id:"b",frequency_hz:433000000,location_label:"Elsewhere"}]});assert.deepEqual(v.matches.map(x=>x.id),["a"]);assert.equal(v.live_status_known,false);});
+test("M06 rejects inverted search",()=>assert.throws(()=>spectrumFindRepeaters({minimum_hz:146000000,maximum_hz:144000000,repeaters:[]})));
+test("M17 searches user supplied manual excerpts",()=>{const v=manualFind({query:"battery",excerpts:[{id:"p1",document_title:"Notes",text:"Replace the battery only when off"},{id:"p2",document_title:"Notes",text:"Antenna switch"}]});assert.deepEqual(v.matches.map(x=>x.id),["p1"]);assert.equal(v.downloaded_external_manual,false);});
+test("M17 refuses duplicate excerpt ids",()=>assert.throws(()=>manualFind({query:"a",excerpts:[{id:"same",document_title:"A",text:"a"},{id:"same",document_title:"B",text:"b"}]})));
