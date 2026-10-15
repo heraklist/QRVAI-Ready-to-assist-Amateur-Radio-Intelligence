@@ -1,6 +1,6 @@
 # QRVAI RF MCP — Merged source, Cloudflare deployment not yet verified
 
-First slice of a **private personal QRVAI plugin's proposed tooling**: one **publicly reachable**, read-only RF power calculator exposed by a stateless Cloudflare Workers Streamable HTTP MCP server at `/mcp`.
+First slice of a **private personal QRVAI plugin's proposed tooling**: two **potentially publicly reachable**, read-only RF calculators exposed by a stateless Cloudflare Workers Streamable HTTP MCP server at `/mcp`.
 
 **NOT INSTALLED. NOT DEPLOYED. NO HOST E2E.** The source was merged through [PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9). User-approved [spec](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/specs/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp-design.md) and [plan](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/plans/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp.md).
 
@@ -19,7 +19,7 @@ npm run build:check
 
 `npm run build:check` uses **`wrangler deploy --dry-run` only** and must not upload any Worker or secrets. The test/CI scripts do not call the Cloudflare API or Plugin Creator.
 
-`rf_power_convert` takes `{value,unit}` (units: `W`, `mW`, `dBm`, `dBW`) and returns bounded finite unit conversions, **-270 ≤ dBm ≤ 270**. No callsign, QTH, station details, logs, CAT/PTT, live data, authorization judgement, third-party APIs, storage, OAuth or device access.
+`rf_link_budget` requires all seven explicit link quantities (TX W, TX/RX gains dBi, three loss components dB, receiver sensitivity dBm), returns a stage-by-stage received power and margin. It does not predict propagation, estimate path loss, or certify station performance.\n\n`rf_power_convert` takes `{value,unit}` (units: `W`, `mW`, `dBm`, `dBW`) and returns bounded finite unit conversions, **-270 ≤ dBm ≤ 270**. No callsign, QTH, station details, logs, CAT/PTT, live data, authorization judgement, third-party APIs, storage, OAuth or device access.
 
 ## Privacy and plan limits
 
