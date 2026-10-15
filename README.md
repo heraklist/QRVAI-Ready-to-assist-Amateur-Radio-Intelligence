@@ -1,6 +1,6 @@
 # QRVAI — Ready-to-assist Amateur Radio Intelligence
 
-**Status (2026-10-15):** GitHub V0 Skills-only source merged to `main`; RF MCP Worker **source merged to `main` as PR #9; no Cloudflare deployment**; no new QRVAI account plugin, Cloudflare deployment, or host `@QRVAI` acceptance is verified.  
+**Status (2026-10-15):** Five V0 Skills and four read-only RF MCP tools are present in source. The Vercel-only MCP migration is under review in [PR #17](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/17). A protected Vercel project was linked; production rollout and ChatGPT `@QRVAI` host acceptance are **not verified**.
 **Languages:** Greek and English · **Initial regulatory jurisdiction:** Greece · **Technical scope:** international amateur radio.
 
 QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence plugin ecosystem. Primary product requirement: invoke **@QRVAI inside an existing ChatGPT conversation**, where the host supports it. Its scope includes RF engineering, frequency/regulatory research, operating/DX, propagation, documentation/manuals, emergency *training and preparedness*, logbook workflows, education and future interactive RF instruments.
@@ -9,7 +9,7 @@ QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence p
 
 - `qrvai/`: exactly **five independently authored V0 Skills** (core plus four Family Skills), no MCP server, App, hardware control, PTT, or sensitive legacy Academy content in the packaged 12-file artifact.
 - `docs/architecture/`: conceptual taxonomy of **4 Families / 24 Domains / 72 Sub-capabilities**, 24 future Domain Skills, 18 Engines, 38 MCP tool proposals, four candidate Orchestrators and 36 interactive view concepts; **not deployed**.
-- [Merged PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9): real but **undeployed** stateless Cloudflare Worker MCP source with three read-only RF tools (`rf_power_convert`, `rf_link_budget`, `rf_impedance`) (W/mW/dBm/dBW); node, Worker and V0 CI evidence on its exact reviewed head. The source is part of `main`; Cloudflare deployment and host acceptance remain separate.
+- [Merged PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9): historical original RF calculator source. [Merged PR #16](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/16) added the fourth read-only calculator. [PR #17](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/17) selects **Vercel as the only MCP runtime**, removing the historical Cloudflare Worker package and deployment configuration. No verified live MCP host endpoint yet.
 - [Merged PR #11](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/11): independent V0 hardening covering ZIP validation, routing fixture and SHA-pinned CI.
 - [Draft PR #10](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/10): M1 conceptual staged math plan; reconcile with existing PR #9 before any parallel implementation.
 
@@ -21,7 +21,7 @@ QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence p
 - Device integrations, if separately approved later, start **read-only**; no automatic PTT, transmission, or unapproved writes.
 - Third-party manuals, provider APIs and callsign/logbook data require source verification, permission and rights-aware handling.
 - The old private QRVAI account-created record is **not** the new plugin identity; do not update/reuse it. [Account blocker #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3); [MCP lifecycle blocker #6](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/6).
-- GitHub source merge, Cloudflare staging/production deploy, Plugin Creator creation, installation and public release are separate approval boundaries.
+- GitHub source merge, Vercel preview/production deployment, Plugin Creator creation, installation and public release are separate approval boundaries.
 
 ## Entry points
 

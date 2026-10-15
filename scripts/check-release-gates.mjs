@@ -1,9 +1,9 @@
-/* Offline evidence-shape check only; NEVER launches a Worker or ChatGPT plugin. */
+/* Offline evidence-shape check only; NEVER launches Vercel or a ChatGPT plugin. */
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const oldId = "plugins_6acf47f502dc8191bf542fe040d484d8";
 const fields = [
-  "accountFreePlanVerified","quotaVerified","measuredWorkerCpu",
+  "vercelPlanVerified","vercelQuotaVerified","vercelFunctionObserved","vercelPreviewTargetVerified","authCompatibilityVerified",
   "deployedEndpointVerified","oldCreatorRecordAbsent","qrvaiNamespaceAvailable",
   "freshPluginCreateAuthorized","newPluginIdDistinct","hostInvocationObserved",
   "observedFollowUp"
@@ -41,9 +41,14 @@ export function checkReleaseGates(evidence) {
   if (typeof originalId!=="string" || !originalId.trim() ||
       typeof follow?.conversationId!=="string" || follow.conversationId!==originalId)
     errors.push("conversation identifiers must match across original host invocation and observed follow-up");
-  const cpu=evidence.measuredWorkerCpu;
-  if (typeof cpu?.cpuMs!=="number" || !Number.isFinite(cpu.cpuMs) || cpu.cpuMs<0 || cpu.cpuMs>10)
-    errors.push("measuredWorkerCpu requires observed CPU <=10 ms per HTTP request");
+  const observed=evidence.vercelFunctionObserved;
+  if (typeof observed?.durationMs!=="number" || !Number.isFinite(observed.durationMs) || observed.durationMs<0)
+    errors.push("vercelFunctionObserved requires measured non-negative Vercel function duration");
+  if (evidence.vercelPreviewTargetVerified?.target!=="preview")
+    errors.push("vercelPreviewTargetVerified must prove preview, never production");
+  if (typeof evidence.authCompatibilityVerified?.method!=="string" ||
+      !evidence.authCompatibilityVerified.method.trim())
+    errors.push("authCompatibilityVerified must identify the observed MCP client authentication method");
   return errors;
 }
 function main() {
