@@ -30,3 +30,33 @@ test("Vercel MCP API exposes all four registered read-only RF tools through Stre
     assert.ok(Math.abs((line.structuredContent as {attenuation_db:number}).attenuation_db-1.7)<1e-12);
   } finally {await client.close();}
 });
+
+test("rejects credentials in URL query even when they match the bearer secret",async()=>{
+ const {handleMcpRequest}=await import("../api/mcp.ts");
+ const secret="qrvai-test-never-deploy-012345678901";
+ const res=await handleMcpRequest(new Request("https://qrvai.example/api/mcp?access_token="+secret,{method:"POST",headers:{"content-type":"application/json"},body:"{}"}),secret);
+ assert.equal(res.status,401);
+});
+test("rejects malformed or incorrect bearer credentials before body parsing",async()=>{
+ const {handleMcpRequest}=await import("../api/mcp.ts");
+ const secret="qrvai-test-never-deploy-012345678901";
+ for(const authorization of ["Basic "+secret,"Bearer WRONG","Bearer "+secret+"a","Bearer "+secret+"\n"]){
+  const res=await handleMcpRequest(new Request("https://qrvai.example/api/mcp",{method:"POST",headers:{"authorization":authorization.replace(/\n/g,""),"content-type":"application/json"},body:"{bad"}),secret);
+  assert.equal(res.status,401);
+ }
+});
+test("rejects hostile Origin, host mismatch and oversized bodies",async()=>{
+ const {handleMcpRequest}=await import("../api/mcp.ts");
+ const secret="qrvai-test-never-deploy-012345678901";
+ const send=(headers:Record<string,string>,body="{}")=>handleMcpRequest(new Request("https://qrvai.example/api/mcp",{method:"POST",headers:{authorization:"Bearer "+secret,"content-type":"application/json",...headers},body}),secret);
+ assert.equal((await send({origin:"https://evil.invalid"})).status,403);
+ assert.equal((await send({host:"evil.invalid"})).status,403);
+ assert.equal((await send({}, "a".repeat(65537))).status,413);
+});
+test("credentialed requests to non-MCP paths or non-POST verbs are denied",async()=>{
+ const {handleMcpRequest}=await import("../api/mcp.ts");
+ const secret="qrvai-test-never-deploy-012345678901";
+ const headers={authorization:"Bearer "+secret};
+ assert.equal((await handleMcpRequest(new Request("https://qrvai.example/other",{method:"POST",headers}),secret)).status,404);
+ assert.equal((await handleMcpRequest(new Request("https://qrvai.example/api/mcp",{method:"GET",headers}),secret)).status,405);
+});
