@@ -12,10 +12,11 @@ test("V0 Skills source stays unchanged and has no premature mcp.json",()=>{
     assert.equal(existsSync(file("qrvai/skills/"+name+"/SKILL.md")),true);
   }
 });
-test("only one registered non-sensitive read-only RF tool",()=>{
+test("only the two reviewed non-sensitive read-only RF tools",()=>{
   const source=readFileSync(file("mcp/qrvai-rf-worker/src/mcp/register.ts"),"utf8");
-  assert.equal((source.match(/registerTool\(/g)||[]).length,1);
+  assert.equal((source.match(/registerTool\(/g)||[]).length,2);
   assert.match(source,/rf_power_convert/);
+  assert.match(source,/rf_link_budget/);
   assert.match(source,/readOnlyHint:\s*true/);
 });
 test("Cloudflare worker contains no paid bindings or secret deployment scripts",()=>{
