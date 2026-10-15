@@ -1,14 +1,14 @@
 # QRVAI V0 — Clean-Slate ChatGPT Plugin Design v0.7
 
 **Date:** 2026-10-14  
-**State:** OWNER-APPROVED FOR IMPLEMENTATION PLANNING (2026-10-14) — actual implementation plan and execution method still require separate owner review; no package created or new plugin installed.  
+**State updated 2026-10-15:** Clean-slate design, implementation plan and **Native per-task execution** have been approved by the owner; five new V0 Skills, validation code and clean ZIP build now exist in GitHub. **No new account plugin created or installed; host `@QRVAI` E2E NOT_EXECUTED.**  
 **Owner directive:** **FULLY abandon in-place migration**. Uninstall/delete the legacy QRVAI, then build a **completely new, independent QRVAI ChatGPT plugin** using only the approved QRVAI v0.5 capability/orchestration architecture. **Do not inherit the old plugin's backend ID, releases, package artifacts, Skills, exam question bank, images, scripts, manifests, private data or configurations.**
 
 ## Owner confirmation and current implementation gate (2026-10-14)
 
-The owner explicitly confirmed that `@QRVAI` **inside any pre-existing ChatGPT conversation** is the product's primary entrypoint, matching the manner in which other installed plugins are invoked when the host supports it. User authorization to **begin V0** triggers design-readiness and implementation planning review; it must not be mistaken for approval of this already-written exact V0 spec, an implementation plan, account/plugin creation, merge or deployment. The [GitHub issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) tracks the blocked full-deletion prerequisite.
+The owner explicitly confirmed that `@QRVAI` **inside any pre-existing ChatGPT conversation** is the product's primary entrypoint, matching the manner in which other installed plugins are invoked when the host supports it. **Historical decision sequence:** initial permission to begin V0 triggered specification review only. The owner subsequently approved the written clean-slate design and separate implementation plan, chose **Native implementation with review per task**, then authorized bounded V0 Hardening and conditional GitHub PR merges. None of these approvals authorizes account-level `create_plugin`, installation, legacy source reuse or public plugin release. The [GitHub issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) tracks the blocked full-deletion prerequisite.
 
-**Fresh read-only status:** Plugin Creator still lists the old personal/private account record `plugins_6acf47f502dc8191bf542fe040d484d8`, version `0.1.0-preview.2`, current release `pluginrel_6acf81d87b588191b6e41839785357aa`. Metadata lookup on that exact ID also succeeds. This establishes that **the saved old record is not yet removed** despite an earlier `not_installed` result for the active-install state. Do not issue `create_plugin` until this identity/namespace gate and owner-approved written plan are satisfied.
+**Verified creator-record status (last reconfirmed 2026-10-15):** Plugin Creator still lists the old personal/private account record `plugins_6acf47f502dc8191bf542fe040d484d8`, version `0.1.0-preview.2`, current release `pluginrel_6acf81d87b588191b6e41839785357aa`. Metadata lookup on that exact ID also succeeds. This establishes that **the saved old record is not yet removed** despite an earlier `not_installed` result for the active-install state. The written plan and development authorization gates have been satisfied; **D1 old-record removal, D2 namespace availability and a separate owner authorization for new private creation remain outstanding**. Do not issue `create_plugin` until those account gates are satisfied.
 
 ## 1. Product purpose and user-visible requirement
 
@@ -62,9 +62,9 @@ V1 can introduce the RF numeric engine and actual MCP tools; separate domain Ski
 
 ## 4. New source of truth / release architecture
 
-**Source:** this existing public GitHub repository, in an independently reviewable development branch and pull request. This repo currently contains documentation but **no functioning plugin sources**. Approved V0 implementation plan will define the exact repository paths and package production steps; do not treat architectural documents as installable components.
+**Source:** this existing public GitHub repository. The [V0 source folder](../../../qrvai/) now contains five independently authored Skill packages and `plugin.json`; source validators, unit tests and archive tooling are committed separately from the plugin package. [PR #4](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/4) and [PR #5](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/5) have been merged into the architecture development branch. Source existence **does not** mean account creation, installation or tested host invocation.
 
-**Package target (design only, not yet created):**
+**Implemented V0 package layout (build verified by CI; NOT installed):**
 
 ```text
 qrvai/
@@ -82,9 +82,9 @@ qrvai/
     qrvai-education-community/references/
 ```
 
-No legacy overlay, no W01–W21 files, no `assets/w21`, no `scripts/w21_bank.py`, no unverified MCP URL, no binary exam bank. The future package is made only from the independently authored clean source and exact pinned dependencies (if any).
+No legacy overlay, no W01–W21 files, no `assets/w21`, no `scripts/w21_bank.py`, no unverified MCP URL, no binary exam bank. The review-only ZIP is built exclusively from the independently authored clean source using a strict 12-file allowlist, with no old preview assets. See the GitHub Actions build receipts; **no new account release has been created**.
 
-**Version:** proposed initial clean semver `0.1.0` rather than a continuation of the old `0.1.0-preview.2` release chain. Author metadata and copyright should be owner-confirmed in V0 plan; do not automatically copy old private manifest. Include real repo URL and honest descriptions only. The `shortDescription` must be <=30 characters in the portable format. Package icon and color selection can use new/reviewed assets, never old ones by default.
+**Version:** initial clean `0.1.0` is recorded in the new GitHub manifest, independent of the old `0.1.0-preview.2` release chain. It has **not** been uploaded or installed. Author metadata and copyright should be owner-confirmed in V0 plan; do not automatically copy old private manifest. Include real repo URL and honest descriptions only. The `shortDescription` must be <=30 characters in the portable format. Package icon and color selection can use new/reviewed assets, never old ones by default.
 
 ## 5. Clean account lifecycle, deletion and namespace gates
 
@@ -126,13 +126,14 @@ No legacy overlay, no W01–W21 files, no `assets/w21`, no `scripts/w21_bank.py`
 - [ ] ChatGPT host actually shows the fresh plugin and correctly routes it; accessibility and no-UI degradation verified.
 - [ ] Tested version, plugin ID, tools list and observed test results included in release receipt.
 
-## 7. Timing and approval boundary
+## 7. Timing, approvals and current gates (updated 2026-10-15)
 
-The owner explicitly **approved this written V0 v0.7 clean-install design** on 2026-10-14, allowing a detailed test-first implementation plan to be written. This is **not approval to skip the subsequent plan review or the user's selection of an execution method**; no package creation, merge or installation is authorized by the design approval alone.
+**Historical approvals:** the owner approved written design v0.7 on 2026-10-14; subsequently separately approved the test-first implementation plan, selected **Native + review per task**, authorized V0 Hardening and requested conditional GitHub merges. The plan was executed in source-control branches, not in an installed ChatGPT plugin.
 
-**Work permitted now:** cancel/supersede old V0 in-place design and tracking issue, record true old plugin installation state, author this replacement spec and update the GitHub plan.  
-**Not permitted/possible yet:** claim total deletion of owner-created old source, create a new plugin with ambiguous `qrvai` slug, publish new private release, merge, or activate tools before plan/review and D1/D2 gates.
+**Executed source integration:** [PR #5](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/5) merged into the V0 foundation; [PR #4](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/4) merged into the architectural development branch. The combined tree passed [40 GitHub Actions tests](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38687772301) with QA corpus validation and a deterministic, 12-file plugin ZIP. The outstanding [PR #1](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/1) is reviewed separately before any `main` merge.
 
-**Owner review outcome:** accepted new five-Skill ChatGPT-first V0 strategy and clean deletion/no-legacy rule. [Implementation Plan](../plans/2026-10-14-qrvai-v0-clean-slate-foundation.md) has been written and is **awaiting separate owner review and execution-method selection**. V1 remains the separately approved deterministic RF workbench.
+**Open gates:** **D1** old account-created plugin source removal remains blocked; **D2** package-name availability is unverified. No fresh personal/workspace plugin creation, new release, installation, real `@QRVAI` host E2E, executable RF engine or MCP endpoints were performed. No independent reviewer execution or approval has been demonstrated. Never present an author second-pass review as an independent sign-off.
+
+**Authority separation:** approving GitHub source/PR integration is not permission to call Plugin Creator `create_plugin`, to modify the legacy `plugins_6acf47f502dc8191bf542fe040d484d8`, or to publish a plugin to users. The latter operations require account identity resolution and **separate explicit authorization**.
 
 **References:** [v0.5 architectural index](../../README.md) · [Capability Register](../../architecture/capability-register-v0.5.md) · [Orchestrator Contracts](../../architecture/orchestrator-control-contracts-v0.5.md) · [ChatGPT-first](../../architecture/chatgpt-first-experience-v0.5.md).

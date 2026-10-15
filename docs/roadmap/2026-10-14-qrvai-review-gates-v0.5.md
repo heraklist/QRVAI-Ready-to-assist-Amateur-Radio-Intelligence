@@ -1,6 +1,6 @@
 # QRVAI v0.5 Research, Specification & Delivery-Gate Roadmap
 
-**Date:** 2026-10-14. **Status:** Proposed program-level plan. This is not a task-by-task implementation plan; application code needs separate owner-reviewed vertical-slice specs.
+**Original date:** 2026-10-14. **Status update 2026-10-15:** This remains a **future program-level roadmap**, while the separate owner-approved V0 plan was executed as Skills-only GitHub source and tested via CI. The V0 account plugin is **not created/installed**; host E2E remains NOT_EXECUTED.
 
 ## Primary mission
 
@@ -16,7 +16,7 @@ Build a ChatGPT-first QRVAI plugin, discoverable and usable through the host's s
 | R3 | Map 18 logical engines and 38 prospective MCP tools | docs/architecture/engine-and-mcp-tool-contracts-v0.5.md | Every method has typed proposal, owner, permissions and error/fallback policy |
 | R4 | Formalize four orchestrators and main routing | docs/superpowers/specs/2026-10-14-qrvai-domain-orchestration-design.md | Direct tool before orchestrator, bounded authority and workload state |
 | R5 | Define ChatGPT-first and @-invocation | docs/architecture/chatgpt-first-experience-v0.5.md | Explicit platform test matrix and text-first fallback |
-| R6 | Final product-owner design review | GitHub Draft PR #1 | Owner approves or requests amendments before any implementation plan |
+| R6 | Final product-owner design review | GitHub PR #1 | Owner approved V0 clean-slate spec, implementation plan and Native execution; source merge and account install are separate gates |
 
 ## Proposed implementation program — subject to separate approvals
 
@@ -26,7 +26,9 @@ Build a ChatGPT-first QRVAI plugin, discoverable and usable through the host's s
 
 **Slice:** package minimally useful verified Skills, maybe a public terminology/operator workflow and a small unit-safe calculation if runtime ready. Deliver a versioned minimal plugin only after an implementation spec and tests, **not as part of the present review**.
 
-**Gate:** host-installed request reaches QRVAI, shows a correct bounded answer and a second follow-up without mandatory external UI; unsupported clients have supported fallback and documented limitations. This has NOT been tested.
+**Source progress (2026-10-15):** five Core/Family Skills, 24 Domain/72 sub-capability references, manifest, security validators and ZIP builder implemented in GitHub; [PR #4](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/4) and [PR #5](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/5) merged into the architectural branch. [40 CI tests](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38687772301) passed; packaging is a review-only build, not a Plugin Creator release.
+
+**Gate still outstanding:** an actual installed request must reach the *new* QRVAI, show a correct bounded answer and a second follow-up without mandatory external UI; unsupported clients need documented fallback. **Not tested** because the legacy creator-source record deletion/name collision is unresolved.
 
 ### V1 — First deterministic engineering workbench (legacy roadmap M1)
 
@@ -105,4 +107,4 @@ CW learning, quizzes, Maker project review, consented club workshop and asset pl
 
 For V0 or V1, record: target host/version and protocol, exact plugin manifest, actual Skill entrypoints, engine interfaces and full JSON Schemas, golden-reference examples, detailed steps/tests, security ownership, provider licensing status, and defined rollback. That **implementation plan** is created only after the owner reviews the written v0.5 design.
 
-**Change management:** keep v0.5 documentation in existing Draft PR #1 until owner review. Do not merge/publish or create the private plugin merely as part of design analysis. No real client/plugin execution has been performed.
+**Change management (2026-10-15):** V0 design/implementation approval and Native TDD execution are recorded. The V0 source branches have been merged internally; [PR #1](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/1) is the separate `main` integration gate. No new private QRVAI account/plugin creation, installation or real ChatGPT `@QRVAI` E2E has occurred; keep D1/D2 account gates and owner authorization separate from a GitHub code merge.
