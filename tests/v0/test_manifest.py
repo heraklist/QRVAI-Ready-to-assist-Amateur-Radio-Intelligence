@@ -57,5 +57,18 @@ class TestManifest(unittest.TestCase):
                 self.assertTrue(any("defaultPrompt" in error for error in errors), errors)
 
 
+    def test_malformed_author_fields_fail_portable_schema(self):
+        source = json.loads((ROOT / "qrvai/plugin.json").read_text(encoding="utf-8"))
+        for bad_author in (
+            {"name": ["not", "text"]},
+            {"name": "heraklist", "email": 123},
+            {"name": "heraklist", "unexpected": "metadata"},
+        ):
+            with self.subTest(author=bad_author):
+                changed = dict(source, author=bad_author)
+                errs = validate_manifest_data(changed)
+                self.assertTrue(any("author" in e for e in errs), errs)
+
+
 if __name__ == "__main__":
     unittest.main()

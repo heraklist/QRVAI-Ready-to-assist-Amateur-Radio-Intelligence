@@ -94,5 +94,21 @@ class TestArchive(unittest.TestCase):
             self.assertTrue(any("reference" in e.lower() for e in errors), errors)
 
 
+    def test_tampered_skill_description_array_fails_archive_validation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source_path = build_archive(ROOT / "qrvai", Path(tmp) / "baseline.zip")
+            tampered = Path(tmp) / "array-description.zip"
+            original = b"description: Use for broad QRVAI amateur radio assistance, capability navigation, cross-family questions, and safe routing to a Family Skill."
+            with zipfile.ZipFile(source_path) as original_zip, zipfile.ZipFile(tampered, "w") as changed_zip:
+                for entry in original_zip.infolist():
+                    data = original_zip.read(entry.filename)
+                    if entry.filename == "qrvai/skills/qrvai-core/SKILL.md":
+                        self.assertIn(original, data)
+                        data = data.replace(original, b"description: [not, a, string]")
+                    changed_zip.writestr(entry, data)
+            errs = validate_archive(tampered)
+            self.assertTrue(any("description" in e.lower() for e in errs), errs)
+
+
 if __name__ == "__main__":
     unittest.main()
