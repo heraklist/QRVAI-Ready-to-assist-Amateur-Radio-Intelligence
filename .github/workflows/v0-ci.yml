@@ -2,10 +2,12 @@ name: QRVAI V0 Tests
 on:
   push:
     branches:
+      - main
       - feat/qrvai-v0-native-reviewed
   pull_request:
     paths:
       - 'qrvai/**'
+      - 'docs/**'
       - 'tests/v0/**'
       - 'qa/v0/**'
       - 'scripts/v0/**'
