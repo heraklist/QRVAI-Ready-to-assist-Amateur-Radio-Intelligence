@@ -20,6 +20,25 @@ class TestManifest(unittest.TestCase):
         self.assertNotIn("mcpServers", doc)
         self.assertFalse((ROOT / "qrvai/mcp.json").exists())
 
+    def test_official_schema_snapshot_uses_2020_12_and_expected_id(self):
+        from scripts.v0.validate import CANONICAL_SCHEMA_PATH
+        schema = json.loads(CANONICAL_SCHEMA_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+        self.assertEqual(schema["$id"], "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json")
+        self.assertEqual(schema["required"], ["$schema", "name"])
+
+    def test_official_schema_validation_rejects_invalid_plugin_name(self):
+        valid = json.loads((ROOT / "qrvai/plugin.json").read_text(encoding="utf-8"))
+        changed = dict(valid, name="invalid--slug")
+        errors = validate_manifest_data(changed)
+        self.assertTrue(any("canonical schema" in err.lower() for err in errors), errors)
+
+    def test_official_schema_is_executed_not_just_documented(self):
+        valid = json.loads((ROOT / "qrvai/plugin.json").read_text(encoding="utf-8"))
+        changed = dict(valid, homepage=42)
+        errors = validate_manifest_data(changed)
+        self.assertTrue(any("canonical schema" in err.lower() for err in errors), errors)
+
     def test_rejects_invalid_display_name_and_overlong_subtitle(self):
         doc = {"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
                "name": "qrvai", "version": "0.1.0", "author": {"name": "heraklist"},

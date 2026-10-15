@@ -1,8 +1,8 @@
-# QRVAI RF MCP — Development-only source
+# QRVAI RF MCP — Merged source, Cloudflare deployment not yet verified
 
 First slice of a **private personal QRVAI plugin's proposed tooling**: one **publicly reachable**, read-only RF power calculator exposed by a stateless Cloudflare Workers Streamable HTTP MCP server at `/mcp`.
 
-**NOT INSTALLED. NOT DEPLOYED. NO HOST E2E.** The source lives in [Draft PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9). User-approved [spec](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/specs/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp-design.md) and [plan](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/plans/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp.md).
+**NOT INSTALLED. NOT DEPLOYED. NO HOST E2E.** The source was merged through [PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9). User-approved [spec](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/specs/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp-design.md) and [plan](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/plans/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp.md).
 
 ## Development checks
 
