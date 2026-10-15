@@ -63,13 +63,24 @@ export function calculateFeedlineLoss(input:unknown):FeedlineResult{
   const profile=record(data.profile,["id","revision","points"],"profile");
   const id=identifier(profile.id,"profile.id",/^[a-z0-9][a-z0-9_-]{0,63}$/);
   const revision=identifier(profile.revision,"profile.revision",/^[A-Za-z0-9][A-Za-z0-9._-]{0,39}$/);
-  if(!Array.isArray(profile.points)||profile.points.length<2||profile.points.length>16){
+  const rawPoints=profile.points;
+  if(!Array.isArray(rawPoints)||rawPoints.length<2||rawPoints.length>16){
     throw new FeedlineInputError("points requires 2..16 ordered samples");
+  }
+  // Iterate ONLY own array data slots, never user-defined getters or prototype methods.
+  // JSON arrays have exactly [0..length-1] and the own "length" property.
+  if(Object.getPrototypeOf(rawPoints)!==Array.prototype ||
+     Reflect.ownKeys(rawPoints).length!==rawPoints.length+1){
+    throw new FeedlineInputError("points array has unsupported extra or inherited properties");
   }
   const points:FeedlinePoint[]=[];
   let prior=0;
-  for(const [i,value] of profile.points.entries()){
-    const item=record(value,["frequency_hz","loss_db_per_100m"],"point "+i);
+  for(let i=0;i<rawPoints.length;i++){
+    const slot=Object.getOwnPropertyDescriptor(rawPoints,String(i));
+    if(!slot||!("value" in slot)){
+      throw new FeedlineInputError("points array must use ordinary data slots");
+    }
+    const item=record(slot.value,["frequency_hz","loss_db_per_100m"],"point "+i);
     const hz=num(item.frequency_hz,"point frequency",0,true);
     const loss=num(item.loss_db_per_100m,"point attenuation",0);
     if(hz<=prior)throw new FeedlineInputError("points must strictly increase in frequency");
