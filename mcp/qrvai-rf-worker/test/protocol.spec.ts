@@ -16,7 +16,7 @@ test("Cloudflare Worker exposes real stateless modern MCP over /mcp", async () =
   try {
     await client.connect(transport);
     const tools=await client.listTools();
-    assert.deepEqual(tools.tools.map(x=>x.name),["rf_power_convert"]);
+    assert.deepEqual(tools.tools.map(x=>x.name),["rf_power_convert","rf_link_budget"]);
     const good=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
     assert.equal((good.structuredContent as {dBm:number}).dBm,50);
     const again=await client.callTool({name:"rf_power_convert",arguments:{value:1,unit:"mW"}});
@@ -45,7 +45,7 @@ test("review: successful MCP responses never enable wildcard browser CORS", asyn
   try {
     await client.connect(transport);
     const list = await client.listTools();
-    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert"]);
+    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget"]);
     assert.ok(cors.length>0);
     assert.ok(cors.every(header=>header!=="*"),"MCP handler must not allow arbitrary browser origins");
   } finally { await client.close(); }
