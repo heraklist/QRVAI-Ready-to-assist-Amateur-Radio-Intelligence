@@ -21,7 +21,7 @@ test("a real SDK v2 server exposes three RF calculators and returns 50 dBm", asy
     assert.equal((budget.structuredContent as {rx_dbm:number;margin_db:number}).rx_dbm,-47);
     assert.equal((budget.structuredContent as {rx_dbm:number;margin_db:number}).margin_db,58);
     const impedance=await client.callTool({name:"rf_impedance",arguments:{r_ohm:100,x_ohm:0,z0_ohm:50}});
-    assert.equal((impedance.structuredContent as {vswr:number}).vswr,2);
+    assert.ok(Math.abs((impedance.structuredContent as {vswr:number}).vswr - 2) < 1e-12);
     const bad=await client.callTool({name:"rf_power_convert",arguments:{value:0,unit:"W"}});
     assert.equal(bad.isError,true);
     const secret=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W",callsign:"PRIVATE"}});
