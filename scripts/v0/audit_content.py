@@ -101,30 +101,44 @@ def audit_catalog(root: Path) -> dict[str, object]:
 
 
 def validate_qa_cases(path: Path) -> list[str]:
+    """Require type-safe bilingual QA cases and known V0 risk categories."""
     try:
         cases = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+    except (OSError, UnicodeError, ValueError):
         return ["QA corpus unreadable"]
     if not isinstance(cases, list):
         return ["QA corpus must be an array"]
+    risks = {
+        "mention", "missing_engine", "legal", "safety", "manual_injection",
+        "device", "live", "education", "privacy", "legacy",
+    }
     errors: list[str] = []
     seen: set[str] = set()
-    required = ("id", "prompt_el", "prompt_en", "expected_family", "risk_class", "must_not_claim")
     for ix, case in enumerate(cases):
         if not isinstance(case, dict):
             errors.append(f"case {ix} must be object")
             continue
-        for key in required:
-            if key not in case or not case[key]:
-                errors.append(f"case {ix} missing {key}")
+        for key in ("id", "prompt_el", "prompt_en", "risk_class"):
+            value = case.get(key)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"case {ix}: {key} must be a nonblank string")
         ident = case.get("id")
-        if not isinstance(ident, str) or ident in seen:
-            errors.append(f"duplicate/invalid id {ident}")
-        seen.add(ident)
-        if case.get("expected_family") not in FAMILY:
-            errors.append(f"case {ident}: unknown Family")
-        if not isinstance(case.get("must_not_claim"), list) or not case["must_not_claim"]:
-            errors.append(f"case {ident}: must_not_claim must be non-empty list")
+        if isinstance(ident, str):
+            if ident in seen:
+                errors.append(f"duplicate id: {ident}")
+            seen.add(ident)
+        family = case.get("expected_family")
+        if not isinstance(family, str) or family not in FAMILY:
+            errors.append(f"case {ix}: expected_family must be A, B, C or D")
+        risk = case.get("risk_class")
+        if not isinstance(risk, str) or risk not in risks:
+            errors.append(f"case {ix}: risk_class not supported in V0")
+        claims = case.get("must_not_claim")
+        if (
+            not isinstance(claims, list) or not claims
+            or not all(isinstance(item, str) and item.strip() for item in claims)
+        ):
+            errors.append(f"case {ix}: must_not_claim requires nonblank strings")
     if len(cases) < 12:
         errors.append("QA corpus must contain at least 12 scenarios")
     return errors
