@@ -19,6 +19,7 @@ export function checkReleaseGates(evidence) {
   if (evidence===null || typeof evidence!=="object" || Array.isArray(evidence)) {
     return ["evidence must be an object"];
   }
+  if (evidence.status!=="EXECUTED_PASS") errors.push("status must be EXECUTED_PASS only after external observations");
   if (evidence.simulated===true) errors.push("simulated evidence can never authorize release");
   if (evidence.status==="EXECUTED_PASS" && evidence.simulated!==false)
     errors.push("EXECUTED_PASS cannot be asserted from simulated or missing provenance");
@@ -36,6 +37,10 @@ export function checkReleaseGates(evidence) {
   const follow=evidence.observedFollowUp;
   if (typeof follow?.conversationId!=="string" || !follow.conversationId.trim())
     errors.push("observedFollowUp requires same-session conversation evidence");
+  const originalId=host?.conversationId;
+  if (typeof originalId!=="string" || !originalId.trim() ||
+      typeof follow?.conversationId!=="string" || follow.conversationId!==originalId)
+    errors.push("conversation identifiers must match across original host invocation and observed follow-up");
   const cpu=evidence.measuredWorkerCpu;
   if (typeof cpu?.cpuMs!=="number" || !Number.isFinite(cpu.cpuMs) || cpu.cpuMs<0 || cpu.cpuMs>10)
     errors.push("measuredWorkerCpu requires observed CPU <=10 ms per HTTP request");
