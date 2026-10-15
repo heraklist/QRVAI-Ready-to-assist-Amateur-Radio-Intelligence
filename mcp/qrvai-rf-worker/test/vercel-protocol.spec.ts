@@ -4,20 +4,20 @@ import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/cli
 
 test("Vercel MCP API fails closed without configured authentication", async () => {
   const { default: handler } = await import("../api/mcp.ts");
-  const response = await handler(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  const response = await handler.fetch(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
   assert.equal(response.status,503);
 });
 
 test("Vercel MCP API rejects unauthorized requests when token is configured", async () => {
   const { default: handler } = await import("../api/mcp.ts");
-  const response = await handler(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}), "qrvai-unit-test-token-not-for-deployment-123456");
+  const response = await handler.fetch(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}), "qrvai-unit-test-token-not-for-deployment-123456");
   assert.equal(response.status,401);
 });
 
 test("Vercel MCP API exposes all four registered read-only RF tools through Streamable HTTP", async () => {
   const { default: handler } = await import("../api/mcp.ts");
   const transport = new StreamableHTTPClientTransport(new URL("https://qrvai.example/api/mcp"), {
-    fetch: (url,init) => { const req=new Request(url,init); req.headers.set("authorization","Bearer qrvai-unit-test-token-not-for-deployment-123456"); return handler(req, "qrvai-unit-test-token-not-for-deployment-123456"); }
+    fetch: (url,init) => { const req=new Request(url,init); req.headers.set("authorization","Bearer qrvai-unit-test-token-not-for-deployment-123456"); return handler.fetch(req, "qrvai-unit-test-token-not-for-deployment-123456"); }
   });
   const client = new Client({name:"qrvai-vercel-test",version:"0.1.0"});
   try {
