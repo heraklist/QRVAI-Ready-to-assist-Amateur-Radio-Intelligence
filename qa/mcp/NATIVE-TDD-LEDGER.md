@@ -11,3 +11,9 @@ Ruling R1: Initial Task 1 uses Node.js 22's built-in `node:test` with TypeScript
 - GREEN `b79c9ce8d`: Actions #38704300669 / #38704294008, 41 Node tests, 42 Python V0 tests, Worker Vitest, typecheck, no-deploy Wrangler dry-run PASS.
 - Reviewer gate: author second-pass PR #9 comment `6187659673`; independent review NOT_EXECUTED. No `qrvai/**` files altered; no Worker or Plugin Creator mutations.
 - Task 6: complete (code+CI only), release BLOCKED.
+
+## Task 7 — Offline release guards / host reporting
+- RED `66247f3`: Actions #38704730884 / #38704723452 observed missing validator.
+- GREEN `1d07129`: Actions #38704969735 / #38704962669 both PASS (45 Node, Worker Vitest, typecheck, V0 42 Python).
+- Author second pass: PR #9 comment `6187745676`; independent reviewer NOT_EXECUTED. Evidence JSON deliberately blocked; no deployment, no plugin creation.
+- Task 7: complete for offline source validation only.
