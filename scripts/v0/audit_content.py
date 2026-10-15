@@ -17,7 +17,7 @@ SKILLS = {
 }
 
 
-_LINK = re.compile(r"(?<!!)\\[[^\\]]+\\]\\(([^)\\s]+)(?:\\s+\\\"[^\\\"]*\\\")?\\)")
+_LINK = re.compile(r'(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+"[^"]*")?\)')
 # This validator intentionally supports simple inline Markdown links in portable Skills.
 # Nonstandard links should be reviewed or rewritten in the source before packaging.
 
