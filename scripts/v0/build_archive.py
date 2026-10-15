@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import json
+import posixpath
+from urllib.parse import unquote, urlsplit
 from pathlib import Path
 import stat
 import zipfile
 
 from scripts.v0.validate import validate_manifest_data
+from scripts.v0.audit_content import _LINK
 
 ALLOWLIST = (
     "plugin.json",
@@ -87,6 +90,32 @@ def validate_archive(archive: Path) -> list[str]:
                     errors.extend(validate_manifest_data(manifest))
                 except (ValueError, KeyError):
                     errors.append("unreadable manifest JSON")
+            for entry in sorted(expected):
+                if not entry.endswith(".md") or entry not in actual:
+                    continue
+                try:
+                    body = z.read(entry).decode("utf-8")
+                except UnicodeDecodeError:
+                    errors.append(f"invalid UTF-8 reference document: {entry}")
+                    continue
+                skill_root = "/".join(entry.split("/")[:3])
+                for match in _LINK.finditer(body):
+                    raw = unquote(match.group(1)).strip()
+                    if raw.startswith("#"):
+                        continue
+                    parsed = urlsplit(raw)
+                    if parsed.scheme:
+                        if parsed.scheme != "https":
+                            errors.append(f"unsafe archive reference in {entry}: {raw}")
+                        continue
+                    if parsed.netloc or raw.startswith("//") or not parsed.path:
+                        errors.append(f"unsafe archive reference in {entry}: {raw}")
+                        continue
+                    target = posixpath.normpath(posixpath.join(posixpath.dirname(entry), parsed.path))
+                    if not target.startswith(skill_root + "/"):
+                        errors.append(f"escaping archive reference in {entry}: {raw}")
+                    elif target not in actual:
+                        errors.append(f"missing archive reference in {entry}: {raw}")
             import yaml
             for entry in sorted(expected):
                 if entry.endswith("/SKILL.md") and entry in actual:
