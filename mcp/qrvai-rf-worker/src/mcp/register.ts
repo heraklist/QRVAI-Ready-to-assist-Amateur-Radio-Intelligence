@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {sourceLookup,regulatoryCheckOperation,spectrumBandSegments,spectrumFindRepeaters,manualFind} from "../rf/wave4.ts";
 import {digitalSetupGuide,repeaterChannelPreview,contestPlan,makerProjectReview,clubWorkshopPlan} from "../rf/wave3.ts";
 import {stationSignalPath,packetRoutePreview,emcommDrill,emcommReadiness,academyExercise} from "../rf/wave2.ts";
 import {describeWave1,antennaGeometry,antennaMatching,filterResponse,powerAutonomy,geoBearing} from "../rf/wave1.ts";
@@ -268,6 +269,41 @@ export function createServer(): McpServer {
     outputSchema:z.strictObject({topic:z.enum(["antenna_basics","digital_modes"]),participants:z.number().int(),agenda:z.array(z.strictObject({section:z.string(),minutes:z.number().int().nonnegative()})),simulated:z.literal(true),disclaimer:z.string(),formula_revision:z.literal("M38-v1")}),
     annotations:w3ro
   },async(args)=>{try{return w3response(clubWorkshopPlan(args))}catch(e){return w3error(e)}});
+
+
+  const w4ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const w4id=z.string().regex(/^[a-zA-Z0-9_-]{1,40}$/);
+  const w4hz=z.number().finite().positive().max(1e12);
+  const w4title=z.string().min(1).max(120);
+  const w4excerpt=z.string().min(1).max(2000);
+  const w4range={minimum_hz:w4hz,maximum_hz:w4hz};
+  function w4response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w4error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("source_lookup",{
+    title:"Search user-supplied source excerpts",description:"Only matches bounded user-provided evidence snippets, no retrieval or independent verification.",
+    inputSchema:z.strictObject({query:z.string().min(1).max(80),sources:z.array(z.strictObject({id:w4id,title:w4title,excerpt:w4excerpt})).max(24)}),
+    outputSchema:z.strictObject({matches:z.array(z.strictObject({id:w4id,title:w4title,excerpt:w4excerpt})),provenance:z.literal("USER_SUPPLIED_UNVERIFIED"),disclaimer:z.string(),formula_revision:z.literal("M02-v1")}),annotations:w4ro
+  },async(args)=>{try{return w4response(sourceLookup(args))}catch(e){return w4error(e)}});
+  server.registerTool("regulatory_check_operation",{
+    title:"Compare user-provided rule excerpts",description:"Unverified matching against supplied rules; NOT a legal or transmission authorization check.",
+    inputSchema:z.strictObject({frequency_hz:w4hz,regions:z.array(z.strictObject({id:w4id,jurisdiction:z.string().min(1).max(100),minimum_hz:w4hz,maximum_hz:w4hz,rule:z.string().min(1).max(500)})).max(24)}),
+    outputSchema:z.strictObject({frequency_hz:w4hz,matches:z.array(z.strictObject({id:w4id,jurisdiction:z.string(),minimum_hz:w4hz,maximum_hz:w4hz,rule:z.string()})),authorized:z.literal(false),provenance:z.literal("USER_SUPPLIED_UNVERIFIED"),disclaimer:z.string(),formula_revision:z.literal("M04-v1")}),annotations:w4ro
+  },async(args)=>{try{return w4response(regulatoryCheckOperation(args))}catch(e){return w4error(e)}});
+  server.registerTool("spectrum_band_segments",{
+    title:"Match user-provided band segments",description:"Match explicit user band records only; not current official allocations.",
+    inputSchema:z.strictObject({frequency_hz:w4hz,segments:z.array(z.strictObject({id:w4id,...w4range,label:z.string().min(1).max(100),source_revision:z.string().min(1).max(80)})).max(24)}),
+    outputSchema:z.strictObject({matches:z.array(z.strictObject({id:w4id,...w4range,label:z.string(),source_revision:z.string()})),verified:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M05-v1")}),annotations:w4ro
+  },async(args)=>{try{return w4response(spectrumBandSegments(args))}catch(e){return w4error(e)}});
+  server.registerTool("spectrum_find_repeaters",{
+    title:"Filter user-supplied repeater records",description:"No external directory, repeater operational status or real-time coverage.",
+    inputSchema:z.strictObject({...w4range,repeaters:z.array(z.strictObject({id:w4id,frequency_hz:w4hz,location_label:z.string().min(1).max(100)})).max(24)}),
+    outputSchema:z.strictObject({matches:z.array(z.strictObject({id:w4id,frequency_hz:w4hz,location_label:z.string()})),live_status_known:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M06-v1")}),annotations:w4ro
+  },async(args)=>{try{return w4response(spectrumFindRepeaters(args))}catch(e){return w4error(e)}});
+  server.registerTool("manual_find",{
+    title:"Search user-supplied manual excerpts",description:"Bounded text search, without downloading manuals or implying vendor endorsement.",
+    inputSchema:z.strictObject({query:z.string().min(1).max(80),excerpts:z.array(z.strictObject({id:w4id,document_title:w4title,text:w4excerpt})).max(24)}),
+    outputSchema:z.strictObject({matches:z.array(z.strictObject({id:w4id,document_title:w4title,text:w4excerpt})),downloaded_external_manual:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M17-v1")}),annotations:w4ro
+  },async(args)=>{try{return w4response(manualFind(args))}catch(e){return w4error(e)}});
 
   return server;
 }
