@@ -9,7 +9,7 @@ QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence p
 
 - `qrvai/`: exactly **five independently authored V0 Skills** (core plus four Family Skills), no MCP server, App, hardware control, PTT, or sensitive legacy Academy content in the packaged 12-file artifact.
 - `docs/architecture/`: conceptual taxonomy of **4 Families / 24 Domains / 72 Sub-capabilities**, 24 future Domain Skills, 18 Engines, 38 MCP tool proposals, four candidate Orchestrators and 36 interactive view concepts; **not deployed**.
-- [Merged PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9): real but **undeployed** stateless Cloudflare Worker MCP source with one read-only `rf_power_convert` tool (W/mW/dBm/dBW); node, Worker and V0 CI evidence on its exact reviewed head. The source is part of `main`; Cloudflare deployment and host acceptance remain separate.
+- [Merged PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9): real but **undeployed** stateless Cloudflare Worker MCP source with three read-only RF tools (`rf_power_convert`, `rf_link_budget`, `rf_impedance`) (W/mW/dBm/dBW); node, Worker and V0 CI evidence on its exact reviewed head. The source is part of `main`; Cloudflare deployment and host acceptance remain separate.
 - [Merged PR #11](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/11): independent V0 hardening covering ZIP validation, routing fixture and SHA-pinned CI.
 - [Draft PR #10](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/10): M1 conceptual staged math plan; reconcile with existing PR #9 before any parallel implementation.
 
@@ -26,6 +26,7 @@ QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence p
 ## Entry points
 
 - [Architecture and actual implementation status](docs/README.md)
+- [ADR-0002: first new plugin includes verified MCP](docs/architecture/ADR-0002-first-fresh-mcp-private-release.md)
 - [V0 Clean-Slate Design](docs/superpowers/specs/2026-10-14-qrvai-v0-clean-install-design.md)
 - [MCP service and Cloudflare preflight](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9)
 - [Audit remediation evidence](docs/reviews/2026-10-15-v0-audit-hardening-evidence.md) (Draft PR #11 until merged)
