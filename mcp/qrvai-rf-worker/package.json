@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --experimental-strip-types --test test/*.spec.ts",
+    "test": "node --experimental-strip-types --test test/power.spec.ts test/validation.spec.ts test/register.spec.ts test/protocol.spec.ts",
     "typecheck": "tsc --noEmit",
     "test:worker": "vitest run --config vitest.worker.config.ts"
   },
