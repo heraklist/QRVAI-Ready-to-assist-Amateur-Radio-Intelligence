@@ -53,5 +53,33 @@ class TestArchive(unittest.TestCase):
                                     for x in archive.namelist()))
 
 
+    def test_rejects_tampered_archive_with_broken_or_escaping_references(self):
+        for link in ("references/missing.md", "../../private.txt", "javascript:bad"):
+            with self.subTest(link=link), tempfile.TemporaryDirectory() as tmp:
+                original = build_archive(ROOT / "qrvai", Path(tmp) / "original.zip")
+                altered = Path(tmp) / "tampered.zip"
+                with zipfile.ZipFile(original) as source, zipfile.ZipFile(altered, "w") as target:
+                    for entry in source.infolist():
+                        blob = source.read(entry.filename)
+                        if entry.filename == "qrvai/skills/qrvai-core/SKILL.md":
+                            blob = blob.replace(b"references/routing.md", link.encode("utf-8"))
+                        target.writestr(entry, blob)
+                errors = validate_archive(altered)
+                self.assertTrue(any("reference" in x.lower() for x in errors), errors)
+
+    def test_rejects_tampered_archive_with_non_utf8_reference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            original = build_archive(ROOT / "qrvai", Path(tmp) / "original.zip")
+            altered = Path(tmp) / "invalid-utf8.zip"
+            with zipfile.ZipFile(original) as source, zipfile.ZipFile(altered, "w") as target:
+                for entry in source.infolist():
+                    blob = source.read(entry.filename)
+                    if entry.filename == "qrvai/skills/qrvai-core/references/routing.md":
+                        blob = b"\\xff\\xfe"
+                    target.writestr(entry, blob)
+            errors = validate_archive(altered)
+            self.assertTrue(any("utf-8" in x.lower() for x in errors), errors)
+
+
 if __name__ == "__main__":
     unittest.main()
