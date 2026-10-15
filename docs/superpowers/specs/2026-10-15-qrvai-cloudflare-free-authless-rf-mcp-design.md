@@ -1,14 +1,14 @@
 # QRVAI — Cloudflare Workers Free, No-Login RF MCP Design
 
 **Date:** 2026-10-15  
-**Status:** DRAFT FOR OWNER REVIEW — initial user-visible architecture direction agreed; this full written specification has **not** yet been approved. No implementation plan, Worker, MCP endpoint, Plugin Creator mutation, or host acceptance test has been executed.  
+**Status updated 2026-10-15:** **OWNER-APPROVED WRITTEN SPEC for implementation planning** — the owner explicitly approved this document in Draft PR #8 and requested a detailed Native TDD implementation plan with per-task review. The plan has now been drafted for its **own, separate owner approval**; no product implementation, Worker, MCP endpoint, Plugin Creator mutation, merge or host acceptance test has been executed.  
 **Related:** [V1 upgrade decision / Issue #6](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/6) · [Old creator identity blocker / Issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) · [V0 Skills-only source](../../../qrvai/) · [ChatGPT-first requirement](../../architecture/chatgpt-first-experience-v0.5.md)
 
 ## 1. Purpose, approved direction, and success criteria
 
 The owner will use QRVAI **personally in existing ChatGPT conversations**. Simplicity matters more than speculative enterprise authentication: avoid recurring OAuth consent/login for ordinary RF calculations. The owner selected **Cloudflare Workers Free** as the target host and agreed that the **first remote MCP service may be anonymous**, provided that it processes **only non-sensitive, deterministic, read-only RF calculations**. The intended ChatGPT plugin remains **private/personal**.
 
-These are architectural intent approvals only. The owner has **not yet approved this complete written specification**, source implementation, deployment, secrets/billing changes, creating/replacing the QRVAI account plugin, public plugin submission, or an automatic merge.
+The owner separately approved this **written specification for planning** on 2026-10-15. The owner has **not yet approved the separately drafted implementation plan**, source implementation, deployment, secrets/billing changes, creating/replacing the QRVAI account plugin, public plugin submission, or an automatic merge.
 
 Success means a real Worker hosted on a verified free account serves a standards-compatible remote MCP tool that produces known numeric results with documented units, without requiring the user to log in on each call. A later and separately authorized fresh QRVAI plugin must successfully invoke the tool in a real ChatGPT host while satisfying the owner's **`@QRVAI` in an already-open conversation** requirement, or explicitly mark that host UNSUPPORTED. No host success may be inferred from GitHub unit tests.
 
@@ -114,4 +114,4 @@ Reviewed the design for ambiguous scope: this **first** service has exactly one 
 
 Open gates are explicit, not hidden implementation placeholders: Cloudflare account Free-plan/usage verification, SDK runtime performance on the **actual** Worker, the personal plugin's supported skills-only→MCP lifecycle, old QRVAI saved-record removal and namespace availability, platform `@QRVAI` behavior, separate code/deployment/creation approvals and any independently executed review.
 
-**Next owner action:** review and approve or amend this written specification. Only then proceed to an independently reviewable implementation plan; this owner approval is not permission to deploy or create the plugin.
+**Next owner action:** review and approve or amend the [separately drafted Native TDD implementation plan](../plans/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp.md). Specification approval is not authorization for source implementation, Cloudflare deployment or Plugin Creator account creation.
