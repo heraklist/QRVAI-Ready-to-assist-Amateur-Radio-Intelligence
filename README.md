@@ -26,6 +26,7 @@ QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence p
 ## Entry points
 
 - [Architecture and actual implementation status](docs/README.md)
+- [M09 feedline review candidate](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/16) — versioned user-supplied attenuation, **not yet merged or deployed**
 - [ADR-0002: first new plugin includes verified MCP](docs/architecture/ADR-0002-first-fresh-mcp-private-release.md)
 - [V0 Clean-Slate Design](docs/superpowers/specs/2026-10-14-qrvai-v0-clean-install-design.md)
 - [MCP service and Cloudflare preflight](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9)
