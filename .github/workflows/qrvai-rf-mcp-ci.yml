@@ -29,11 +29,9 @@ jobs:
         run: |
           python -m pip install -r requirements-v0-dev.txt
           python -m unittest discover -s tests/v0 -p 'test_*.py' -v
-      - name: Verify typed stateless MCP and Worker with no cloud auth
+      - name: Verify authenticated Vercel MCP adapter and RF tools with no deployment
         working-directory: mcp/qrvai-rf-worker
         run: |
           npm ci --ignore-scripts
           npm run typecheck
           npm test
-          npm run test:worker
-          npm run build:check
