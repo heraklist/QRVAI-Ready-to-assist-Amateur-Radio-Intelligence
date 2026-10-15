@@ -64,3 +64,8 @@ test("review: MCP CI remains active for future source merges into main",()=>{
   const yaml=readFileSync(file(".github/workflows/qrvai-rf-mcp-ci.yml"),"utf8");
   assert.ok(yaml.includes("push:") && yaml.includes("- main"));
 });
+
+test("Vercel deployment includes typed MCP source modules needed by runtime",()=>{
+  const config=JSON.parse(readFileSync(file("mcp/qrvai-rf-worker/vercel.json"),"utf8"));
+  assert.equal(config.functions["api/mcp.ts"].includeFiles,"src/**/*");
+});
