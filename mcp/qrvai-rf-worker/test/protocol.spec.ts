@@ -7,7 +7,7 @@ async function fetchMcp(url: URL|string, init?: RequestInit): Promise<Response> 
   const {default:handler}=await import("../api/mcp.ts");
   const request=new Request(url,init);
   request.headers.set("authorization","Bearer "+secret);
-  return handler(request,secret);
+  return handler.fetch(request,secret);
 }
 test("Vercel exposes stateless modern MCP over /api/mcp",async()=>{
   const transport=new StreamableHTTPClientTransport(new URL("https://test.local/api/mcp"),{fetch:fetchMcp});
