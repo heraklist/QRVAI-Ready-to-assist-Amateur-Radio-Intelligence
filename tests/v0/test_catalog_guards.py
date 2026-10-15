@@ -14,7 +14,7 @@ class TestCatalogGuards(unittest.TestCase):
         self.assertEqual(len(data["domain_ids"]), 24)
         self.assertEqual(len(data["subcapability_ids"]), 72)
         self.assertEqual(len(data["skill_names"]), 5)
-        self.assertEqual(data["family_ids"], {"A", "B", "C", "D"})
+        self.assertEqual(data["family_ids"], {"A", "B", "C", "D", "CORE"})
         self.assertEqual(data["violations"], [])
 
     def test_absent_legacy_identifiers_and_unverified_services(self):
@@ -35,6 +35,18 @@ class TestCatalogGuards(unittest.TestCase):
         self.assertTrue({"legal", "manual_injection", "missing_engine", "legacy", "mention"} <=
                         {c["risk_class"] for c in cases})
 
+
+    def test_intro_routes_to_core_and_core_cannot_be_assigned_arbitrarily(self):
+        source = json.loads((ROOT / "qa/v0/prompt-cases.json").read_text(encoding="utf-8"))
+        self.assertEqual(source[0]["id"], "intro")
+        self.assertEqual(source[0]["expected_family"], "CORE")
+        with tempfile.TemporaryDirectory() as work:
+            changed = json.loads(json.dumps(source))
+            changed[1]["expected_family"] = "CORE"
+            path = Path(work) / "qa.json"
+            path.write_text(json.dumps(changed), encoding="utf-8")
+            issues = validate_qa_cases(path)
+            self.assertTrue(any("expected_family" in err for err in issues), issues)
 
     def test_rejects_missing_internal_skill_reference(self):
         with tempfile.TemporaryDirectory() as work:
