@@ -1,0 +1,30 @@
+[
+  {
+    "id": "golden-100w",
+    "input": {
+      "tx_w": 100,
+      "tx_gain_dbi": 2,
+      "tx_loss_db": 1,
+      "path_loss_db": 100,
+      "rx_gain_dbi": 3,
+      "rx_loss_db": 1,
+      "rx_sensitivity_dbm": -105
+    },
+    "rx_dbm": -47,
+    "margin_db": 58
+  },
+  {
+    "id": "milliwatt",
+    "input": {
+      "tx_w": 0.001,
+      "tx_gain_dbi": 0,
+      "tx_loss_db": 0,
+      "path_loss_db": 100,
+      "rx_gain_dbi": 0,
+      "rx_loss_db": 0,
+      "rx_sensitivity_dbm": -110
+    },
+    "rx_dbm": -100,
+    "margin_db": 10
+  }
+]
