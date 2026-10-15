@@ -1,5 +1,5 @@
 # QRVAI V0 — Pre-main Review and Upgrade Research
-**Date:** 2026-10-15 · **Target:** [PR #1](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/1) · **Status:** PRE-MERGE AUDIT; report is NOT a host acceptance receipt, external independent review or plugin release.
+**Date:** 2026-10-15 · **Target:** [PR #1](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/1) · **Status:** PRE-MERGE AUDIT — R1–R3 corrected and verified by CI; this report is NOT a host acceptance receipt, external independent review or plugin release.
 
 ## Confirmed present implementation and evidence
 
@@ -20,9 +20,9 @@
 
 | ID | Severity | Evidence in reviewed code | Corrective gate |
 |---|---|---|---|
-| R1 | IMPORTANT source-validator correctness | `scripts/v0/validate.py::validate_manifest_data` checks only truthiness of `author.name`, not type or allowed author fields. A list-valued `author.name` can be incorrectly accepted, contrary to normative Agent Plugins manifest constraints. | Before main: add RED→GREEN malformed-author fixture(s), fail closed, check actual GitHub CI |
-| R2 | IMPORTANT archive-validator parity | `scripts/v0/build_archive.py::validate_archive` checks a Skill frontmatter description for presence rather than string type. Tampering `description` into a nonempty YAML array can pass its frontmatter gate while the source Skill validator rejects it. | Before main: archive mutation negative test → fix, run full suite and build |
-| R3 | IMPORTANT CI continuity | `.github/workflows/v0-ci.yml` has `push.branches` set only to a V0 development branch; direct merges to `main` do not trigger the same push validation. `pull_request` does run the branch tests when matching paths change. | Before main: add `main` to push triggers, verify workflow text and CI |
+| R1 | RESOLVED pre-main: IMPORTANT source-validator correctness | `scripts/v0/validate.py::validate_manifest_data` checks only truthiness of `author.name`, not type or allowed author fields. A list-valued `author.name` can be incorrectly accepted, contrary to normative Agent Plugins manifest constraints. | Before main: add RED→GREEN malformed-author fixture(s), fail closed, check actual GitHub CI |
+| R2 | RESOLVED pre-main: IMPORTANT archive-validator parity | `scripts/v0/build_archive.py::validate_archive` checks a Skill frontmatter description for presence rather than string type. Tampering `description` into a nonempty YAML array can pass its frontmatter gate while the source Skill validator rejects it. | Before main: archive mutation negative test → fix, run full suite and build |
+| R3 | RESOLVED pre-main: IMPORTANT CI continuity | `.github/workflows/v0-ci.yml` has `push.branches` set only to a V0 development branch; direct merges to `main` do not trigger the same push validation. `pull_request` does run the branch tests when matching paths change. | Before main: add `main` to push triggers, verify workflow text and CI |
 | R4 | RECOMMENDED supply-chain | GitHub Actions external dependencies are referenced by moving major version tags, not immutable full SHAs; dependency file `PyYAML==6.0.2` pins version without hashes. | Separate review task: pin verified official Actions SHAs; use hash-locked Python wheels/allowlisted runner policy if practical |
 | R5 | RELEASE BLOCKER, NOT MAIN BLOCKER | Bespoke validators + unit tests do not constitute canonical external JSON-schema validation, host import, permissions verification or real `@QRVAI` routing on supported ChatGPT clients. | Before Plugin Creator: validate with authoritative schema and real platform ingestion/host E2E, preserving NOT_EXECUTED until observed |
 | R6 | ACCOUNT BLOCKER, NOT MAIN BLOCKER | Legacy personal QRVAI `plugins_6acf47f502dc8191bf542fe040d484d8` remains discoverable to Plugin Creator; owner UI has no Delete action. | Delete via supported account workflow, verify `qrvai` namespace, explicitly authorize *new* account plugin; never update/reuse old record |
@@ -30,6 +30,16 @@
 | R8 | FUTURE SECURITY HARDENING | `validate_archive` flags oversized ZIP members but scans and reads afterward; it is intended for own built archives, not a general untrusted ZIP inspection service. | If processing external ZIPs, enforce member and total size limits **before** reads, add decompression-ratio and corrupt ZIP tests |
 | R9 | TESTS VS BEHAVIOR | Sixteen prompt scenarios currently check JSON shape and risk categories, not actual model response quality, translations, source provenance or numeric correctness. | Host E2E fixtures with dated response/source receipts, then future numeric-property tests for V1 RF calculations |
 | R10 | FUTURE PRODUCT FEATURES | 18 engines, 38 tools, 36 app views and 24 individual domain Skills are designs, not code; advancing all together would inflate scope and liability. | Prioritize deterministic dBm/dBW → loss/link budget → SWR read-only engines in separate owner-reviewed TDD plan; add MCP only with verified platform lifecycle |
+
+## Corrective TDD and audit receipts (2026-10-15)
+
+**R1–R2 — verified real RED→GREEN**, preserving the source plugin's 12-file artifact:
+
+- RED commit `0502704337c682ba13c5347b4b182165eea77793`, [GitHub Actions #38689241857](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38689241857): two negative tests, **four failed assertions**, proving author metadata of list/number/extra fields and array-valued Skill descriptions had slipped through the custom validators.
+- GREEN commit `c0fa6b581451955d587c951e25083ce6c936f607`, [GitHub Actions #38689340756](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38689340756): **42/42 Python tests passed**, QA corpus PASS, same 12-file ZIP hash. Fix checks allowed `author` keys and string types, and strict nonblank-string `description` in tampered ZIP Skill frontmatter.
+- R3 workflow change `520180d0df6ffcef5eaca10ca0d17c4be82d9ef8` adds `main` push coverage plus `docs/**` PR paths. [GitHub Actions #38689423289](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/actions/runs/38689423289) completed with **42 tests PASS**, QA corpus PASS and same deterministic clean package hash. Main-branch push verification remains to be observed **after** the actual merge (not preclaimed).
+
+**Review characterization:** This is a documented additional author analysis based on actual source, GitHub Actions runner logs and current normative external standards; **no independent reviewer/subagent execution** has occurred.
 
 ## Merge decision criteria
 
