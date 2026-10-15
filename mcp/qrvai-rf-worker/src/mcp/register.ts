@@ -3,6 +3,7 @@ import { z } from "zod/v4";
 import { convertPower, PowerInputError } from "../rf/power.ts";
 import { calculateLinkBudget, LinkBudgetInputError } from "../rf/link-budget.ts";
 import { calculateImpedance, ImpedanceInputError } from "../rf/impedance.ts";
+import { calculateFeedlineLoss, FeedlineInputError } from "../rf/feedline.ts";
 
 const inputSchema = z.strictObject({
   value: z.number().finite(),
@@ -41,6 +42,32 @@ const impedanceOutputSchema = z.strictObject({
   vswr_status:z.enum(["FINITE","INFINITE","NUMERICAL_LIMIT"]),
   return_loss_status:z.enum(["FINITE","INFINITE"]),
   formula_revision:z.literal("M10-v1"),assumptions:z.string()
+});
+
+const feedlinePointSchema = z.strictObject({
+  frequency_hz: z.number().finite().positive(),
+  loss_db_per_100m: z.number().finite().nonnegative()
+});
+const feedlineInputSchema = z.strictObject({
+  profile: z.strictObject({
+    id: z.string().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/),
+    revision: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._-]{0,39}$/),
+    points: z.array(feedlinePointSchema).min(2).max(16)
+  }),
+  frequency_hz: z.number().finite().positive(),
+  length_m: z.number().finite().nonnegative(),
+  connector_loss_db: z.number().finite().nonnegative(),
+  interpolation_method: z.literal("log_frequency")
+});
+const feedlineOutputSchema = z.strictObject({
+  attenuation_db:z.number().finite(), cable_loss_db:z.number().finite(),
+  connector_loss_db:z.number().finite(), delivered_ratio:z.number().finite(),
+  interpolated_loss_db_per_100m:z.number().finite(),
+  series:z.array(feedlinePointSchema).min(1).max(2),
+  profile_id:z.string(), profile_revision:z.string(),
+  profile_trust:z.literal("USER_SUPPLIED_UNVERIFIED"),
+  interpolation_method:z.literal("log_frequency"), formula_revision:z.literal("M09-v1"),
+  assumptions:z.string()
 });
 
 export function createServer(): McpServer {
@@ -101,6 +128,26 @@ export function createServer(): McpServer {
         return {content:[{type:"text" as const,text:`${error.code}: ${error.message}`}],isError:true};
       }
       return {content:[{type:"text" as const,text:"INVALID_INPUT: impedance calculation failed"}],isError:true};
+    }
+  });
+  server.registerTool("rf_feedline_loss", {
+    title: "Feedline Attenuation — Supplied Coax Curve",
+    description: "Calculate feedline loss from explicitly supplied versioned cable attenuation points; interpolate in log frequency within coverage. Does not lookup, verify or certify a manufacturer cable profile.",
+    inputSchema:feedlineInputSchema,
+    outputSchema:feedlineOutputSchema,
+    annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false}
+  }, async (args)=>{
+    try{
+      const output=calculateFeedlineLoss(args);
+      return {
+        content:[{type:"text" as const,text:`Calculated ${output.attenuation_db} dB total line/connector loss, delivered power ratio ${output.delivered_ratio}. Supplied profile is UNVERIFIED; this is not a cable measurement.`}],
+        structuredContent:output
+      };
+    }catch(error){
+      if(error instanceof FeedlineInputError){
+        return {content:[{type:"text" as const,text:`${error.code}: ${error.message}`}],isError:true};
+      }
+      return {content:[{type:"text" as const,text:"INVALID_INPUT: feedline calculation failed"}],isError:true};
     }
   });
   return server;
