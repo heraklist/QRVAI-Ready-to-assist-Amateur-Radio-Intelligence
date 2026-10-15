@@ -1,5 +1,6 @@
 import { createMcpHandler } from "agents/mcp/server";
 import { createServer } from "./mcp/register.ts";
+import { limitMcpRequest } from "./http/limits.ts";
 
 /** Stateless Streamable HTTP Worker. No persistence, credentials or device control. */
 export default {
@@ -8,6 +9,8 @@ export default {
     if (url.pathname !== "/mcp") {
       return new Response("Not found", {status: 404, headers: {"content-type": "text/plain"}});
     }
-    return createMcpHandler(createServer)(request, env, ctx as never);
+    const checked = await limitMcpRequest(request);
+    if (checked instanceof Response) return checked;
+    return createMcpHandler(createServer)(checked, env, ctx as never);
   }
 };
