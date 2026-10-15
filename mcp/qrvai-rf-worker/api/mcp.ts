@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/server/webStandardStreamableHttp.js";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/server";
 import { createServer } from "../src/mcp/register.ts";
 import { limitMcpRequest } from "../src/http/limits.ts";
 
