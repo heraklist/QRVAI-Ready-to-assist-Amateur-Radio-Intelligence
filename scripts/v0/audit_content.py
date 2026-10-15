@@ -132,8 +132,12 @@ def validate_qa_cases(path: Path) -> list[str]:
                 errors.append(f"duplicate id: {ident}")
             seen.add(ident)
         family = case.get("expected_family")
-        if not isinstance(family, str) or family not in FAMILY:
-            errors.append(f"case {ix}: expected_family must be A, B, C or D")
+        if not isinstance(family, str) or family not in (*FAMILY, "CORE"):
+            errors.append(f"case {ix}: expected_family must be CORE, A, B, C or D")
+        elif family == "CORE" and case.get("id") != "intro":
+            errors.append(f"case {ix}: expected_family CORE reserved for intro")
+        elif case.get("id") == "intro" and family != "CORE":
+            errors.append(f"case {ix}: expected_family for intro must be CORE")
         risk = case.get("risk_class")
         if not isinstance(risk, str) or risk not in risks:
             errors.append(f"case {ix}: risk_class not supported in V0")
