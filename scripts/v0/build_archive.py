@@ -103,7 +103,11 @@ def validate_archive(archive: Path) -> list[str]:
                     raw = unquote(match.group(1)).strip()
                     if raw.startswith("#"):
                         continue
-                    parsed = urlsplit(raw)
+                    try:
+                        parsed = urlsplit(raw)
+                    except ValueError:
+                        errors.append(f"malformed archive reference URL in {entry}: {raw}")
+                        continue
                     if parsed.scheme:
                         if parsed.scheme != "https":
                             errors.append(f"unsafe archive reference in {entry}: {raw}")
