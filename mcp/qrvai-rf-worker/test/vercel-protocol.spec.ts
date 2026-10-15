@@ -17,7 +17,7 @@ test("Vercel MCP API rejects unauthorized requests when token is configured", as
 test("Vercel MCP API exposes all four registered read-only RF tools through Streamable HTTP", async () => {
   const { default: handler } = await import("../api/mcp.ts");
   const transport = new StreamableHTTPClientTransport(new URL("https://qrvai.example/api/mcp"), {
-    fetch: (url,init) => handler(new Request(url,init), "qrvai-unit-test-token-not-for-deployment-123456")
+    fetch: (url,init) => { const req=new Request(url,init); req.headers.set("authorization","Bearer qrvai-unit-test-token-not-for-deployment-123456"); return handler(req, "qrvai-unit-test-token-not-for-deployment-123456"); }
   });
   const client = new Client({name:"qrvai-vercel-test",version:"0.1.0"});
   try {
