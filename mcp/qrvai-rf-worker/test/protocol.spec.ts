@@ -4,10 +4,10 @@ import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/cli
 const secret="protocol-test-only-secure-token-123456789";
 const names=["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"];
 async function fetchMcp(url: URL|string, init?: RequestInit): Promise<Response> {
-  const {default:handler}=await import("../api/mcp.ts");
+  const {handleMcpRequest}=await import("../api/mcp.ts");
   const request=new Request(url,init);
   request.headers.set("authorization","Bearer "+secret);
-  return handler.fetch(request,secret);
+  return handleMcpRequest(request,secret);
 }
 test("Vercel exposes stateless modern MCP over /api/mcp",async()=>{
   const transport=new StreamableHTTPClientTransport(new URL("https://test.local/api/mcp"),{fetch:fetchMcp});
