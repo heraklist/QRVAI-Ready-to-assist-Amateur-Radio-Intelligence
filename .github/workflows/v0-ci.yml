@@ -7,6 +7,7 @@ on:
     paths:
       - 'qrvai/**'
       - 'tests/v0/**'
+      - 'qa/v0/**'
       - 'scripts/v0/**'
       - 'requirements-v0-dev.txt'
       - '.github/workflows/v0-ci.yml'
@@ -27,11 +28,15 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           from hashlib import sha256
-          from scripts.v0.audit_content import audit_catalog
+          from scripts.v0.audit_content import audit_catalog, validate_qa_cases
           from scripts.v0.build_archive import build_archive, validate_archive
           issues = audit_catalog(Path("qrvai"))["violations"]
           if issues:
               raise SystemExit("catalog invalid: " + "; ".join(issues))
+          qa_errors = validate_qa_cases(Path("qa/v0/prompt-cases.json"))
+          if qa_errors:
+              raise SystemExit("QA corpus invalid: " + "; ".join(qa_errors))
+          print("CLEAN_V0_QA_CORPUS=PASS")
           zip_path = build_archive(Path("qrvai"), Path("dist/qrvai-v0-0.1.0.zip"))
           assert validate_archive(zip_path) == []
           print("CLEAN_V0_ARCHIVE_SHA256=" + sha256(zip_path.read_bytes()).hexdigest())

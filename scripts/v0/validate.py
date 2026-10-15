@@ -24,11 +24,21 @@ def validate_manifest_data(data: dict) -> list[str]:
         errors.append("missing author.name")
     for key in sorted(set(data) - ROOT_ALLOWED):
         errors.append("unapproved root key: " + key)
-    exts = data.get("extensions", {})
+    exts = data.get("extensions")
     if not isinstance(exts, dict):
+        errors.append("extensions must be an object")
         exts = {}
-    ui = exts.get("com.openai", {}).get("interface", {}) if isinstance(exts.get("com.openai"), dict) else {}
+    for key in sorted(set(exts) - {"com.openai"}):
+        errors.append("unapproved extensions key: " + key)
+    openai = exts.get("com.openai")
+    if not isinstance(openai, dict):
+        errors.append("extensions.com.openai must be an object")
+        openai = {}
+    for key in sorted(set(openai) - {"interface"}):
+        errors.append("unapproved extensions.com.openai key: " + key)
+    ui = openai.get("interface")
     if not isinstance(ui, dict):
+        errors.append("extensions.com.openai.interface must be an object")
         ui = {}
     for key in INTERFACE_REQUIRED:
         if not isinstance(ui.get(key), str) or not ui[key].strip():
@@ -41,7 +51,16 @@ def validate_manifest_data(data: dict) -> list[str]:
         errors.append("capabilities must be list")
     elif ui["capabilities"]:
         errors.append("V0 must not advertise interactive app capabilities")
-    if "mcpServers" in data or "apps" in exts.get("com.openai", {}):
+    prompt = ui.get("defaultPrompt")
+    if prompt is not None:
+        valid_string = isinstance(prompt, str) and bool(prompt.strip())
+        valid_list = (
+            isinstance(prompt, list) and 1 <= len(prompt) <= 3
+            and all(isinstance(item, str) and bool(item.strip()) for item in prompt)
+        )
+        if not (valid_string or valid_list):
+            errors.append("defaultPrompt must be a nonblank string or 1–3 nonblank strings")
+    if "mcpServers" in data or "apps" in openai:
         errors.append("V0 cannot advertise MCP or App connections")
     return errors
 

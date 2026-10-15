@@ -32,5 +32,30 @@ class TestManifest(unittest.TestCase):
         self.assertTrue(any("shortDescription" in e for e in errors))
 
 
+    def test_invalid_extensions_fail_closed(self):
+        original = json.loads((ROOT / "qrvai/plugin.json").read_text(encoding="utf-8"))
+        bad_cases = [
+            ({"com.openai": "not-an-object"}, "extensions.com.openai"),
+            ({"com.openai": {"interface": original["extensions"]["com.openai"]["interface"]},
+              "unapproved.vendor": {}}, "unapproved.vendor"),
+            ("not-an-object", "extensions"),
+        ]
+        for extensions, reason in bad_cases:
+            with self.subTest(reason=reason):
+                altered = dict(original, extensions=extensions)
+                errors = validate_manifest_data(altered)
+                self.assertTrue(any(reason in error for error in errors), errors)
+
+    def test_rejects_bad_default_prompt_type_and_empty_entries(self):
+        original = json.loads((ROOT / "qrvai/plugin.json").read_text(encoding="utf-8"))
+        import copy
+        for invalid in ([], ["", "available"], ["one", "two", "three", "four"], 123):
+            with self.subTest(value=invalid):
+                altered = copy.deepcopy(original)
+                altered["extensions"]["com.openai"]["interface"]["defaultPrompt"] = invalid
+                errors = validate_manifest_data(altered)
+                self.assertTrue(any("defaultPrompt" in error for error in errors), errors)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,8 @@
 """Read-only exact identity and package-content traceability audit."""
 from __future__ import annotations
 import json
+import re
+from urllib.parse import unquote, urlsplit
 from pathlib import Path
 from scripts.v0.catalog import extract_domain_ids, extract_subcapability_ids
 from scripts.v0.validate import validate_skill, validate_manifest
@@ -15,6 +17,45 @@ SKILLS = {
 }
 
 
+_LINK = re.compile(r'(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+"[^"]*")?\)')
+# This validator intentionally supports simple inline Markdown links in portable Skills.
+# Nonstandard links should be reviewed or rewritten in the source before packaging.
+
+
+def validate_local_references(skill_root: Path) -> list[str]:
+    """Reject references that are missing, unsafe, or leave this Skill's package."""
+    errors: list[str] = []
+    base = skill_root.resolve()
+    for source in sorted(skill_root.rglob("*.md")):
+        try:
+            body = source.read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            errors.append(f"unreadable reference source: {source}")
+            continue
+        for match in _LINK.finditer(body):
+            raw = unquote(match.group(1)).strip()
+            if raw.startswith("#"):
+                continue
+            try:
+                parts = urlsplit(raw)
+            except ValueError:
+                errors.append(f"malformed reference URL in {source.name}: {raw}")
+                continue
+            if parts.scheme:
+                if parts.scheme != "https":
+                    errors.append(f"unsafe reference scheme in {source.name}: {raw}")
+                continue
+            if parts.netloc or raw.startswith("//") or not parts.path:
+                errors.append(f"unsafe reference target in {source.name}: {raw}")
+                continue
+            target = (source.parent / parts.path).resolve()
+            if not target.is_relative_to(base):
+                errors.append(f"escaping Skill reference in {source.name}: {raw}")
+            elif not target.is_file():
+                errors.append(f"missing Skill reference in {source.name}: {raw}")
+    return errors
+
+
 def audit_catalog(root: Path) -> dict[str, object]:
     violations: list[str] = []
     all_domains: set[str] = set()
@@ -26,6 +67,7 @@ def audit_catalog(root: Path) -> dict[str, object]:
     for slug, family in SKILLS.items():
         errors = validate_skill(root / f"skills/{slug}/SKILL.md")
         violations.extend(errors)
+        violations.extend(validate_local_references(root / f"skills/{slug}"))
         if family is None:
             continue
         ref = root / f"skills/{slug}/references/family-{family.lower()}.md"
@@ -63,30 +105,44 @@ def audit_catalog(root: Path) -> dict[str, object]:
 
 
 def validate_qa_cases(path: Path) -> list[str]:
+    """Require type-safe bilingual QA cases and known V0 risk categories."""
     try:
         cases = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+    except (OSError, UnicodeError, ValueError):
         return ["QA corpus unreadable"]
     if not isinstance(cases, list):
         return ["QA corpus must be an array"]
+    risks = {
+        "mention", "missing_engine", "legal", "safety", "manual_injection",
+        "device", "live", "education", "privacy", "legacy",
+    }
     errors: list[str] = []
     seen: set[str] = set()
-    required = ("id", "prompt_el", "prompt_en", "expected_family", "risk_class", "must_not_claim")
     for ix, case in enumerate(cases):
         if not isinstance(case, dict):
             errors.append(f"case {ix} must be object")
             continue
-        for key in required:
-            if key not in case or not case[key]:
-                errors.append(f"case {ix} missing {key}")
+        for key in ("id", "prompt_el", "prompt_en", "risk_class"):
+            value = case.get(key)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"case {ix}: {key} must be a nonblank string")
         ident = case.get("id")
-        if not isinstance(ident, str) or ident in seen:
-            errors.append(f"duplicate/invalid id {ident}")
-        seen.add(ident)
-        if case.get("expected_family") not in FAMILY:
-            errors.append(f"case {ident}: unknown Family")
-        if not isinstance(case.get("must_not_claim"), list) or not case["must_not_claim"]:
-            errors.append(f"case {ident}: must_not_claim must be non-empty list")
+        if isinstance(ident, str):
+            if ident in seen:
+                errors.append(f"duplicate id: {ident}")
+            seen.add(ident)
+        family = case.get("expected_family")
+        if not isinstance(family, str) or family not in FAMILY:
+            errors.append(f"case {ix}: expected_family must be A, B, C or D")
+        risk = case.get("risk_class")
+        if not isinstance(risk, str) or risk not in risks:
+            errors.append(f"case {ix}: risk_class not supported in V0")
+        claims = case.get("must_not_claim")
+        if (
+            not isinstance(claims, list) or not claims
+            or not all(isinstance(item, str) and item.strip() for item in claims)
+        ):
+            errors.append(f"case {ix}: must_not_claim requires nonblank strings")
     if len(cases) < 12:
         errors.append("QA corpus must contain at least 12 scenarios")
     return errors
