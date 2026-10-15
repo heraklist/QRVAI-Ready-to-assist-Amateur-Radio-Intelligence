@@ -9,7 +9,12 @@ export const IMPLEMENTED_TOOLS:readonly ToolDescriptor[] = Object.freeze([
   {candidate_id:"M12",name:"antenna_matching",scope:"Lossless quarter-wave transformer"},
   {candidate_id:"M13",name:"rf_filter_response",scope:"Ideal first-order RC magnitude"},
   {candidate_id:"M22",name:"power_autonomy",scope:"Idealized battery runtime"},
-  {candidate_id:"M25",name:"geo_bearing",scope:"Spherical great-circle azimuth"}
+  {candidate_id:"M25",name:"geo_bearing",scope:"Spherical great-circle azimuth"},
+  {candidate_id:"M20",name:"station_signal_path",scope:"User-supplied unverified signal path"},
+  {candidate_id:"M29",name:"packet_route_preview",scope:"Simulated AX25/APRS path"},
+  {candidate_id:"M34",name:"emcomm_drill",scope:"Classroom-only emergency exercise"},
+  {candidate_id:"M35",name:"emcomm_readiness",scope:"Hypothetical emergency-training resource gaps"},
+  {candidate_id:"M36",name:"academy_exercise",scope:"Fixed educational questions"}
 ]);
 export function describeWave1():ToolDescriptor[]{return IMPLEMENTED_TOOLS.map(x=>({...x}));}
 const C=299792458;

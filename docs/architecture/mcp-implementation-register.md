@@ -1,8 +1,8 @@
-# QRVAI MCP implementation register — 2026-10-15
+ SOURCE IMPLEMENTED IN DRAFT | `academy_exercise` | SOURCE IMPLEMENTED IN DRAFT | `emcomm_readiness` | SOURCE IMPLEMENTED IN DRAFT | `emcomm_drill` | SOURCE IMPLEMENTED IN DRAFT | `packet_route_preview` | SOURCE IMPLEMENTED IN DRAFT | `geo_bearing` | SOURCE IMPLEMENTED IN DRAFT | `power_autonomy` | SOURCE IMPLEMENTED IN DRAFT | `station_signal_path` | SOURCE IMPLEMENTED IN DRAFT | `rf_filter_response` | SOURCE IMPLEMENTED IN DRAFT | `antenna_matching` | SOURCE IMPLEMENTED IN DRAFT | `antenna_geometry` | SOURCE IMPLEMENTED IN DRAFT | `core_capabilities` |# QRVAI MCP implementation register — 2026-10-15
 
 **Runtime policy:** Vercel Node.js Functions only; no Cloudflare runtime, fallback or connector.
 
-**Implemented now:** four RF calculation tools in `mcp/qrvai-rf-worker/src/mcp/register.ts`, available through the `/api/mcp` source adapter, gated by Bearer authentication. All other candidate catalog contracts are proposals, **NOT registered endpoints**, **NOT deployed**. Exact registered names deliberately differ from the conceptual dotted M07–M10 names; consumer code must use only the registered names. M09 implementation accepts user-provided bounded profiles rather than the proposed vendor cable-ID database.
+**Implemented in this draft source chain:** fifteen RF/core, simulation and education tools in `mcp/qrvai-rf-worker/src/mcp/register.ts`, available through the `/api/mcp` source adapter, gated by Bearer authentication. All remaining candidate catalog contracts are proposals, **NOT registered endpoints**, **NOT deployed**. Exact registered names deliberately differ from the conceptual dotted M07–M10 names; consumer code must use only the registered names. M09 implementation accepts user-provided bounded profiles rather than the proposed vendor cable-ID database.
 
 **Real deployment status:** protected Vercel feature-branch preview READY; HTTPS no-token request returns 503 (expected fail-closed). Real credentialed tools/list, tools/call, production and ChatGPT @QRVAI host acceptance remain blocked/unverified.
 
@@ -47,7 +47,7 @@
 | M37 | `qrvai.maker.project_review` | E17/E03 | public | NOT IMPLEMENTED | — |
 | M38 | `qrvai.club.workshop_plan` | E17 | public/club.data.read | NOT IMPLEMENTED | — |
 
-**Completion count:** 4/38 catalog capabilities mapped to four actual MCP registrations; 34 require separate source implementations, versioned validation, tests and where applicable provider credentials, license/rights review, consented file access, device bridges, or model validation. The conceptual 38 methods are **not** 38 available endpoints.
+**Completion count (dependent draft branches, not main):** 15/38 catalog capabilities mapped to actual source MCP registrations; 23 remain unimplemented. Counts do not certify authenticated live endpoint or production integration.
 
 **Readiness gates:** reproducible tests and precise source SHA → authenticated real preview HTTPS protocol proof → Vercel quotas, firewall, token/OAuth fit and safe operations → authorized production release → first new clean Plugin Creator identity and deferred host end-to-end. No fake data, licensed feed substitutions or dummy tools are allowed to fill gaps.
 
