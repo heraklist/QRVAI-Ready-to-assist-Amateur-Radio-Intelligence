@@ -21,24 +21,15 @@ test("only four approved stateless read-only RF calculations",()=>{
   assert.match(source,/rf_feedline_loss/);
   assert.match(source,/readOnlyHint:\s*true/);
 });
-test("Cloudflare worker contains no paid bindings or secret deployment scripts",()=>{
-  const config=JSON.parse(readFileSync(file("mcp/qrvai-rf-worker/wrangler.jsonc"),"utf8"));
-  for(const key of ["kv_namespaces","d1_databases","durable_objects","ai","vars","r2_buckets","routes"]){
-    assert.equal(Object.hasOwn(config,key),false,key);
-  }
-  const pkg=JSON.parse(readFileSync(file("mcp/qrvai-rf-worker/package.json"),"utf8"));
-  assert.equal(Object.hasOwn(pkg.scripts,"deploy"),false);
-  assert.equal(Object.hasOwn(pkg.scripts,"publish"),false);
-  assert.ok(pkg.scripts["build:check"]?.includes("--dry-run"));
-});
-test("CI validates V0, type safety and Cloudflare Worker with read-only permissions",()=>{
+test("Vercel-only MCP backend has no Cloudflare runtime or dependencies",()=>{\n  const pkg=JSON.parse(readFileSync(file("mcp/qrvai-rf-worker/package.json"),"utf8"));\n  assert.equal(Object.hasOwn(pkg.scripts,"build:check"),false);\n  assert.equal(Object.hasOwn(pkg.scripts,"test:worker"),false);\n  assert.equal(Object.hasOwn(pkg.dependencies,"agents"),false);\n  assert.equal(existsSync(file("mcp/qrvai-rf-worker/wrangler.jsonc")),false);\n  assert.equal(existsSync(file("mcp/qrvai-rf-worker/src/index.ts")),false);\n});
+test("CI validates V0, type safety and Vercel MCP with read-only permissions",()=>{
   const yaml=readFileSync(file(".github/workflows/qrvai-rf-mcp-ci.yml"),"utf8");
   assert.match(yaml,/permissions:\s*\n\s+contents:\s*read/);
   assert.match(yaml,/node-version:\s*['"]22['"]/);
   assert.match(yaml,/npm ci/);
-  assert.match(yaml,/npm run test:worker/);
+  assert.doesNotMatch(yaml,/npm run test:worker/);
   assert.match(yaml,/python -m unittest discover/);
-  assert.match(yaml,/npm run build:check/);
+  assert.doesNotMatch(yaml,/npm run build:check/);
   assert.doesNotMatch(yaml,/CLOUDFLARE_API_TOKEN|wrangler deploy(?!.*--dry-run)/);
 });
 test("numerical fixtures and owner-facing source README exist",()=>{
@@ -47,15 +38,7 @@ test("numerical fixtures and owner-facing source README exist",()=>{
 });
 
 
-test("Cloudflare Free runbook makes public/anonymous and quota gates explicit",()=>{
-  const contents=readFileSync(file("docs/runbooks/qrvai-rf-mcp-cloudflare-free-preflight.md"),"utf8");
-  assert.match(contents,/100,000/);
-  assert.match(contents,/10 ms/);
-  assert.match(contents,/anonymous|unauthenticated/i);
-  assert.match(contents,/separat(e|ely) (owner )?approv/i);
-  assert.match(contents,/NOT_EXECUTED|BLOCKED/);
-  assert.match(contents,/Origin|Host/);
-});
+test("Vercel-only runbook documents secure MCP endpoint",()=>{\n  const contents=readFileSync(file("docs/runbooks/qrvai-rf-mcp-vercel.md"),"utf8");\n  assert.match(contents,/Bearer/);\n  assert.match(contents,/NOT_DEPLOYED|NOT VERIFIED/);\n  assert.match(contents,/Vercel/);\n});
 test("host report cannot pretend successful account installation",()=>{
   const report=JSON.parse(readFileSync(file("qa/mcp/host-report.example.json"),"utf8"));
   assert.equal(report.status,"NOT_EXECUTED");
