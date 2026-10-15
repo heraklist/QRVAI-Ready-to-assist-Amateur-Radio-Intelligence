@@ -21,10 +21,18 @@ test("only four approved stateless read-only RF calculations",()=>{
   assert.match(source,/rf_feedline_loss/);
   assert.match(source,/readOnlyHint:\s*true/);
 });
-test("Vercel-only MCP backend has no Cloudflare runtime or dependencies",()=>{\n  const pkg=JSON.parse(readFileSync(file("mcp/qrvai-rf-worker/package.json"),"utf8"));\n  assert.equal(Object.hasOwn(pkg.scripts,"build:check"),false);\n  assert.equal(Object.hasOwn(pkg.scripts,"test:worker"),false);\n  assert.equal(Object.hasOwn(pkg.dependencies,"agents"),false);\n  assert.equal(existsSync(file("mcp/qrvai-rf-worker/wrangler.jsonc")),false);\n  assert.equal(existsSync(file("mcp/qrvai-rf-worker/src/index.ts")),false);\n});
+test("Vercel-only MCP backend has no Cloudflare runtime or dependencies",()=>{
+  const pkg=JSON.parse(readFileSync(file("mcp/qrvai-rf-worker/package.json"),"utf8"));
+  assert.equal(Object.hasOwn(pkg.scripts,"build:check"),false);
+  assert.equal(Object.hasOwn(pkg.scripts,"test:worker"),false);
+  assert.equal(Object.hasOwn(pkg.dependencies,"agents"),false);
+  assert.equal(existsSync(file("mcp/qrvai-rf-worker/wrangler.jsonc")),false);
+  assert.equal(existsSync(file("mcp/qrvai-rf-worker/src/index.ts")),false);
+});
 test("CI validates V0, type safety and Vercel MCP with read-only permissions",()=>{
   const yaml=readFileSync(file(".github/workflows/qrvai-rf-mcp-ci.yml"),"utf8");
-  assert.match(yaml,/permissions:\s*\n\s+contents:\s*read/);
+  assert.match(yaml,/permissions:\s*
+\s+contents:\s*read/);
   assert.match(yaml,/node-version:\s*['"]22['"]/);
   assert.match(yaml,/npm ci/);
   assert.doesNotMatch(yaml,/npm run test:worker/);
@@ -38,7 +46,12 @@ test("numerical fixtures and owner-facing source README exist",()=>{
 });
 
 
-test("Vercel-only runbook documents secure MCP endpoint",()=>{\n  const contents=readFileSync(file("docs/runbooks/qrvai-rf-mcp-vercel.md"),"utf8");\n  assert.match(contents,/Bearer/);\n  assert.match(contents,/NOT_DEPLOYED|NOT VERIFIED/);\n  assert.match(contents,/Vercel/);\n});
+test("Vercel-only runbook documents secure MCP endpoint",()=>{
+  const contents=readFileSync(file("docs/runbooks/qrvai-rf-mcp-vercel.md"),"utf8");
+  assert.match(contents,/Bearer/);
+  assert.match(contents,/NOT_DEPLOYED|NOT VERIFIED/);
+  assert.match(contents,/Vercel/);
+});
 test("host report cannot pretend successful account installation",()=>{
   const report=JSON.parse(readFileSync(file("qa/mcp/host-report.example.json"),"utf8"));
   assert.equal(report.status,"NOT_EXECUTED");
@@ -50,5 +63,8 @@ test("host report cannot pretend successful account installation",()=>{
 
 test("review: MCP CI remains active for future source merges into main",()=>{
   const yaml=readFileSync(file(".github/workflows/qrvai-rf-mcp-ci.yml"),"utf8");
-  assert.match(yaml,/push:\s*\n\s+branches:\s*\n\s+- main(?:\n|$)/);
+  assert.match(yaml,/push:\s*
+\s+branches:\s*
+\s+- main(?:
+|$)/);
 });
