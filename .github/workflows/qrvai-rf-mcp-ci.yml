@@ -8,6 +8,7 @@ on:
       - 'docs/runbooks/qrvai-rf-mcp-*.md'
   push:
     branches:
+      - main
       - feat/qrvai-rf-mcp-native-tdd
 jobs:
   rf-native-test:
