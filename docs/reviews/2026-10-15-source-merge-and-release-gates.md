@@ -17,7 +17,7 @@ Current V0 `qrvai/` 12-file reproducible ZIP is Skills-only. The reviewed future
 **ChatGPT host verification remains pending by explicit user preference.** No claims of `@QRVAI` host invocation, successful connection, new plugin installation or private release.
 
 ## Future extensions
-The one proven M07-like capability is RF power conversion. Proposed M08 link budget, M09 feedline loss, M10 impedance/SWR, the remaining 17 engines, domain catalog and UI components are NOT executable as of this ledger. PR #10 is a superseded, alternative M07 planning thread, not permission to duplicate code.
+The three implemented calculation capabilities are power conversion (M07-like), M08 link budget (merged PR #13), and M10 impedance/SWR (merged PR #14). Proposed M09 feedline loss, the remaining proposed engines, domain catalog and UI components are NOT executable as of this ledger. PR #10 is a superseded, alternative M07 planning thread, not permission to duplicate code.
 
 ## Evidence wording
 Code merged != Worker deployed != endpoint tested != Plugin created != installed in ChatGPT != end-to-end `@QRVAI` verified. Mark each state separately.
