@@ -91,6 +91,17 @@ class TestCatalogGuards(unittest.TestCase):
             path.write_text(json.dumps(altered), encoding="utf-8")
             self.assertTrue(any("duplicate" in x for x in validate_qa_cases(path)))
 
+    def test_malformed_https_reference_fails_closed_without_exception(self):
+        with tempfile.TemporaryDirectory() as work:
+            staged = Path(work) / "qrvai"
+            shutil.copytree(ROOT / "qrvai", staged)
+            core = staged / "skills/qrvai-core/SKILL.md"
+            core.write_text(core.read_text(encoding="utf-8").replace(
+                "references/routing.md", "https://["
+            ), encoding="utf-8")
+            issues = audit_catalog(staged)["violations"]
+            self.assertTrue(any("reference" in error.lower() for error in issues), issues)
+
 
 if __name__ == "__main__":
     unittest.main()
