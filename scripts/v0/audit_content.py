@@ -36,7 +36,11 @@ def validate_local_references(skill_root: Path) -> list[str]:
             raw = unquote(match.group(1)).strip()
             if raw.startswith("#"):
                 continue
-            parts = urlsplit(raw)
+            try:
+                parts = urlsplit(raw)
+            except ValueError:
+                errors.append(f"malformed reference URL in {source.name}: {raw}")
+                continue
             if parts.scheme:
                 if parts.scheme != "https":
                     errors.append(f"unsafe reference scheme in {source.name}: {raw}")
