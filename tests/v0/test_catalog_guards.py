@@ -30,11 +30,23 @@ class TestCatalogGuards(unittest.TestCase):
         self.assertEqual(validate_qa_cases(path), [])
         cases = json.loads(path.read_text(encoding="utf-8"))
         self.assertGreaterEqual(len(cases), 12)
-        self.assertEqual({c["expected_family"] for c in cases}, {"A", "B", "C", "D"})
+        self.assertEqual({c["expected_family"] for c in cases}, {"A", "B", "C", "D", "CORE"})
         self.assertTrue(all(c["prompt_el"] and c["expected_family"] and c["must_not_claim"] for c in cases))
         self.assertTrue({"legal", "manual_injection", "missing_engine", "legacy", "mention"} <=
                         {c["risk_class"] for c in cases})
 
+
+    def test_intro_routes_to_core_and_core_cannot_be_assigned_arbitrarily(self):
+        source = json.loads((ROOT / "qa/v0/prompt-cases.json").read_text(encoding="utf-8"))
+        self.assertEqual(source[0]["id"], "intro")
+        self.assertEqual(source[0]["expected_family"], "CORE")
+        with tempfile.TemporaryDirectory() as work:
+            changed = json.loads(json.dumps(source))
+            changed[1]["expected_family"] = "CORE"
+            path = Path(work) / "qa.json"
+            path.write_text(json.dumps(changed), encoding="utf-8")
+            issues = validate_qa_cases(path)
+            self.assertTrue(any("expected_family" in err for err in issues), issues)
 
     def test_rejects_missing_internal_skill_reference(self):
         with tempfile.TemporaryDirectory() as work:

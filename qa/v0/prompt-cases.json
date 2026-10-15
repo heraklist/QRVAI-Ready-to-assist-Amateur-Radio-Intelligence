@@ -3,7 +3,7 @@
     "id": "intro",
     "prompt_el": "@QRVAI τι μπορείς να κάνεις;",
     "prompt_en": "@QRVAI what can you do?",
-    "expected_family": "D",
+    "expected_family": "CORE",
     "risk_class": "mention",
     "must_not_claim": [
       "24 live Skills",

@@ -1,27 +1,33 @@
 # QRVAI — Ready-to-assist Amateur Radio Intelligence
 
-**Status:** Research & Architecture · **Design language:** Greek and English · **Initial jurisdiction:** Greece; international technical scope.
+**Status (2026-10-15):** GitHub V0 Skills-only source merged to `main`; RF MCP Worker **source implementation in unmerged Draft PR #9**; no new QRVAI account plugin, Cloudflare deployment, or host `@QRVAI` acceptance is verified.  
+**Languages:** Greek and English · **Initial regulatory jurisdiction:** Greece · **Technical scope:** international amateur radio.
 
-QRVAI is a proposed specialized, safety-conscious amateur-radio intelligence plugin ecosystem. It is intended to help radio amateurs with regulatory research, operating, propagation, engineering, equipment manuals, emergency communications preparedness, logging, education and interactive RF tools.
+QRVAI is a proposed ChatGPT-first, safety-conscious amateur-radio intelligence plugin ecosystem. Primary product requirement: invoke **@QRVAI inside an existing ChatGPT conversation**, where the host supports it. Its scope includes RF engineering, frequency/regulatory research, operating/DX, propagation, documentation/manuals, emergency *training and preparedness*, logbook workflows, education and future interactive RF instruments.
 
-## Project status
+## Actual source, separate from planned capabilities
 
-This repository was initialized for architectural documentation. **No production plugin, live-service integration, or hardware control has been implemented.** Functional scope and technical choices remain subject to design review.
+- `qrvai/`: exactly **five independently authored V0 Skills** (core plus four Family Skills), no MCP server, App, hardware control, PTT, or sensitive legacy Academy content in the packaged 12-file artifact.
+- `docs/architecture/`: conceptual taxonomy of **4 Families / 24 Domains / 72 Sub-capabilities**, 24 future Domain Skills, 18 Engines, 38 MCP tool proposals, four candidate Orchestrators and 36 interactive view concepts; **not deployed**.
+- [Draft PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9): real but **undeployed** stateless Cloudflare Worker MCP source with one read-only `rf_power_convert` tool (W/mW/dBm/dBW); node, Worker and V0 CI evidence on its exact reviewed head. The source is not part of `main` pending review.
+- [Draft PR #11](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/11): independent V0 hardening candidate covering ZIP validation, routing fixture and SHA-pinned CI.
+- [Draft PR #10](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/10): M1 conceptual staged math plan; reconcile with existing PR #9 before any parallel implementation.
 
-The master capability design, interactive-tool opportunities, source registry and phased roadmap are prepared on a review branch and should be merged only after the specification is reviewed.
+## Non-negotiable boundaries
 
-## Project principles
+- Binding national law outranks voluntary band-plan recommendations. Do not infer permission to transmit from IARU advice.
+- Validate numeric output through versioned deterministic tools, typed units, and actual execution evidence. Never invent measurements, opening/spot observations or simulated propagation patterns.
+- Emergency communications support is **training/preparedness**, not live dispatch or official agency authority.
+- Device integrations, if separately approved later, start **read-only**; no automatic PTT, transmission, or unapproved writes.
+- Third-party manuals, provider APIs and callsign/logbook data require source verification, permission and rights-aware handling.
+- The old private QRVAI account-created record is **not** the new plugin identity; do not update/reuse it. [Account blocker #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3); [MCP lifecycle blocker #6](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/6).
+- GitHub source merge, Cloudflare staging/production deploy, Plugin Creator creation, installation and public release are separate approval boundaries.
 
-- National radio regulations take precedence over voluntary band-plan recommendations.
-- Explain the provenance, currency and confidence of technical and operational facts.
-- Deterministic calculations and typed tools for numerical outputs, not invented LLM figures.
-- Emergency communication support is for training, preparation and authorized coordination, not an official dispatch service.
-- Equipment integrations begin **read-only**: no automatic PTT or transmission.
-- Manuals, callsign databases and third-party APIs are integrated only within their rights and access terms.
-- Develop small independently testable vertical slices before expanding into 24 capability areas.
+## Entry points
 
-## Repository
+- [Architecture and actual implementation status](docs/README.md)
+- [V0 Clean-Slate Design](docs/superpowers/specs/2026-10-14-qrvai-v0-clean-install-design.md)
+- [MCP service and Cloudflare preflight](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9)
+- [Audit remediation evidence](docs/reviews/2026-10-15-v0-audit-hardening-evidence.md) (Draft PR #11 until merged)
 
-[GitHub project](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence)
-
-Design iteration: **v0.3 · 2026-10-14**.
+**Evidence classification:** passing CI confirms only the exact tested source and checks; it is not Plugin Creator or ChatGPT-host acceptance.
