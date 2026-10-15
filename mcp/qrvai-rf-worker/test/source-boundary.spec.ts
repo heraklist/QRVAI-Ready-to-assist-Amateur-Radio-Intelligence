@@ -42,3 +42,21 @@ test("numerical fixtures and owner-facing source README exist",()=>{
   assert.equal(existsSync(file("qa/mcp/rf-power-fixtures.json")),true);
   assert.equal(existsSync(file("mcp/qrvai-rf-worker/README.md")),true);
 });
+
+
+test("Cloudflare Free runbook makes public/anonymous and quota gates explicit",()=>{
+  const contents=readFileSync(file("docs/runbooks/qrvai-rf-mcp-cloudflare-free-preflight.md"),"utf8");
+  assert.match(contents,/100,000/);
+  assert.match(contents,/10 ms/);
+  assert.match(contents,/anonymous|unauthenticated/i);
+  assert.match(contents,/separat(e|ely) (owner )?approv/i);
+  assert.match(contents,/NOT_EXECUTED|BLOCKED/);
+  assert.match(contents,/Origin|Host/);
+});
+test("host report cannot pretend successful account installation",()=>{
+  const report=JSON.parse(readFileSync(file("qa/mcp/host-report.example.json"),"utf8"));
+  assert.equal(report.status,"NOT_EXECUTED");
+  assert.equal(report.freshPluginCreateAuthorized.passed,false);
+  assert.equal(report.hostInvocationObserved.passed,false);
+  assert.equal(existsSync(file("qrvai/mcp.json")),false);
+});
