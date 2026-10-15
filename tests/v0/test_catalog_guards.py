@@ -60,5 +60,37 @@ class TestCatalogGuards(unittest.TestCase):
                 self.assertTrue(any("reference" in error.lower() for error in issues), issues)
 
 
+    def test_rejects_malformed_bilingual_qa_fields(self):
+        source = json.loads((ROOT / "qa/v0/prompt-cases.json").read_text(encoding="utf-8"))
+        changes = [
+            ("prompt_el", ["not a sentence"]),
+            ("prompt_en", 42),
+            ("risk_class", {"bad": True}),
+            ("must_not_claim", ["", 100]),
+            ("expected_family", ["A"]),
+        ]
+        for name, bad in changes:
+            with self.subTest(field=name), tempfile.TemporaryDirectory() as work:
+                changed = json.loads(json.dumps(source))
+                changed[0][name] = bad
+                path = Path(work) / "qa.json"
+                path.write_text(json.dumps(changed), encoding="utf-8")
+                errors = validate_qa_cases(path)
+                self.assertTrue(any(name in error for error in errors), errors)
+
+    def test_rejects_unrecognized_qa_risk_and_duplicate_ids(self):
+        original = json.loads((ROOT / "qa/v0/prompt-cases.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as work:
+            path = Path(work) / "qa.json"
+            altered = json.loads(json.dumps(original))
+            altered[0]["risk_class"] = "arbitrary-unreviewed-risk"
+            path.write_text(json.dumps(altered), encoding="utf-8")
+            errors = validate_qa_cases(path)
+            self.assertTrue(any("risk_class" in error for error in errors), errors)
+            altered[1]["id"] = altered[0]["id"]
+            path.write_text(json.dumps(altered), encoding="utf-8")
+            self.assertTrue(any("duplicate" in x for x in validate_qa_cases(path)))
+
+
 if __name__ == "__main__":
     unittest.main()
