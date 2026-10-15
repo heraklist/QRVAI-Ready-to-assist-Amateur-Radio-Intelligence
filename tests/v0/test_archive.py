@@ -1,4 +1,6 @@
 import hashlib
+import copy
+from unittest.mock import patch
 import shutil
 import tempfile
 from pathlib import Path
@@ -108,6 +110,32 @@ class TestArchive(unittest.TestCase):
                     changed_zip.writestr(entry, data)
             errs = validate_archive(tampered)
             self.assertTrue(any("description" in e.lower() for e in errs), errs)
+
+
+    def test_zip_metadata_oversize_rejected_without_reading_payload(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = build_archive(ROOT / "qrvai", Path(tmp) / "valid.zip")
+            with zipfile.ZipFile(path) as z:
+                fake = [copy.copy(item) for item in z.infolist()]
+            fake[0].file_size = 1_048_577
+            with patch.object(zipfile.ZipFile, "infolist", return_value=fake):
+                with patch.object(zipfile.ZipFile, "read", side_effect=AssertionError("payload read before preflight")) as reader:
+                    issues = validate_archive(path)
+            self.assertTrue(any("size limit" in error.lower() for error in issues), issues)
+            reader.assert_not_called()
+
+    def test_zip_bomb_ratio_rejected_without_reading_payload(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = build_archive(ROOT / "qrvai", Path(tmp) / "valid.zip")
+            with zipfile.ZipFile(path) as z:
+                fake = [copy.copy(item) for item in z.infolist()]
+            fake[0].file_size = 500_000
+            fake[0].compress_size = 1
+            with patch.object(zipfile.ZipFile, "infolist", return_value=fake):
+                with patch.object(zipfile.ZipFile, "read", side_effect=AssertionError("payload read before compression check")) as reader:
+                    issues = validate_archive(path)
+            self.assertTrue(any("compression ratio" in error.lower() for error in issues), issues)
+            reader.assert_not_called()
 
 
 if __name__ == "__main__":
