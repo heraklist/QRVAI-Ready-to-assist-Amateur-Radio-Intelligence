@@ -1,0 +1,36 @@
+{
+  "status": "NOT_EXECUTED",
+  "simulated": false,
+  "exactSourceSha": null,
+  "accountFreePlanVerified": {
+    "passed": false
+  },
+  "quotaVerified": {
+    "passed": false
+  },
+  "measuredWorkerCpu": {
+    "passed": false
+  },
+  "deployedEndpointVerified": {
+    "passed": false
+  },
+  "oldCreatorRecordAbsent": {
+    "passed": false
+  },
+  "qrvaiNamespaceAvailable": {
+    "passed": false
+  },
+  "freshPluginCreateAuthorized": {
+    "passed": false
+  },
+  "newPluginIdDistinct": {
+    "passed": false
+  },
+  "hostInvocationObserved": {
+    "passed": false
+  },
+  "observedFollowUp": {
+    "passed": false
+  },
+  "notes": "Template for later owner-authorized real Cloudflare/host evidence. Never claim observed results without links."
+}
