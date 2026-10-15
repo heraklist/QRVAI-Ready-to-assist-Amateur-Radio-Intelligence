@@ -12,9 +12,9 @@ test("V0 Skills source stays unchanged and has no premature mcp.json",()=>{
     assert.equal(existsSync(file("qrvai/skills/"+name+"/SKILL.md")),true);
   }
 });
-test("only four approved stateless read-only RF calculations",()=>{
+test("ten approved stateless read-only RF/core calculations",()=>{
   const source=readFileSync(file("mcp/qrvai-rf-worker/src/mcp/register.ts"),"utf8");
-  assert.equal((source.match(/registerTool\(/g)||[]).length,4);
+  assert.equal((source.match(/registerTool\(/g)||[]).length,10);
   assert.match(source,/rf_power_convert/);
   assert.match(source,/rf_link_budget/);
   assert.match(source,/rf_impedance/);
