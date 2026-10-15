@@ -33,3 +33,37 @@ test("simulation fixture cannot masquerade as observed host proof",async()=>{
   data.simulated=true;data.status="EXECUTED_PASS";
   assert.ok(checkReleaseGates(data).some(x=>x.toLowerCase().includes("simulat")));
 });
+
+
+/** Synthetic test-only receipt set. NONE of these URLs represent an observed release. */
+function syntheticCompleteReport(): Record<string, any> {
+  const result: Record<string,any> = fixture();
+  const receipt=()=>({passed:true,evidenceUrl:"https://example.invalid/not-a-real-receipt",observedAt:"2026-10-15T10:00:00Z"});
+  for(const name of ["accountFreePlanVerified","quotaVerified","measuredWorkerCpu",
+    "deployedEndpointVerified","oldCreatorRecordAbsent","qrvaiNamespaceAvailable",
+    "freshPluginCreateAuthorized","newPluginIdDistinct","hostInvocationObserved","observedFollowUp"]){
+      result[name]=receipt();
+  }
+  result.simulated=false; // Exercise documentary checks as though the input were not marked simulation.
+  result.status="EXECUTED_PASS";
+  result.exactSourceSha="a".repeat(40);
+  result.newPluginIdDistinct.newPluginId="plugins_synthetic_new_identity";
+  result.measuredWorkerCpu.cpuMs=0.5;
+  result.hostInvocationObserved.conversationAlreadyOpen=true;
+  result.hostInvocationObserved.client="synthetic-test-client";
+  result.hostInvocationObserved.conversationId="synthetic-session-A";
+  result.observedFollowUp.conversationId="synthetic-session-A";
+  return result;
+}
+test("review: complete-looking receipts cannot pass when status is NOT_EXECUTED",async()=>{
+  const {checkReleaseGates}=await readGate();
+  const report=syntheticCompleteReport();
+  report.status="NOT_EXECUTED";
+  assert.ok(checkReleaseGates(report).some(x=>x.includes("status")), "offline verifier must reject contradictory completion status");
+});
+test("review: follow-up conversation ID must match original @QRVAI session",async()=>{
+  const {checkReleaseGates}=await readGate();
+  const report=syntheticCompleteReport();
+  report.observedFollowUp.conversationId="synthetic-session-B";
+  assert.ok(checkReleaseGates(report).some(x=>x.includes("conversation")), "different conversations cannot satisfy same-session E2E gate");
+});
