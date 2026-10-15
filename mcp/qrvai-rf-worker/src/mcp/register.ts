@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {stationSignalPath,packetRoutePreview,emcommDrill,emcommReadiness,academyExercise} from "../rf/wave2.ts";
 import {describeWave1,antennaGeometry,antennaMatching,filterResponse,powerAutonomy,geoBearing} from "../rf/wave1.ts";
 import { convertPower, PowerInputError } from "../rf/power.ts";
 import { calculateLinkBudget, LinkBudgetInputError } from "../rf/link-budget.ts";
@@ -193,6 +194,43 @@ export function createServer(): McpServer {
     outputSchema:z.strictObject({initial_bearing_deg:z.number().finite().min(0).max(360),distance_km:positive,formula_revision:z.literal("M25-v1"),assumptions:z.string()}),
     annotations:ro
   },async(args)=>{try{return response(geoBearing(args))}catch(e){return failed(e)}});
+
+
+  const w2ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const ident=z.string().regex(/^[a-zA-Z0-9_-]{1,32}$/);
+  const w2positive=z.number().finite().positive();
+  function w2response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w2error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("station_signal_path",{
+    title:"Unverified station signal-path diagram",description:"Validate and display explicit directed user topology; does not certify component, RF or electrical compatibility.",
+    inputSchema:z.strictObject({devices:z.array(z.strictObject({id:ident,kind:ident})).min(1).max(16),connections:z.array(z.strictObject({from:ident,to:ident})).max(32)}),
+    outputSchema:z.strictObject({nodes:z.array(z.strictObject({id:ident,kind:ident})),edges:z.array(z.strictObject({from:ident,to:ident})),verified:z.literal(false),warnings:z.array(z.string()),formula_revision:z.literal("M20-v1")}),
+    annotations:w2ro
+  },async(args)=>{try{return w2response(stationSignalPath(args))}catch(e){return w2error(e)}});
+  server.registerTool("packet_route_preview",{
+    title:"Illustrative AX25/APRS packet path",description:"Simulate a user-supplied path. No packets sent; no live route/relay claims.",
+    inputSchema:z.strictObject({protocol:z.enum(["AX25","APRS"]),path:z.array(ident).min(2).max(8)}),
+    outputSchema:z.strictObject({protocol:z.enum(["AX25","APRS"]),hops:z.array(z.strictObject({from:ident,to:ident})),hop_count:z.number().int().min(1).max(7),simulated:z.literal(true),assumptions:z.string(),formula_revision:z.literal("M29-v1")}),
+    annotations:w2ro
+  },async(args)=>{try{return w2response(packetRoutePreview(args))}catch(e){return w2error(e)}});
+  server.registerTool("emcomm_drill",{
+    title:"Emergency communication classroom exercise",description:"Paper-only simulation; never dispatches or sends communications.",
+    inputSchema:z.strictObject({scenario:z.enum(["power_outage","repeater_unavailable"]),roles:z.array(ident).min(1).max(8)}),
+    outputSchema:z.strictObject({scenario:z.enum(["power_outage","repeater_unavailable"]),roles:z.array(ident),exercise_steps:z.array(z.string()),simulated:z.literal(true),disclaimer:z.string(),formula_revision:z.literal("M34-v1")}),
+    annotations:w2ro
+  },async(args)=>{try{return w2response(emcommDrill(args))}catch(e){return w2error(e)}});
+  server.registerTool("emcomm_readiness",{
+    title:"Hypothetical power and staffing gap",description:"Educational numerical estimate only; not real emergency readiness certification.",
+    inputSchema:z.strictObject({battery_wh:w2positive,average_load_w:w2positive,usable_fraction:z.number().finite().positive().max(1),participants:z.number().int().min(0).max(100),required_roles:z.number().int().min(0).max(100)}),
+    outputSchema:z.strictObject({estimated_runtime_h:w2positive,staffing_gap:z.number().int().nonnegative(),simulated:z.literal(true),disclaimer:z.string(),formula_revision:z.literal("M35-v1")}),
+    annotations:w2ro
+  },async(args)=>{try{return w2response(emcommReadiness(args))}catch(e){return w2error(e)}});
+  server.registerTool("academy_exercise",{
+    title:"Fixed amateur-radio quiz",description:"One deterministic Greek/English educational question with optional answer check; no user profile or stored results.",
+    inputSchema:z.strictObject({topic:z.enum(["rf_power","antenna_basics"]),locale:z.enum(["el","en"]),answer_index:z.number().int().min(0).max(2).optional()}),
+    outputSchema:z.strictObject({topic:z.enum(["rf_power","antenna_basics"]),locale:z.enum(["el","en"]),question:z.string(),options:z.array(z.string()).length(3),correct:z.boolean().optional(),formula_revision:z.literal("M36-v1"),disclaimer:z.string()}),
+    annotations:w2ro
+  },async(args)=>{try{return w2response(academyExercise(args))}catch(e){return w2error(e)}});
 
   return server;
 }
