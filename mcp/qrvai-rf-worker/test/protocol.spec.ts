@@ -16,7 +16,7 @@ test("Cloudflare Worker exposes real stateless modern MCP over /mcp", async () =
   try {
     await client.connect(transport);
     const tools=await client.listTools();
-    assert.deepEqual(tools.tools.map(x=>x.name),["rf_power_convert","rf_link_budget"]);
+    assert.deepEqual(tools.tools.map(x=>x.name),["rf_power_convert","rf_link_budget","rf_impedance"]);
     const good=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
     assert.equal((good.structuredContent as {dBm:number}).dBm,50);
     const again=await client.callTool({name:"rf_power_convert",arguments:{value:1,unit:"mW"}});
