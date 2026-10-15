@@ -14,7 +14,7 @@ test("a real SDK v2 server exposes exactly one RF calculator and returns 50 dBm"
     assert.deepEqual(result.tools.map(t=>t.name),["rf_power_convert"]);
     assert.ok(result.tools[0]?.annotations?.readOnlyHint);
     const good=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
-    assert.equal(good.isError,undefined);
+    assert.notEqual(good.isError,true);
     assert.equal((good.structuredContent as {dBm:number}).dBm,50);
     assert.match(JSON.stringify(good.content),/50/);
     const bad=await client.callTool({name:"rf_power_convert",arguments:{value:0,unit:"W"}});
