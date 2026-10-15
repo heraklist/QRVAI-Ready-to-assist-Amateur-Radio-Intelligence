@@ -33,3 +33,21 @@ No `qrvai/mcp.json`, new Plugin Creator release, actual `@QRVAI` host invocation
 - **Real HTTPS protocol checklist still OPEN:** authorized MCP initialize, tools/list, calls of all four RF functions, unsupported-tool rejection, invalid-token HTTP 401 and valid-token response headers; repeat via protected exact SHA preview. A normal URL GET `503` without env token is proof of deny-by-default only.
 - **Hobby guardrails:** official documentation says Hobby stops service beyond certain allocation limits rather than simply charging overages, but usage, billing eligibility and future upgrade options must still be checked in team dashboard. No automatic plan upgrade, paid WAF purchase or production promotion.
 - **Release state:** Stage 01 NOT COMPLETE, PR #17 remains DRAFT; no production and no ChatGPT Plugin Creator mutation authorized here. Credential environment access/permissions is an operational blocker requiring a team account with the appropriate privileges.
+
+## Reproducible live HTTPS acceptance — operator-only
+
+An opt-in harness exists at `mcp/qrvai-rf-worker/scripts/verify-https.mjs`. It requires a REAL deployed Preview Bearer secret and a complete HTTPS endpoint. It cannot be run successfully against a fail-closed deployment reporting 503. From a private terminal on an authorized client machine:
+
+```sh
+cd mcp/qrvai-rf-worker
+npm ci
+# Provide QRVAI_MCP_URL and QRVAI_MCP_BEARER_TOKEN from private secret storage.
+# Do not put literal secret values in shell history, GitHub Actions logs or chat.
+npm run verify:https
+```
+
+The script rejects non-HTTPS, unexpected paths, query-string credentials and non-Vercel hostnames. It verifies missing/invalid token 401, hostile Origin 403, oversized body 413; runs real MCP initialize via SDK, tools/list with four read-only annotations, numeric calls to all four RF functions, and unknown-tool denial. It never prints the credential. Note: Vercel Authentication deployment protection must be satisfied separately by the caller (for example authenticated `vercel curl` or appropriately scoped trusted identity). Neither a 503 nor a READY build passes these checks.
+
+**Connector permission diagnosis:** A team-member lookup confirms one member with role `OWNER`, while the app's project-env metadata read still fails 403. This is evidence of a **connection/API authorization discrepancy**, not evidence the human owner lacks team permissions. Do not assume a successful owner lookup grants environment-variable access. Check or reconnect Vercel plugin permissions and use a securely authenticated owner-side dashboard/CLI if the connector cannot access them. Firewall active configuration still responds 404; do not assume a rule is present.
+
+**Operational safeguard:** Never include a bearer token in a URL, a PR, test fixtures, an issue comment, or a Vercel shareable link. Preview-only secret creation and full protected-transport verification remain release blockers.
