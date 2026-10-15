@@ -4,16 +4,33 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+from functools import lru_cache
+from jsonschema import Draft202012Validator
 
 SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+CANONICAL_SCHEMA_PATH = (Path(__file__).resolve().parents[2] / "docs" / "schemas" / "agent-plugins-1.0.0-plugin.schema.json")
 ROOT_ALLOWED = {"$schema", "name", "version", "description", "author", "repository", "extensions"}
 INTERFACE_REQUIRED = ("displayName", "shortDescription", "longDescription", "developerName", "category")
+
+
+@lru_cache(maxsize=1)
+def _official_schema_validator() -> Draft202012Validator:
+    schema = json.loads(CANONICAL_SCHEMA_PATH.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(schema)
+    return Draft202012Validator(schema)
 
 
 def validate_manifest_data(data: dict) -> list[str]:
     errors: list[str] = []
     if not isinstance(data, dict):
         return ["manifest must be an object"]
+    # Offline canonical schema check AND stricter QRVAI-specific policy checks.
+    # Fail closed when the vendored upstream snapshot cannot be used.
+    try:
+        for issue in sorted(_official_schema_validator().iter_errors(data), key=lambda x: (list(map(str, x.path)), x.message)):
+            errors.append("canonical schema: " + issue.message)
+    except (OSError, ValueError, TypeError) as exc:
+        errors.append("canonical schema unavailable or invalid: " + type(exc).__name__)
     if data.get("$schema") != SCHEMA:
         errors.append("invalid $schema")
     if data.get("name") != "qrvai":
