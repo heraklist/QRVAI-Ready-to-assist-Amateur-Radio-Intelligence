@@ -1,0 +1,35 @@
+[
+  {
+    "id": "match",
+    "input": {
+      "r_ohm": 50,
+      "x_ohm": 0,
+      "z0_ohm": 50
+    },
+    "gamma_magnitude": 0,
+    "vswr": 1,
+    "return_loss_db": null
+  },
+  {
+    "id": "two-to-one",
+    "input": {
+      "r_ohm": 100,
+      "x_ohm": 0,
+      "z0_ohm": 50
+    },
+    "gamma_magnitude": 0.3333333333333333,
+    "vswr": 2,
+    "return_loss_db": 9.542425094393248
+  },
+  {
+    "id": "short",
+    "input": {
+      "r_ohm": 0,
+      "x_ohm": 0,
+      "z0_ohm": 50
+    },
+    "gamma_magnitude": 1,
+    "vswr": null,
+    "return_loss_db": 0
+  }
+]
