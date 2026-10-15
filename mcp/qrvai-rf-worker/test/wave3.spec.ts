@@ -1,0 +1,12 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {digitalSetupGuide,repeaterChannelPreview,contestPlan,makerProjectReview,clubWorkshopPlan} from "../src/rf/wave3.ts";
+test("M28 receive-only offline guide has no transmit instructions",()=>{const v=digitalSetupGuide({mode:"FT8",locale:"en"});assert.equal(v.simulated,true);assert.ok(v.steps.length>=2);assert.ok(!v.steps.join(" ").toLowerCase().includes("transmit now"));});
+test("M30 repeater hypothetical shift applies signed offset",()=>{const v=repeaterChannelPreview({rx_frequency_hz:145600000,offset_hz:-600000});assert.equal(v.tx_frequency_hz,145000000);assert.equal(v.verified,false);});
+test("M30 refuses impossible transmit candidates",()=>assert.throws(()=>repeaterChannelPreview({rx_frequency_hz:100000,offset_hz:-200000})));
+test("M33 deterministic contest plan sorts explicit UTC slots",()=>{const v=contestPlan({slots:[{utc:"14:30",band:"20m"},{utc:"09:00",band:"40m"}]});assert.equal(v.slots[0].utc,"09:00");assert.equal(v.official_schedule,false);});
+test("M33 rejects duplicate slots",()=>assert.throws(()=>contestPlan({slots:[{utc:"10:00",band:"20m"},{utc:"10:00",band:"20m"}]})));
+test("M37 educational project review cannot certify safety",()=>{const v=makerProjectReview({project_name:"LED receiver indicator",supply_voltage_v:5,components:["LED","resistor"]});assert.equal(v.certified,false);assert.ok(v.warnings.length>0);});
+test("M37 rejects unsafe voltage category",()=>assert.throws(()=>makerProjectReview({project_name:"HV",supply_voltage_v:230,components:["transformer"]})));
+test("M38 builds bounded offline workshop agenda",()=>{const v=clubWorkshopPlan({topic:"antenna_basics",participants:12,duration_minutes:60});assert.equal(v.simulated,true);assert.equal(v.agenda.reduce((a,s)=>a+s.minutes,0),60);});
+test("M38 rejects invalid attendance",()=>assert.throws(()=>clubWorkshopPlan({topic:"antenna_basics",participants:-1,duration_minutes:60})));
