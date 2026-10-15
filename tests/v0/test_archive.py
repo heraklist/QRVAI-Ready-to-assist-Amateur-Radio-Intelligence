@@ -80,6 +80,19 @@ class TestArchive(unittest.TestCase):
             errors = validate_archive(altered)
             self.assertTrue(any("utf-8" in x.lower() for x in errors), errors)
 
+    def test_malformed_https_reference_in_zip_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            original = build_archive(ROOT / "qrvai", Path(tmp) / "original.zip")
+            altered = Path(tmp) / "malformed-link.zip"
+            with zipfile.ZipFile(original) as source, zipfile.ZipFile(altered, "w") as target:
+                for entry in source.infolist():
+                    blob = source.read(entry.filename)
+                    if entry.filename == "qrvai/skills/qrvai-core/SKILL.md":
+                        blob = blob.replace(b"references/routing.md", b"https://[")
+                    target.writestr(entry, blob)
+            errors = validate_archive(altered)
+            self.assertTrue(any("reference" in e.lower() for e in errors), errors)
+
 
 if __name__ == "__main__":
     unittest.main()
