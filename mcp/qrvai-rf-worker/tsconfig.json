@@ -8,8 +8,7 @@
     "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "types": [
-      "node",
-      "@cloudflare/vitest-plugin/types"
+      "node"
     ],
     "lib": [
       "ES2022",
@@ -20,5 +19,8 @@
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
+  ],
+  "exclude": [
+    "test/worker.spec.ts"
   ]
 }
