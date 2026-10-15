@@ -40,7 +40,7 @@ test("rejects credentials in URL query even when they match the bearer secret",a
 test("rejects malformed or incorrect bearer credentials before body parsing",async()=>{
  const {handleMcpRequest}=await import("../api/mcp.ts");
  const secret="qrvai-test-never-deploy-012345678901";
- for(const authorization of ["Basic "+secret,"Bearer WRONG","Bearer "+secret+"a","Bearer "+secret+"\n"]){
+ for(const authorization of ["Basic "+secret,"Bearer WRONG","Bearer "+secret+"a","Bearer "+secret+" extra"]){
   const res=await handleMcpRequest(new Request("https://qrvai.example/api/mcp",{method:"POST",headers:{"authorization":authorization.replace(/\n/g,""),"content-type":"application/json"},body:"{bad"}),secret);
   assert.equal(res.status,401);
  }
