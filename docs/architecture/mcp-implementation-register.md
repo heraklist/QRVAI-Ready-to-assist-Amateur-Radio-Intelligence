@@ -2,7 +2,7 @@
 
 **Runtime policy:** Vercel Node.js Functions only; no Cloudflare runtime, fallback or connector.
 
-**Implemented in this draft source chain:** fifteen RF/core, simulation and education tools in `mcp/qrvai-rf-worker/src/mcp/register.ts`, available through the `/api/mcp` source adapter, gated by Bearer authentication. All remaining candidate catalog contracts are proposals, **NOT registered endpoints**, **NOT deployed**. Exact registered names deliberately differ from the conceptual dotted M07–M10 names; consumer code must use only the registered names. M09 implementation accepts user-provided bounded profiles rather than the proposed vendor cable-ID database.
+**Implemented in this draft source chain:** twenty RF/core, simulation and education tools in `mcp/qrvai-rf-worker/src/mcp/register.ts`, available through the `/api/mcp` source adapter, gated by Bearer authentication. All remaining candidate catalog contracts are proposals, **NOT registered endpoints**, **NOT deployed**. Exact registered names deliberately differ from the conceptual dotted M07–M10 names; consumer code must use only the registered names. M09 implementation accepts user-provided bounded profiles rather than the proposed vendor cable-ID database.
 
 **Real deployment status:** protected Vercel feature-branch preview READY; HTTPS no-token request returns 503 (expected fail-closed). Real credentialed tools/list, tools/call, production and ChatGPT @QRVAI host acceptance remain blocked/unverified.
 
@@ -35,19 +35,19 @@
 | M25 | `qrvai.geo.bearing` | E09 | public | SOURCE IMPLEMENTED IN DRAFT | `geo_bearing` |
 | M26 | `qrvai.satellite.pass` | E13 | public | NOT IMPLEMENTED | — |
 | M27 | `qrvai.dx.reception_reports` | E11 | public/provider.auth | NOT IMPLEMENTED | — |
-| M28 | `qrvai.digital.setup_guide` | E07/E12 | public | NOT IMPLEMENTED | — |
+| M28 | `qrvai.digital.setup_guide` | E07/E12 | public | SOURCE IMPLEMENTED IN DRAFT | `digital_setup_guide` |
 | M29 | `qrvai.packet.route_preview` | E12 | public | SOURCE IMPLEMENTED IN DRAFT | `packet_route_preview` |
-| M30 | `qrvai.repeater.channel_preview` | E02/E12 | public | NOT IMPLEMENTED | — |
+| M30 | `qrvai.repeater.channel_preview` | E02/E12 | public | SOURCE IMPLEMENTED IN DRAFT | `repeater_channel_preview` |
 | M31 | `qrvai.log.adif_validate` | E14 | user.file.read | NOT IMPLEMENTED | — |
 | M32 | `qrvai.log.award_progress` | E14 | logs.read | NOT IMPLEMENTED | — |
-| M33 | `qrvai.contest.plan` | E14/E08 | public | NOT IMPLEMENTED | — |
+| M33 | `qrvai.contest.plan` | E14/E08 | public | SOURCE IMPLEMENTED IN DRAFT | `contest_plan` |
 | M34 | `qrvai.emcomm.drill` | E15 | public | SOURCE IMPLEMENTED IN DRAFT | `emcomm_drill` |
 | M35 | `qrvai.emcomm.readiness` | E15/E08 | public | SOURCE IMPLEMENTED IN DRAFT | `emcomm_readiness` |
 | M36 | `qrvai.academy.exercise` | E16 | public | SOURCE IMPLEMENTED IN DRAFT | `academy_exercise` |
-| M37 | `qrvai.maker.project_review` | E17/E03 | public | NOT IMPLEMENTED | — |
-| M38 | `qrvai.club.workshop_plan` | E17 | public/club.data.read | NOT IMPLEMENTED | — |
+| M37 | `qrvai.maker.project_review` | E17/E03 | public | SOURCE IMPLEMENTED IN DRAFT | `maker_project_review` |
+| M38 | `qrvai.club.workshop_plan` | E17 | public/club.data.read | SOURCE IMPLEMENTED IN DRAFT | `club_workshop_plan` |
 
-**Completion count (dependent draft branches, not main):** 15/38 catalog capabilities mapped to actual source MCP registrations; 23 remain unimplemented. Counts do not certify authenticated live endpoint or production integration.
+**Completion count (dependent draft branches, not main):** 20/38 catalog capabilities mapped to actual source MCP registrations; 18 remain unimplemented. Counts do not certify authenticated live endpoint or production integration.
 
 **Readiness gates:** reproducible tests and precise source SHA → authenticated real preview HTTPS protocol proof → Vercel quotas, firewall, token/OAuth fit and safe operations → authorized production release → first new clean Plugin Creator identity and deferred host end-to-end. No fake data, licensed feed substitutions or dummy tools are allowed to fill gaps.
 
