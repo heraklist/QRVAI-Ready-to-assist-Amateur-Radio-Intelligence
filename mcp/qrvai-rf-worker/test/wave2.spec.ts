@@ -1,0 +1,11 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {stationSignalPath,packetRoutePreview,emcommDrill,emcommReadiness,academyExercise} from "../src/rf/wave2.ts";
+test("M20 returns unverified user diagram without asserting compatibility",()=>{const v=stationSignalPath({devices:[{id:"rig",kind:"radio"},{id:"ant",kind:"antenna"}],connections:[{from:"rig",to:"ant"}]});assert.equal(v.nodes.length,2);assert.equal(v.edges.length,1);assert.equal(v.verified,false)});
+test("M20 rejects nonexistent edges and graph cycles",()=>{assert.throws(()=>stationSignalPath({devices:[{id:"a",kind:"radio"}],connections:[{from:"a",to:"b"}]}));assert.throws(()=>stationSignalPath({devices:[{id:"a",kind:"radio"},{id:"b",kind:"antenna"}],connections:[{from:"a",to:"b"},{from:"b",to:"a"}]}))});
+test("M29 previews AX25 path but never transmits",()=>{const v=packetRoutePreview({protocol:"AX25",path:["CALL1","RELAY1","CALL2"]});assert.equal(v.hop_count,2);assert.equal(v.simulated,true);assert.equal(v.hops[0].from,"CALL1");assert.equal(v.hops[1].to,"CALL2")});
+test("M29 rejects repeated paths",()=>assert.throws(()=>packetRoutePreview({protocol:"APRS",path:["a","a"]})));
+test("M34 returns fixed training-only power exercise",()=>{const v=emcommDrill({scenario:"power_outage",roles:["net_control","operator"]});assert.equal(v.simulated,true);assert.equal(v.scenario,"power_outage");assert.ok(v.exercise_steps.length>=2);assert.ok(v.exercise_steps.every(x=>!x.includes("transmit now")))});
+test("M35 uses explicit user supplied energy and roles",()=>{const v=emcommReadiness({battery_wh:120,average_load_w:20,usable_fraction:.8,participants:2,required_roles:3});assert.ok(Math.abs(v.estimated_runtime_h-4.8)<1e-12);assert.equal(v.staffing_gap,1);assert.equal(v.simulated,true)});
+test("M36 Greek antenna quiz deterministic no answer leak",()=>{const q=academyExercise({topic:"antenna_basics",locale:"el"});assert.equal(q.options.length,3);assert.equal(q.correct,undefined);const answered=academyExercise({topic:"antenna_basics",locale:"el",answer_index:0});assert.equal(typeof answered.correct,"boolean")});
+test("Wave2 refuses malformed inputs",()=>{assert.throws(()=>emcommReadiness({battery_wh:20,average_load_w:0,usable_fraction:1,participants:2,required_roles:3}));assert.throws(()=>academyExercise({topic:"unsupported",locale:"el"}))});
