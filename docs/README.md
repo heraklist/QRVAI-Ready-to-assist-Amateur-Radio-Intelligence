@@ -1,6 +1,6 @@
 # QRVAI Architecture Documentation Index
 
-**Updated:** 2026-10-15 · **State:** V0 Skills-only package and ONE read-only RF MCP Worker are implemented as **source in GitHub main** (merged PRs #9 and #11). Neither a Cloudflare Worker nor a fresh ChatGPT Plugin is deployed or host-tested. The remaining architecture catalog is proposed.
+**Updated:** 2026-10-15 · **State:** V0 Skills-only package and ONE RF MCP Worker hosting THREE read-only calculation tools are implemented as **source in GitHub main** (merged PRs #9 and #11). Neither a Cloudflare Worker nor a fresh ChatGPT Plugin is deployed or host-tested. The remaining architecture catalog is proposed.
 
 ## Start here
 
@@ -32,6 +32,6 @@
 
 **Still blocked or not executed:** the legacy private creator-record `plugins_6acf47f502dc8191bf542fe040d484d8` remains saved and must not be updated/reused. The owner found no Delete action in personal plugin management; [Issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) tracks record deletion and possible name collision. There has been **no new Plugin Creator `create_plugin` call**, no fresh QRVAI private release, no installation, and no ChatGPT-client end-to-end `@QRVAI` or follow-up routing test.
 
-**Future architecture is not deployed:** 24 separate Domain Skills, 18 engines, 38 candidate MCP methods, four independent orchestrators and 36 MCP Apps are **proposals**. The source on `main` now includes exactly one deterministic RF power conversion engine / MCP tool, still **undeployed**. The V0 plugin package itself ships no `mcp.json`, CAT/PTT integration, emergency dispatch, live provider adapter or private Academy question bank. The earlier in-place migration design was rejected.
+**Future architecture is not deployed:** 24 separate Domain Skills, 18 engines, 38 candidate MCP methods, four independent orchestrators and 36 MCP Apps are **proposals**. The source on `main` now includes three deterministic RF calculation tools: power conversion, link budget, and impedance/VSWR, still **undeployed**. The V0 plugin package itself ships no `mcp.json`, CAT/PTT integration, emergency dispatch, live provider adapter or private Academy question bank. The earlier in-place migration design was rejected.
 
 **Next gates:** independently review source/CI if available; complete the old-account identity/namespace prerequisites; explicitly authorize a *new private* plugin creation and host acceptance when those gates are satisfied. GitHub merge into `main`, ChatGPT plugin creation/installation and publication are **distinct decisions**.
