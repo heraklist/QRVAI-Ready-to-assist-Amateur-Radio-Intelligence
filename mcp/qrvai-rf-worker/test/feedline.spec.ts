@@ -93,3 +93,15 @@ test("M09 rejects numeric overflow or ratio underflow instead of false zero",()=
     profile:{...profile,points:[{frequency_hz:10e6,loss_db_per_100m:1e308},{frequency_hz:1e9,loss_db_per_100m:1e308}]}}),FeedlineInputError);
   assert.throws(()=>calculateFeedlineLoss({...args,connector_loss_db:4000}),FeedlineInputError);
 });
+
+test("M09 rejects accessor, additional and inherited point-array properties",()=>{
+  const accessorPoints=[profile.points[0],profile.points[1]];
+  Object.defineProperty(accessorPoints,"0",{get(){throw new Error("unsafe array-index getter");},enumerable:true});
+  const additionalPoints=profile.points.slice() as typeof profile.points & {callsign?:string};
+  additionalPoints.callsign="PRIVATE";
+  const inheritedPoints=profile.points.slice();
+  Object.setPrototypeOf(inheritedPoints,Object.create(Array.prototype,{privateFlag:{value:true}}));
+  for(const points of [accessorPoints,additionalPoints,inheritedPoints]){
+    assert.throws(()=>calculateFeedlineLoss({...args,profile:{...profile,points}}),FeedlineInputError);
+  }
+});
