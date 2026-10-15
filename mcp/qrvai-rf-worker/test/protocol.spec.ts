@@ -50,3 +50,24 @@ test("review: successful MCP responses never enable wildcard browser CORS", asyn
     assert.ok(cors.every(header=>header!=="*"),"MCP handler must not allow arbitrary browser origins");
   } finally { await client.close(); }
 });
+
+
+test("review: MCP SDK refuses hostile browser Origins while allowing origin-less clients", async () => {
+  const { default:worker } = await import("../src/index.ts");
+  const envelope=JSON.stringify({
+    jsonrpc:"2.0",id:1,method:"initialize",
+    params:{protocolVersion:"2025-06-18",capabilities:{},clientInfo:{name:"browser-threat-test",version:"0.1.0"}}
+  });
+  for (const hostileOrigin of ["https://attacker.example", "null", "file://example"]) {
+    const result=await worker.fetch(new Request("https://qrvai.test/mcp",{
+      method:"POST",
+      headers:{
+        "content-type":"application/json",
+        accept:"application/json, text/event-stream",
+        origin:hostileOrigin
+      },
+      body:envelope
+    }),{},{} as never);
+    assert.equal(result.status,403,"Origin must be rejected: "+hostileOrigin);
+  }
+});
