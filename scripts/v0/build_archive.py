@@ -130,8 +130,13 @@ def validate_archive(archive: Path) -> list[str]:
                             continue
                         front = yaml.safe_load(text.split("\n---\n", 1)[0][4:])
                         slug = entry.split("/")[2]
-                        if not isinstance(front, dict) or front.get("name") != slug or not front.get("description"):
-                            errors.append(f"Skill identity missing: {entry}")
+                        if not isinstance(front, dict):
+                            errors.append(f"Skill frontmatter must be a mapping: {entry}")
+                        else:
+                            if front.get("name") != slug:
+                                errors.append(f"Skill name does not match package folder: {entry}")
+                            if not isinstance(front.get("description"), str) or not front["description"].strip():
+                                errors.append(f"Skill description must be a nonblank string: {entry}")
                     except (UnicodeDecodeError, yaml.YAMLError):
                         errors.append(f"invalid Skill encoding/frontmatter: {entry}")
     except (OSError, zipfile.BadZipFile):

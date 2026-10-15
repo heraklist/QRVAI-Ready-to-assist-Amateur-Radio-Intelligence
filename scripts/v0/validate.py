@@ -20,8 +20,17 @@ def validate_manifest_data(data: dict) -> list[str]:
         errors.append("name must be qrvai for approved V0")
     if data.get("version") != "0.1.0":
         errors.append("version must be 0.1.0 for first clean release")
-    if not isinstance(data.get("author"), dict) or not data["author"].get("name"):
-        errors.append("missing author.name")
+    author = data.get("author")
+    if not isinstance(author, dict):
+        errors.append("author must be an object")
+    else:
+        if not isinstance(author.get("name"), str) or not author["name"].strip():
+            errors.append("author.name must be a nonblank string")
+        for key in sorted(set(author) - {"name", "email", "url"}):
+            errors.append("unexpected author field: " + key)
+        for key in ("email", "url"):
+            if key in author and not isinstance(author[key], str):
+                errors.append(f"author.{key} must be a string")
     for key in sorted(set(data) - ROOT_ALLOWED):
         errors.append("unapproved root key: " + key)
     exts = data.get("extensions")
