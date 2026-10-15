@@ -1,6 +1,8 @@
 """Read-only exact identity and package-content traceability audit."""
 from __future__ import annotations
 import json
+import re
+from urllib.parse import unquote, urlsplit
 from pathlib import Path
 from scripts.v0.catalog import extract_domain_ids, extract_subcapability_ids
 from scripts.v0.validate import validate_skill, validate_manifest
@@ -15,6 +17,41 @@ SKILLS = {
 }
 
 
+_LINK = re.compile(r"(?<!!)\\[[^\\]]+\\]\\(([^)\\s]+)(?:\\s+\\\"[^\\\"]*\\\")?\\)")
+# This validator intentionally supports simple inline Markdown links in portable Skills.
+# Nonstandard links should be reviewed or rewritten in the source before packaging.
+
+
+def validate_local_references(skill_root: Path) -> list[str]:
+    """Reject references that are missing, unsafe, or leave this Skill's package."""
+    errors: list[str] = []
+    base = skill_root.resolve()
+    for source in sorted(skill_root.rglob("*.md")):
+        try:
+            body = source.read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            errors.append(f"unreadable reference source: {source}")
+            continue
+        for match in _LINK.finditer(body):
+            raw = unquote(match.group(1)).strip()
+            if raw.startswith("#"):
+                continue
+            parts = urlsplit(raw)
+            if parts.scheme:
+                if parts.scheme != "https":
+                    errors.append(f"unsafe reference scheme in {source.name}: {raw}")
+                continue
+            if parts.netloc or raw.startswith("//") or not parts.path:
+                errors.append(f"unsafe reference target in {source.name}: {raw}")
+                continue
+            target = (source.parent / parts.path).resolve()
+            if not target.is_relative_to(base):
+                errors.append(f"escaping Skill reference in {source.name}: {raw}")
+            elif not target.is_file():
+                errors.append(f"missing Skill reference in {source.name}: {raw}")
+    return errors
+
+
 def audit_catalog(root: Path) -> dict[str, object]:
     violations: list[str] = []
     all_domains: set[str] = set()
@@ -26,6 +63,7 @@ def audit_catalog(root: Path) -> dict[str, object]:
     for slug, family in SKILLS.items():
         errors = validate_skill(root / f"skills/{slug}/SKILL.md")
         violations.extend(errors)
+        violations.extend(validate_local_references(root / f"skills/{slug}"))
         if family is None:
             continue
         ref = root / f"skills/{slug}/references/family-{family.lower()}.md"
