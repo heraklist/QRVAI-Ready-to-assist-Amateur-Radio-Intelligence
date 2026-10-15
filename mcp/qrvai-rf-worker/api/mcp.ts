@@ -15,7 +15,7 @@ function authorized(authorization: string | null, secret: string): boolean {
   return received.length===expected.length && timingSafeEqual(received,expected);
 }
 /** Stateless, per-request authenticated Streamable HTTP. Deployment requires QRVAI_MCP_BEARER_TOKEN. */
-export default async function handler(
+export async function handleMcpRequest(
   request: Request,
   secret: string | undefined = process.env.QRVAI_MCP_BEARER_TOKEN
 ): Promise<Response> {
@@ -42,3 +42,10 @@ export default async function handler(
     await server.close();
   }
 }
+
+/** Vercel Web Standard Function contract; unlike the legacy Node handler it receives Request. */
+export default {
+  fetch(request: Request): Promise<Response> {
+    return handleMcpRequest(request);
+  }
+};
