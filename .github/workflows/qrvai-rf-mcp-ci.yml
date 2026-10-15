@@ -1,0 +1,26 @@
+name: QRVAI RF MCP Native TDD
+on:
+  pull_request:
+    paths:
+      - 'mcp/qrvai-rf-worker/**'
+      - '.github/workflows/qrvai-rf-mcp-ci.yml'
+      - 'qa/mcp/**'
+      - 'docs/runbooks/qrvai-rf-mcp-*.md'
+  push:
+    branches:
+      - feat/qrvai-rf-mcp-native-tdd
+jobs:
+  rf-native-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Native power RED-GREEN tests (no npm network dependencies in Task 1)
+        run: |
+          cd mcp/qrvai-rf-worker
+          npm ci --ignore-scripts
+          npm test
