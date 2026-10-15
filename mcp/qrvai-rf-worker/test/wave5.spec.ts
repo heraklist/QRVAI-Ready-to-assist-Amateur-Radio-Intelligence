@@ -1,0 +1,13 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {measurementsInspectTrace,sdrInspectIq,equipmentDiagnose,logAdifValidate,logAwardProgress} from "../src/rf/wave5.ts";
+test("M15 computes ordered trace peak and average",()=>{const v=measurementsInspectTrace({points:[{frequency_hz:200,power_dbm:-30},{frequency_hz:100,power_dbm:-10}]});assert.equal(v.peak_frequency_hz,100);assert.equal(v.mean_power_dbm,-20);assert.equal(v.points[0].frequency_hz,100);});
+test("M15 rejects nonfinite numbers",()=>assert.throws(()=>measurementsInspectTrace({points:[{frequency_hz:100,power_dbm:NaN}]})));
+test("M16 calculates sample RMS and clipping hints only",()=>{const v=sdrInspectIq({samples:[{i:0.5,q:0},{i:0,q:0.5}]});assert.equal(v.rms_amplitude,0.5);assert.equal(v.clipping_suspected,false);assert.equal(v.device_connected,false);});
+test("M16 bounds sample values",()=>assert.throws(()=>sdrInspectIq({samples:[{i:2,q:0}]})));
+test("M19 returns educational suggestions without hardware diagnosis",()=>{const v=equipmentDiagnose({symptom:"no_receive"});assert.equal(v.device_connected,false);assert.ok(v.checks.length>1);});
+test("M19 rejects unknown symptom",()=>assert.throws(()=>equipmentDiagnose({symptom:"magic" as any})));
+test("M31 validates compact ADIF input without exposing raw callsigns",()=>{const v=logAdifValidate({adif:"<EOH><CALL:4>SV1A<BAND:3>20M<EOR>"});assert.equal(v.record_count,1);assert.equal(v.valid,true);assert.equal(JSON.stringify(v).includes("SV1A"),false);});
+test("M31 rejects malformed ADIF length",()=>{const v=logAdifValidate({adif:"<EOH><CALL:9>ABC<EOR>"});assert.equal(v.valid,false);});
+test("M32 calculates distinct submitted entities without official award claim",()=>{const v=logAwardProgress({qsos:[{band:"20m",dxcc:236},{band:"40m",dxcc:236},{band:"20m",dxcc:291}]});assert.equal(v.unique_dxcc_count,2);assert.equal(v.official_award_verified,false);});
+test("M32 rejects invalid DXCC ids",()=>assert.throws(()=>logAwardProgress({qsos:[{band:"20m",dxcc:-1}]})));
