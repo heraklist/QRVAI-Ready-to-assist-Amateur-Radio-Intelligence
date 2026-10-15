@@ -7,6 +7,7 @@ on:
     paths:
       - 'qrvai/**'
       - 'tests/v0/**'
+      - 'qa/v0/**'
       - 'scripts/v0/**'
       - 'requirements-v0-dev.txt'
       - '.github/workflows/v0-ci.yml'
