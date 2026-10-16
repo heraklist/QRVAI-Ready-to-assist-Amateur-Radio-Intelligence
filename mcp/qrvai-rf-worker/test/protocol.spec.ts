@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 const secret="protocol-test-only-secure-token-123456789";
-const names=["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss","core_capabilities","antenna_geometry","antenna_matching","rf_filter_response","power_autonomy","geo_bearing","station_signal_path","packet_route_preview","emcomm_drill","emcomm_readiness","academy_exercise","digital_setup_guide","repeater_channel_preview","contest_plan","maker_project_review","club_workshop_plan","source_lookup","regulatory_check_operation","spectrum_band_segments","spectrum_find_repeaters","manual_find","measurements_inspect_trace","sdr_inspect_iq","manual_answer_cited","equipment_diagnose","adif_validate"];
+const names=["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss","core_capabilities","antenna_geometry","antenna_matching","rf_filter_response","power_autonomy","geo_bearing","station_signal_path","packet_route_preview","emcomm_drill","emcomm_readiness","academy_exercise","digital_setup_guide","repeater_channel_preview","contest_plan","maker_project_review","club_workshop_plan","source_lookup","regulatory_check_operation","spectrum_band_segments","spectrum_find_repeaters","manual_find","measurements_inspect_trace","sdr_inspect_iq","manual_answer_cited","equipment_diagnose","adif_validate","station_get_profile","station_read_status","spaceweather_indices","dx_reception_reports","log_award_progress"];
 async function fetchMcp(url: URL|string, init?: RequestInit): Promise<Response> {
   const {handleMcpRequest}=await import("../api/mcp.ts");
   const request=new Request(url,init);
