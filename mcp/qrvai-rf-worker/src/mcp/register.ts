@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {measurementsInspectTrace,sdrInspectIq,manualAnswerCited,equipmentDiagnose,adifValidate} from "../rf/wave5.ts";
 import {sourceLookup,regulatoryCheckOperation,spectrumBandSegments,spectrumFindRepeaters,manualFind} from "../rf/wave4.ts";
 import {digitalSetupGuide,repeaterChannelPreview,contestPlan,makerProjectReview,clubWorkshopPlan} from "../rf/wave3.ts";
 import {stationSignalPath,packetRoutePreview,emcommDrill,emcommReadiness,academyExercise} from "../rf/wave2.ts";
@@ -304,6 +305,38 @@ export function createServer(): McpServer {
     inputSchema:z.strictObject({query:z.string().min(1).max(80),excerpts:z.array(z.strictObject({id:w4id,document_title:w4title,text:w4excerpt})).max(24)}),
     outputSchema:z.strictObject({matches:z.array(z.strictObject({id:w4id,document_title:w4title,text:w4excerpt})),downloaded_external_manual:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M17-v1")}),annotations:w4ro
   },async(args)=>{try{return w4response(manualFind(args))}catch(e){return w4error(e)}});
+
+
+  const w5ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const w5num=z.number().finite(),w5freq=w5num.positive().max(1e12);
+  const w5id=z.string().min(1).max(40),w5excerpt=z.string().min(1).max(2000);
+  function w5response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w5error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("measurements_inspect_trace",{
+    title:"Inspect user-provided RF magnitude samples",description:"Bounded RF magnitude trace extrema; no instrument, calibration or file access.",
+    inputSchema:z.strictObject({samples:z.array(z.strictObject({frequency_hz:w5freq,magnitude_db:w5num.min(-500).max(500)})).min(1).max(32)}),
+    outputSchema:z.strictObject({sample_count:z.number().int().positive(),minimum_db:w5num,maximum_db:w5num,deepest_dip_frequency_hz:w5freq,instrument_connected:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M15-v1")}),annotations:w5ro
+  },async(args)=>{try{return w5response(measurementsInspectTrace(args))}catch(e){return w5error(e)}});
+  server.registerTool("sdr_inspect_iq",{
+    title:"Compute statistics of supplied IQ pairs",description:"Bounded IQ magnitude statistics; no SDR device, recording, or signal processing beyond supplied pairs.",
+    inputSchema:z.strictObject({samples:z.array(z.strictObject({i:w5num.min(-1e6).max(1e6),q:w5num.min(-1e6).max(1e6)})).min(1).max(32)}),
+    outputSchema:z.strictObject({sample_count:z.number().int().positive(),mean_power:z.number().finite().nonnegative(),peak_magnitude:z.number().finite().nonnegative(),device_connected:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M16-v1")}),annotations:w5ro
+  },async(args)=>{try{return w5response(sdrInspectIq(args))}catch(e){return w5error(e)}});
+  server.registerTool("manual_answer_cited",{
+    title:"Return exact user-supplied manual excerpts",description:"Abstains without matching evidence; no external manual retrieval, synthesized answer or verified vendor instructions.",
+    inputSchema:z.strictObject({question:z.string().min(1).max(80),excerpts:z.array(z.strictObject({id:w5id,text:w5excerpt})).max(24)}),
+    outputSchema:z.strictObject({answered:z.boolean(),citations:z.array(z.strictObject({id:w5id,excerpt:w5excerpt})),answer:z.string(),external_retrieval:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M18-v1")}),annotations:w5ro
+  },async(args)=>{try{return w5response(manualAnswerCited(args))}catch(e){return w5error(e)}});
+  server.registerTool("equipment_diagnose",{
+    title:"Non-invasive educational fault checklist",description:"Only preset safety-first receive, SWR and supply diagnostic checklists; no device control or repair certification.",
+    inputSchema:z.strictObject({symptom:z.enum(["no_receive_audio","high_swr_reading","unstable_power"])}),
+    outputSchema:z.strictObject({symptom:z.enum(["no_receive_audio","high_swr_reading","unstable_power"]),steps:z.array(z.string()),repair_certified:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M19-v1")}),annotations:w5ro
+  },async(args)=>{try{return w5response(equipmentDiagnose(args))}catch(e){return w5error(e)}});
+  server.registerTool("adif_validate",{
+    title:"Validate bounded supplied ADIF snippet",description:"Preview of tagged fields and EOR delimiters, without log storage or complete ADIF standard certification.",
+    inputSchema:z.strictObject({adif:z.string().min(1).max(4096)}),
+    outputSchema:z.strictObject({valid:z.boolean(),records:z.number().int().nonnegative(),fields:z.array(z.string()),saved:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M31-v1")}),annotations:w5ro
+  },async(args)=>{try{return w5response(adifValidate(args))}catch(e){return w5error(e)}});
 
   return server;
 }

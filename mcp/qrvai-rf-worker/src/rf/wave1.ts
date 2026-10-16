@@ -24,7 +24,12 @@ export const IMPLEMENTED_TOOLS:readonly ToolDescriptor[] = Object.freeze([
   {candidate_id:"M04",name:"regulatory_check_operation",scope:"Compare unverified user supplied rules"},
   {candidate_id:"M05",name:"spectrum_band_segments",scope:"User supplied spectrum records"},
   {candidate_id:"M06",name:"spectrum_find_repeaters",scope:"Filter user supplied repeater records"},
-  {candidate_id:"M17",name:"manual_find",scope:"Search user supplied manual excerpts"}
+  {candidate_id:"M17",name:"manual_find",scope:"Search user supplied manual excerpts"},
+  {candidate_id:"M15",name:"measurements_inspect_trace",scope:"Analyze bounded user supplied RF trace samples"},
+  {candidate_id:"M16",name:"sdr_inspect_iq",scope:"Analyze bounded user supplied IQ samples"},
+  {candidate_id:"M18",name:"manual_answer_cited",scope:"Exact user supplied source excerpt matches"},
+  {candidate_id:"M19",name:"equipment_diagnose",scope:"Non-invasive diagnostic checklists"},
+  {candidate_id:"M31",name:"adif_validate",scope:"Bounded user supplied ADIF grammar validation"}
 ]);
 export function describeWave1():ToolDescriptor[]{return IMPLEMENTED_TOOLS.map(x=>({...x}));}
 const C=299792458;
