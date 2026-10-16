@@ -56,7 +56,7 @@ export async function validateOAuthAccessToken(token:string,settings:OAuthVerifi
   const matches=keys.filter(k=>k.kid===header.kid&&k.kty==="RSA"&&(k.use===undefined||k.use==="sig")&&(k.alg===undefined||k.alg==="RS256")&&(k.key_ops===undefined||k.key_ops.includes("verify")));
   if(matches.length!==1)return reject("JWT signing key mismatch");
   let key:KeyObject;
-  try{key=createPublicKey({key:matches[0] as Parameters<typeof createPublicKey>[0] extends never ? never : any,format:"jwk"});}catch{return reject("invalid JWKS signing key");}
+  try{key=createPublicKey({key:matches[0] as import("node:crypto").JsonWebKey,format:"jwk"});}catch{return reject("invalid JWKS signing key");}
   const valid=verifySignature("RSA-SHA256",Buffer.from(pieces[0]+"."+pieces[1]),key,Buffer.from(pieces[2],"base64url"));
   if(!valid)return reject("invalid JWT signature");
   return {subject:claims.sub,scopes};
