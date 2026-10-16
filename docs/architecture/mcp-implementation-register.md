@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|
 | M01 | `qrvai.core.capabilities` | E18 | public | SOURCE IMPLEMENTED IN DRAFT | `core_capabilities` |
 | M02 | `qrvai.source.lookup` | E06/E18 | public | SOURCE IMPLEMENTED IN DRAFT | `source_lookup` |
-| M03 | `qrvai.station.get_profile` | E18 | profile.read | NOT IMPLEMENTED | — |
+| M03 | `qrvai.station.get_profile` | E18 | profile.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `station_get_profile` |
 | M04 | `qrvai.regulatory.check_operation` | E01 | public | SOURCE IMPLEMENTED IN DRAFT | `regulatory_check_operation` |
 | M05 | `qrvai.spectrum.band_segments` | E02 | public | SOURCE IMPLEMENTED IN DRAFT | `spectrum_band_segments` |
 | M06 | `qrvai.spectrum.find_repeaters` | E02 | public | SOURCE IMPLEMENTED IN DRAFT | `spectrum_find_repeaters` |
@@ -28,18 +28,18 @@
 | M18 | `qrvai.manual.answer_cited` | E06 | public/user.file.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `manual_answer_cited` |
 | M19 | `qrvai.equipment.diagnose` | E06/E07 | public | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `equipment_diagnose` |
 | M20 | `qrvai.station.signal_path` | E07 | public | SOURCE IMPLEMENTED IN DRAFT | `station_signal_path` |
-| M21 | `qrvai.station.read_status` | E07 | device.read | NOT IMPLEMENTED | — |
+| M21 | `qrvai.station.read_status` | E07 | device.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `station_read_status` |
 | M22 | `qrvai.power.autonomy` | E08 | public | SOURCE IMPLEMENTED IN DRAFT | `power_autonomy` |
-| M23 | `qrvai.spaceweather.indices` | E11 | public | NOT IMPLEMENTED | — |
+| M23 | `qrvai.spaceweather.indices` | E11 | public | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `spaceweather_indices` |
 | M24 | `qrvai.propagation.path` | E09/E10 | public | NOT IMPLEMENTED | — |
 | M25 | `qrvai.geo.bearing` | E09 | public | SOURCE IMPLEMENTED IN DRAFT | `geo_bearing` |
 | M26 | `qrvai.satellite.pass` | E13 | public | NOT IMPLEMENTED | — |
-| M27 | `qrvai.dx.reception_reports` | E11 | public/provider.auth | NOT IMPLEMENTED | — |
+| M27 | `qrvai.dx.reception_reports` | E11 | public/provider.auth | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `dx_reception_reports` |
 | M28 | `qrvai.digital.setup_guide` | E07/E12 | public | SOURCE IMPLEMENTED IN DRAFT | `digital_setup_guide` |
 | M29 | `qrvai.packet.route_preview` | E12 | public | SOURCE IMPLEMENTED IN DRAFT | `packet_route_preview` |
 | M30 | `qrvai.repeater.channel_preview` | E02/E12 | public | SOURCE IMPLEMENTED IN DRAFT | `repeater_channel_preview` |
 | M31 | `qrvai.log.adif_validate` | E14 | user.file.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `adif_validate` |
-| M32 | `qrvai.log.award_progress` | E14 | logs.read | NOT IMPLEMENTED | — |
+| M32 | `qrvai.log.award_progress` | E14 | logs.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `log_award_progress` |
 | M33 | `qrvai.contest.plan` | E14/E08 | public | SOURCE IMPLEMENTED IN DRAFT | `contest_plan` |
 | M34 | `qrvai.emcomm.drill` | E15 | public | SOURCE IMPLEMENTED IN DRAFT | `emcomm_drill` |
 | M35 | `qrvai.emcomm.readiness` | E15/E08 | public | SOURCE IMPLEMENTED IN DRAFT | `emcomm_readiness` |
@@ -47,7 +47,7 @@
 | M37 | `qrvai.maker.project_review` | E17/E03 | public | SOURCE IMPLEMENTED IN DRAFT | `maker_project_review` |
 | M38 | `qrvai.club.workshop_plan` | E17 | public/club.data.read | SOURCE IMPLEMENTED IN DRAFT | `club_workshop_plan` |
 
-**Completion count (dependent draft branches, not main):** 30/38 catalog capabilities mapped to actual source MCP registrations; 8 remain unimplemented. Counts do not certify authenticated live endpoint or production integration.
+**Completion count (dependent draft branches, not main):** 35/38 catalog capabilities mapped to actual source MCP registrations; 3 remain unimplemented. Counts do not certify authenticated live endpoint or production integration.
 
 **Readiness gates:** reproducible tests and precise source SHA → authenticated real preview HTTPS protocol proof → Vercel quotas, firewall, token/OAuth fit and safe operations → authorized production release → first new clean Plugin Creator identity and deferred host end-to-end. No fake data, licensed feed substitutions or dummy tools are allowed to fill gaps.
 
