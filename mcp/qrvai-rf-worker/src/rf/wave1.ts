@@ -34,7 +34,10 @@ export const IMPLEMENTED_TOOLS:readonly ToolDescriptor[] = Object.freeze([
   {candidate_id:"M21",name:"station_read_status",scope:"Inspect supplied unverified station status"},
   {candidate_id:"M23",name:"spaceweather_indices",scope:"Inspect supplied unverified Kp index record"},
   {candidate_id:"M27",name:"dx_reception_reports",scope:"Filter supplied unverified reception records"},
-  {candidate_id:"M32",name:"log_award_progress",scope:"Compare user supplied award entity records"}
+  {candidate_id:"M32",name:"log_award_progress",scope:"Compare user supplied award entity records"},
+  {candidate_id:"M14",name:"rf_exposure_screen",scope:"Theoretical ideal far-field power flux (not compliance)"},
+  {candidate_id:"M24",name:"propagation_path",scope:"Great-circle distance and free-space path loss only"},
+  {candidate_id:"M26",name:"satellite_pass",scope:"Summarize user-supplied above-horizon samples, no orbital prediction"}
 ]);
 export function describeWave1():ToolDescriptor[]{return IMPLEMENTED_TOOLS.map(x=>({...x}));}
 const C=299792458;
