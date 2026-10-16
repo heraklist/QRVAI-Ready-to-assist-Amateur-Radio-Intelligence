@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-16-qrvai-p0-consolidation-design.md` (Draft PR #37, owner approved design for planning in conversation on 2026-10-16). Baseline code SHA before the design PR: `73feb5789d7830b4d47ea6100a971d864db8fb28`. Design PR #37 originally added only the spec at `3ce421cd27037ec5e45e1926e5d2f9f923b0e9c9`.
 
+**Roadmap traceability:** Existing [M0–M8 strategic roadmap](../../roadmap/2026-10-14-qrvai-master-roadmap.md) and [V0–V8 delivery review gates](../../roadmap/2026-10-14-qrvai-review-gates-v0.5.md) remain governing; the [2026-10-17 P0 crosswalk](../../roadmap/2026-10-17-qrvai-master-plan-p0-crosswalk.md) establishes the bounded dependency of these six engineering tasks on that wider program. Do not confuse current **P0** (source consolidation), strategic **M0**, delivered **V0**, MCP method IDs **M01–M38** or risk-priority labels **P0**. None authorizes Plugin Creator installation or completion claims for M1–M8. Before implementing Task 1, check the crosswalk's source identity and classify evidence by exact SHA and runtime status.
+
 ## Global Constraints
 
 - Implement **only after owner reviews and approves this written plan** and selects execution method; the present commit is planning-only.
