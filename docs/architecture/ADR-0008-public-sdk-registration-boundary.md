@@ -1,0 +1,5 @@
+# ADR-0008 — Public SDK registration boundary
+
+Phase 4.2.6: replace fragile access to the MCP SDK private _registeredTools map with supported createServer(allowTool) callback, selectively registering each of 38 tools using the public server.registerTool interface. Default createServer() behavior registers all tools and preserves existing shared bearer entrypoint. createAuthorizedServer(principal) composes the explicit registry and scoped tool policy. No private SDK introspection or mutation.
+
+Security gates remain OPEN: this server factory is not connected to live HTTP request authentication; any principal must be independently verified from an issuer and token audience. No tenant ownership resolution has been wired, so private station/log tools stay disabled. New tests assert no private registry reliance, and existing Streamable HTTP transport tests validate actual list/call behavior. Runtime OAuth provider choice, tenant isolation, response filtering, session boundaries, token revocation, and ChatGPT handshake remain unverified. Preview protection stays unchanged; no main merge or production promotion.
