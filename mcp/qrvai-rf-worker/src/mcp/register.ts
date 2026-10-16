@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {rfExposureScreen,propagationPath,satellitePass} from "../rf/wave7.ts";
 import {stationGetProfile,stationReadStatus,spaceweatherIndices,dxReceptionReports,logAwardProgress} from "../rf/wave6.ts";
 import {measurementsInspectTrace,sdrInspectIq,manualAnswerCited,equipmentDiagnose,adifValidate} from "../rf/wave5.ts";
 import {sourceLookup,regulatoryCheckOperation,spectrumBandSegments,spectrumFindRepeaters,manualFind} from "../rf/wave4.ts";
@@ -370,6 +371,32 @@ export function createServer(): McpServer {
     inputSchema:z.strictObject({target_entities:z.array(w6entity).max(100),confirmed_entities:z.array(w6entity).max(100)}),
     outputSchema:z.strictObject({confirmed_count:z.number().int().nonnegative(),target_count:z.number().int().nonnegative(),missing_entities:z.array(w6entity),provenance:w6provenance,verified:z.literal(false),award_certified:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M32-v1")}),annotations:w6ro
   },async(args)=>{try{return w6response(logAwardProgress(args))}catch(e){return w6error(e)}});
+
+
+  const w7ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const w7positive=z.number().finite().positive();
+  const w7lat=z.number().finite().min(-90).max(90),w7lon=z.number().finite().min(-180).max(180);
+  const w7source=z.literal("USER_SUPPLIED_INPUTS");
+  function w7response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w7error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("rf_exposure_screen",{
+    title:"Ideal RF far-field flux estimate (NOT a safety certification)",
+    description:"Compare theoretical far-field power flux with a user-given reference; never decides legal RF exposure compliance or safe antenna placement.",
+    inputSchema:z.strictObject({mean_power_w:w7positive.max(1e7),linear_gain:w7positive.max(1e5),distance_m:w7positive.max(1e6),reference_flux_w_m2:w7positive.max(1e6)}),
+    outputSchema:z.strictObject({estimated_flux_w_m2:z.number().finite().nonnegative(),below_user_reference:z.boolean(),compliance_established:z.literal(false),source:w7source,disclaimer:z.string(),formula_revision:z.literal("M14-v1")}),annotations:w7ro
+  },async(args)=>{try{return w7response(rfExposureScreen(args))}catch(e){return w7error(e)}});
+  server.registerTool("propagation_path",{
+    title:"Spherical distance and ideal free-space path loss",
+    description:"Simple FSPL and great-circle geometry; does not model actual terrestrial or ionospheric radio propagation.",
+    inputSchema:z.strictObject({frequency_mhz:w7positive.max(1e6),from_lat_deg:w7lat,from_lon_deg:w7lon,to_lat_deg:w7lat,to_lon_deg:w7lon}),
+    outputSchema:z.strictObject({distance_km:w7positive,free_space_path_loss_db:z.number().finite(),real_world_prediction:z.literal(false),source:w7source,disclaimer:z.string(),formula_revision:z.literal("M24-v1")}),annotations:w7ro
+  },async(args)=>{try{return w7response(propagationPath(args))}catch(e){return w7error(e)}});
+  server.registerTool("satellite_pass",{
+    title:"Summarize supplied satellite elevation samples (NOT orbital forecast)",
+    description:"Above-horizon sample window only; no TLE, SGP4, ephemerides, real satellite pass or Doppler prediction.",
+    inputSchema:z.strictObject({samples:z.array(z.strictObject({observed_at:z.string().datetime({offset:false}),elevation_deg:z.number().finite().min(-90).max(90)})).min(1).max(32)}),
+    outputSchema:z.strictObject({above_horizon_sample_count:z.number().int().nonnegative(),peak_sample_elevation_deg:z.number().finite().positive().nullable(),window_start:z.string().nullable(),window_end:z.string().nullable(),orbit_computed:z.literal(false),source:z.literal("USER_SUPPLIED_ELEVATION_SAMPLES"),disclaimer:z.string(),formula_revision:z.literal("M26-v1")}),annotations:w7ro
+  },async(args)=>{try{return w7response(satellitePass(args))}catch(e){return w7error(e)}});
 
   return server;
 }

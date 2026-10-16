@@ -21,7 +21,7 @@
 | M11 | `qrvai.antenna.geometry` | E04 | public | SOURCE IMPLEMENTED IN DRAFT | `antenna_geometry` |
 | M12 | `qrvai.antenna.matching` | E03 | public | SOURCE IMPLEMENTED IN DRAFT | `antenna_matching` |
 | M13 | `qrvai.rf.filter_response` | E03 | public | SOURCE IMPLEMENTED IN DRAFT | `rf_filter_response` |
-| M14 | `qrvai.rf.exposure_screen` | E01/E03 | public | NOT IMPLEMENTED | — |
+| M14 | `qrvai.rf.exposure_screen` | E01/E03 | public | SOURCE IMPLEMENTED IN DRAFT — BOUNDED PHYSICS, NOT LIVE | `rf_exposure_screen` |
 | M15 | `qrvai.measurements.inspect_trace` | E05 | user.file.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `measurements_inspect_trace` |
 | M16 | `qrvai.sdr.inspect_iq` | E05 | user.file.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `sdr_inspect_iq` |
 | M17 | `qrvai.manual.find` | E06 | public | SOURCE IMPLEMENTED IN DRAFT | `manual_find` |
@@ -31,9 +31,9 @@
 | M21 | `qrvai.station.read_status` | E07 | device.read | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `station_read_status` |
 | M22 | `qrvai.power.autonomy` | E08 | public | SOURCE IMPLEMENTED IN DRAFT | `power_autonomy` |
 | M23 | `qrvai.spaceweather.indices` | E11 | public | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `spaceweather_indices` |
-| M24 | `qrvai.propagation.path` | E09/E10 | public | NOT IMPLEMENTED | — |
+| M24 | `qrvai.propagation.path` | E09/E10 | public | SOURCE IMPLEMENTED IN DRAFT — BOUNDED PHYSICS, NOT LIVE | `propagation_path` |
 | M25 | `qrvai.geo.bearing` | E09 | public | SOURCE IMPLEMENTED IN DRAFT | `geo_bearing` |
-| M26 | `qrvai.satellite.pass` | E13 | public | NOT IMPLEMENTED | — |
+| M26 | `qrvai.satellite.pass` | E13 | public | SOURCE IMPLEMENTED IN DRAFT — BOUNDED PHYSICS, NOT LIVE | `satellite_pass` |
 | M27 | `qrvai.dx.reception_reports` | E11 | public/provider.auth | SOURCE IMPLEMENTED IN DRAFT — INPUT ONLY | `dx_reception_reports` |
 | M28 | `qrvai.digital.setup_guide` | E07/E12 | public | SOURCE IMPLEMENTED IN DRAFT | `digital_setup_guide` |
 | M29 | `qrvai.packet.route_preview` | E12 | public | SOURCE IMPLEMENTED IN DRAFT | `packet_route_preview` |
@@ -47,7 +47,7 @@
 | M37 | `qrvai.maker.project_review` | E17/E03 | public | SOURCE IMPLEMENTED IN DRAFT | `maker_project_review` |
 | M38 | `qrvai.club.workshop_plan` | E17 | public/club.data.read | SOURCE IMPLEMENTED IN DRAFT | `club_workshop_plan` |
 
-**Completion count (dependent draft branches, not main):** 35/38 catalog capabilities mapped to actual source MCP registrations; 3 remain unimplemented. Counts do not certify authenticated live endpoint or production integration.
+**Completion count (dependent draft branches, not main):** 38/38 catalog capabilities mapped to actual source MCP registrations; 0 remain without draft source registrations. Counts do not certify authenticated live endpoint or production integration.
 
 **Readiness gates:** reproducible tests and precise source SHA → authenticated real preview HTTPS protocol proof → Vercel quotas, firewall, token/OAuth fit and safe operations → authorized production release → first new clean Plugin Creator identity and deferred host end-to-end. No fake data, licensed feed substitutions or dummy tools are allowed to fill gaps.
 
