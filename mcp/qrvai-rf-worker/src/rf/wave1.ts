@@ -29,7 +29,12 @@ export const IMPLEMENTED_TOOLS:readonly ToolDescriptor[] = Object.freeze([
   {candidate_id:"M16",name:"sdr_inspect_iq",scope:"Analyze bounded user supplied IQ samples"},
   {candidate_id:"M18",name:"manual_answer_cited",scope:"Exact user supplied source excerpt matches"},
   {candidate_id:"M19",name:"equipment_diagnose",scope:"Non-invasive diagnostic checklists"},
-  {candidate_id:"M31",name:"adif_validate",scope:"Bounded user supplied ADIF grammar validation"}
+  {candidate_id:"M31",name:"adif_validate",scope:"Bounded user supplied ADIF grammar validation"},
+  {candidate_id:"M03",name:"station_get_profile",scope:"Read supplied unverified station snapshot"},
+  {candidate_id:"M21",name:"station_read_status",scope:"Inspect supplied unverified station status"},
+  {candidate_id:"M23",name:"spaceweather_indices",scope:"Inspect supplied unverified Kp index record"},
+  {candidate_id:"M27",name:"dx_reception_reports",scope:"Filter supplied unverified reception records"},
+  {candidate_id:"M32",name:"log_award_progress",scope:"Compare user supplied award entity records"}
 ]);
 export function describeWave1():ToolDescriptor[]{return IMPLEMENTED_TOOLS.map(x=>({...x}));}
 const C=299792458;
