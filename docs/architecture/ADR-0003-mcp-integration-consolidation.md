@@ -29,3 +29,17 @@ Date: 2026-10-16. Status: **Draft / review-required**, Vercel-only, no productio
 ## Policy and next step
 
 Retain Draft PRs and existing Vercel deployment protection; do not merge, promote, expose bearer secrets or enable production. Reconcile alternative Wave3/Wave5 changes by inspecting concrete patches and tests, then implement any proven missing behavior using TDD on this integration branch. Update the implementation register's stale introduction (which still states 'twenty-five' registered tools) after independent count/protocol checks. Keep distinction between **38 source-registered** and **38 integrated**.
+
+## Wave3 / Wave5 alternative reconciliation — evidence pass 2026-10-16
+
+- **PR #21 (Wave3 alternate):** compared actual `src/rf/wave3.ts` on PR #21 head and canonical #27. Both export the five named operations `digitalSetupGuide`, `repeaterChannelPreview`, `contestPlan`, `makerProjectReview`, `clubWorkshopPlan`, so there is no missing top-level Wave3 operation. However contracts differ materially: alternate M28 requests `rig/software/os` while canonical M28 requests `mode/locale`; alternate M30 uses `frequency_hz/offset_hz/tone_hz`, canonical M30 uses `rx_frequency_hz/offset_hz/...`. **Resolution: do not cherry-pick.** Mark alternate device-oriented input contract as a separate product-design decision requiring compatible schema, provenance and targeted tests, not an implicit replacement.
+- **PR #23 (Wave5 alternate):** its GitHub PR patch contains only a Wave5 spec, `package.json` and `test/wave5.spec.ts`; no `src/rf/wave5.ts` implementation or new registered MCP tool in that PR. The canonical branch already exports `measurementsInspectTrace`, `sdrInspectIq`, `manualAnswerCited`, `equipmentDiagnose`, `adifValidate` in its Wave5 module; log award progress is separately implemented. **Resolution: do not cherry-pick incomplete alternate tests onto a different source contract.** Preserve alternate test cases as review candidates and ensure equivalent behavioral assertions after schema alignment.
+- Both alternatives remain Draft and unmerged; this reconciliation addresses source coverage and contract conflicts, **not** release acceptance or preservation of every alternate behavior.
+- **Same-commit delivery proof:** PR #27 head `9dab6f7fe4438af894b3795f586eb009501c67ff`: GitHub workflow `QRVAI V0 Tests` succeeded and Vercel preview deployment `dpl_2XrMNC2vVJfuvcktBoBVjix3z7HR` reached READY. The registry source contains 38 `registerTool(` declarations. This is build / registration evidence, not credentialed HTTPS MCP acceptance or comprehensive per-tool functional validation.
+
+### Remaining 4.1 conditions
+
+1. Record and approve the alternate Wave3 schema decision; examine test diffs for behavioral gaps; retain a compatibility migration plan rather than silently rewriting the canonical API.
+2. Review the Wave5 alternate test assertions against canonical Wave5 semantics; add coverage only with explicit pass/fail TDD evidence.
+3. Full same-SHA RF-specific workflow and test-output proof; V0 workflow success alone does not independently demonstrate all 38 MCP tools.
+4. After above, proceed to phase 4.2 OAuth / user identity / scoped authorization design, separate from the current bearer-gated private backend.
