@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {stationGetProfile,stationReadStatus,spaceweatherIndices,dxReceptionReports,logAwardProgress} from "../rf/wave6.ts";
 import {measurementsInspectTrace,sdrInspectIq,manualAnswerCited,equipmentDiagnose,adifValidate} from "../rf/wave5.ts";
 import {sourceLookup,regulatoryCheckOperation,spectrumBandSegments,spectrumFindRepeaters,manualFind} from "../rf/wave4.ts";
 import {digitalSetupGuide,repeaterChannelPreview,contestPlan,makerProjectReview,clubWorkshopPlan} from "../rf/wave3.ts";
@@ -337,6 +338,38 @@ export function createServer(): McpServer {
     inputSchema:z.strictObject({adif:z.string().min(1).max(4096)}),
     outputSchema:z.strictObject({valid:z.boolean(),records:z.number().int().nonnegative(),fields:z.array(z.string()),saved:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M31-v1")}),annotations:w5ro
   },async(args)=>{try{return w5response(adifValidate(args))}catch(e){return w5error(e)}});
+
+
+  const w6ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  const w6freq=z.number().finite().positive().max(1e12), w6call=z.string().regex(/^[A-Za-z0-9/]{3,16}$/);
+  const w6entity=z.string().regex(/^[A-Za-z0-9-]{1,8}$/),w6provenance=z.literal("USER_SUPPLIED_UNVERIFIED");
+  function w6response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function w6error(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("station_get_profile",{
+    title:"Echo bounded user supplied station profile",description:"Offline profile snapshot; no profile.read account or database access.",
+    inputSchema:z.strictObject({callsign:w6call,grid_square:z.string().min(1).max(12),antenna_note:z.string().min(1).max(200)}),
+    outputSchema:z.strictObject({profile:z.strictObject({callsign:w6call,grid_square:z.string(),antenna_note:z.string()}),provenance:w6provenance,verified:z.literal(false),profile_connected:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M03-v1")}),annotations:w6ro
+  },async(args)=>{try{return w6response(stationGetProfile(args))}catch(e){return w6error(e)}});
+  server.registerTool("station_read_status",{
+    title:"Inspect user-supplied station status",description:"Only explicit user snapshot, no live hardware, monitoring or TX.",
+    inputSchema:z.strictObject({mode:z.enum(["RX","TX","STANDBY"]),frequency_hz:w6freq,status_note:z.string().min(1).max(200)}),
+    outputSchema:z.strictObject({status:z.strictObject({mode:z.enum(["RX","TX","STANDBY"]),frequency_hz:w6freq,status_note:z.string()}),provenance:w6provenance,verified:z.literal(false),live_device_connected:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M21-v1")}),annotations:w6ro
+  },async(args)=>{try{return w6response(stationReadStatus(args))}catch(e){return w6error(e)}});
+  server.registerTool("spaceweather_indices",{
+    title:"Inspect supplied historical Kp record",description:"No NOAA or space-weather live feed; user supplied timestamp and provenance only.",
+    inputSchema:z.strictObject({observed_at:z.string().datetime({offset:false}),kp_index:z.number().finite().min(0).max(9),source_label:z.string().min(1).max(120)}),
+    outputSchema:z.strictObject({observed_at:z.string(),kp_index:z.number(),source_label:z.string(),provenance:w6provenance,verified:z.literal(false),live_feed:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M23-v1")}),annotations:w6ro
+  },async(args)=>{try{return w6response(spaceweatherIndices(args))}catch(e){return w6error(e)}});
+  server.registerTool("dx_reception_reports",{
+    title:"Filter user supplied DX reception records",description:"No DX cluster authentication, current reception or third-party verification.",
+    inputSchema:z.strictObject({band:z.string().min(1).max(12),reports:z.array(z.strictObject({id:z.string().min(1).max(40),band:z.string().min(1).max(12),station:w6call,report:z.string().min(1).max(20)})).max(24)}),
+    outputSchema:z.strictObject({matches:z.array(z.strictObject({id:z.string(),band:z.string(),station:w6call,report:z.string()})),provenance:w6provenance,verified:z.literal(false),provider_authenticated:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M27-v1")}),annotations:w6ro
+  },async(args)=>{try{return w6response(dxReceptionReports(args))}catch(e){return w6error(e)}});
+  server.registerTool("log_award_progress",{
+    title:"Compare user provided award target entities",description:"Only user provided entity overlap, not authenticated logs or award adjudication.",
+    inputSchema:z.strictObject({target_entities:z.array(w6entity).max(100),confirmed_entities:z.array(w6entity).max(100)}),
+    outputSchema:z.strictObject({confirmed_count:z.number().int().nonnegative(),target_count:z.number().int().nonnegative(),missing_entities:z.array(w6entity),provenance:w6provenance,verified:z.literal(false),award_certified:z.literal(false),disclaimer:z.string(),formula_revision:z.literal("M32-v1")}),annotations:w6ro
+  },async(args)=>{try{return w6response(logAwardProgress(args))}catch(e){return w6error(e)}});
 
   return server;
 }
