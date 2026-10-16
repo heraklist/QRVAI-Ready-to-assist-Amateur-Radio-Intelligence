@@ -1,0 +1,31 @@
+# QRVAI 4.1 Integration & Consolidation decision record
+
+Date: 2026-10-16. Status: **Draft / review-required**, Vercel-only, no production release.
+
+## Verified snapshot
+
+- Canonical source candidate: PR #26 commit `2d708fc46d1921231c36e910e03b103cfc8617cb`, based on PR #25, PR #24, PR #22, PR #20, PR #19, PR #18 and PR #17.
+- GitHub commit compare `main...feat/mcp-wave7-bounded-physics-20261016`: **ahead 131, behind 0**, 48 changed file paths (at audit time). This means branch descends from main, NOT that it is reviewed/ready for main.
+- All 38 conceptual tool IDs map to source-registered names on the canonical *draft* branch; many remain synthetic, user-input-only, or unconnected to real authenticated services.
+- PR #21 is a parallel Wave3 implementation relative to PR #20; comparison reported **diverged, 13 ahead / 13 behind**, with overlapping register and tests. Do **NOT** auto-merge or automatically cherry-pick it.
+- PR #23 is a parallel Wave5 implementation relative to PR #24; comparison reported **diverged, 3 ahead / 12 behind**, with overlapping package/tests. Do **NOT** auto-merge or automatically cherry-pick it.
+- PRs #17 through #26 remained **open and Draft** at audit time. Parent chain: #17 → #18 → #19 → #20 → #22 → #24 → #25 → #26. Alternate branches #21 and #23 remain available for deliberate per-change reconciliation. No PR is represented as merged.
+- Previous checks: GitHub Actions RF MCP Native TDD and V0 tests passed on exact #26 head SHA; same SHA Vercel preview READY, not credentialed MCP HTTP acceptance or ChatGPT OAuth proof.
+
+## Integration gates / ownership
+
+| Gate | Status | Required proof |
+|---|---|---|
+| G1: Pick canonical chain and classify alternatives | DOCUMENTED / REVIEW REQUIRED | Diff-by-diff reconciliation of #21 and #23, record any intentionally omitted feature |
+| G2: Complete functional registry | SOURCE-ONLY | Verify exact 38 registered tool names and no unintended hidden endpoints |
+| G3: Cloudflare-free Vercel runtime | SOURCE-ONLY | Dependency and runtime scan, build & deployment test |
+| G4: Deterministic CI | PREVIOUSLY PASS | Fresh same-SHA npm typecheck, full unit/protocol tests, V0 CI |
+| G5: Security and credential boundaries | NOT ACCEPTED | Real auth, denial, Origin, oversized payload, provider scopes, secret rotation |
+| G6: End-to-end Vercel HTTPS MCP | NOT ACCEPTED | Protected preview credentialed initialize, tools/list, representative tools/call, error-path tests |
+| G7: ChatGPT host onboarding | NOT ACCEPTED | Host-supported authentication and user consent; real @QRVAI invocation |
+| G8: Science/source fidelity | PARTIAL | Per-tool authoritative model references and explicit unverified/simulated flags |
+| G9: Production release | BLOCKED | G1–G8 evidence, review, staging validation, rollback and explicit release authorization |
+
+## Policy and next step
+
+Retain Draft PRs and existing Vercel deployment protection; do not merge, promote, expose bearer secrets or enable production. Reconcile alternative Wave3/Wave5 changes by inspecting concrete patches and tests, then implement any proven missing behavior using TDD on this integration branch. Update the implementation register's stale introduction (which still states 'twenty-five' registered tools) after independent count/protocol checks. Keep distinction between **38 source-registered** and **38 integrated**.
