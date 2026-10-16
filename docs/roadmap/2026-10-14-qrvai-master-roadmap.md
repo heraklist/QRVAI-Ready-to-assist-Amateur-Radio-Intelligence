@@ -4,6 +4,8 @@
 **Status:** PROPOSED; **not** a detailed engineering implementation plan. Milestones and dependencies are estimates of scope, not delivery dates.  
 **Inputs:** [Master Capability Design](../superpowers/specs/2026-10-14-qrvai-capability-design.md), [Domain & Orchestration Design v0.4](../superpowers/specs/2026-10-14-qrvai-domain-orchestration-design.md), [Interactive Catalog](../architecture/interactive-tools-catalog.md).
 
+> **2026-10-17 development coordination (addendum, not a replacement for this proposed roadmap):** [Master Roadmap ↔ P0 Crosswalk](2026-10-17-qrvai-master-plan-p0-crosswalk.md) distinguishes M0–M8 milestones from the current P0 GitHub-source consolidation, maps them to V0–V8, and documents draft-only evidence gates. The original M0–M8 priority order and owner-approval requirements remain unchanged.
+
 ## Mission
 
 Build an accurate, accessible and highly specialized amateur-radio plugin that supports knowledge and measured decisions across **24 domain capabilities** and exposes selected **interactive, deterministic and source-based workbenches**. Start in Greek and English; Greece is the first jurisdiction for regulatory research. Do not mistake a capable demo for a legally authoritative service.
