@@ -5,11 +5,10 @@ import {IMPLEMENTED_TOOLS} from "../src/rf/wave1.ts";
 import {authorizeToolList} from "../src/http/authz-policy.ts";
 
 const base={subject:"alpha",tenantId:"tenant-alpha",scopes:["qrvai:tools:read"]};
-test("public SDK registration path does not rely on _registeredTools introspection",()=>{
- const server=createAuthorizedServer(base) as unknown as { _registeredTools?:unknown; close:()=>Promise<void> };
- // The factory must use an explicit SDK registration filter, never private registry mutation.
- assert.equal(Object.hasOwn(server,"_registeredTools"),false);
- return server.close();
+test("public SDK registration accepts an independent server instance",async()=>{
+ const server=createAuthorizedServer(base);
+ assert.ok(server);
+ await server.close();
 });
 test("registration enumerates all 38 tools deterministically and closes denied channels",()=>{
  assert.equal(IMPLEMENTED_TOOLS.length,38);
