@@ -4,6 +4,9 @@
 
 ## Start here
 
+**Current planning reconciliation (2026-10-17):** [Master Roadmap ↔ P0 source-consolidation crosswalk](roadmap/2026-10-17-qrvai-master-plan-p0-crosswalk.md) connects the original **M0–M8** strategy and **V0–V8** review gates to [Draft PR #37](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/37). This is a development-only overlay. The source and CI claims in the historical 2026-10-15 snapshot below are date-scoped; status reconciliation remains an explicit P0 implementation task.
+
+
 **Current V0 plan: [NEW QRVAI Clean-Slate Installation Design](superpowers/specs/2026-10-14-qrvai-v0-clean-install-design.md)** — owner explicitly rejected old-package migration. Build one independent plugin with fresh Skills and no legacy data. The previous [in-place proposal](superpowers/specs/2026-10-14-qrvai-v0-in-place-migration-design.md) is **SUPERSEDED, DO NOT IMPLEMENT**.
 
 
