@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {handleVerifiedMcpRequest} from "../src/http/verified-mcp.ts";
 const url="https://qrvai.example/api/mcp";
 const body={jsonrpc:"2.0",id:1,method:"tools/list"};
-const req=(authorization?:string)=>new Request(url,{method:"POST",headers:{"content-type":"application/json",...(authorization?{authorization}:{})},body:JSON.stringify(body)});
+const req=(authorization?:string)=>new Request(url,{method:"POST",headers:{"content-type":"application/json","accept":"application/json, text/event-stream",...(authorization?{authorization}:{})},body:JSON.stringify(body)});
 const cfg={issuer:"https://issuer.example/",audience:"https://qrvai.example/api/mcp"};
 test("reject missing token without invoking verifier",async()=>{
  let called=0;
