@@ -2,9 +2,9 @@
 
 **Runtime policy:** Vercel Node.js Functions only; no Cloudflare runtime, fallback or connector.
 
-**Implemented in this draft source chain:** twenty-five bounded RF/core, user-supplied sources, simulation and education tools in `mcp/qrvai-rf-worker/src/mcp/register.ts`, available through the `/api/mcp` source adapter, gated by Bearer authentication. All remaining candidate catalog contracts are proposals, **NOT registered endpoints**, **NOT deployed**. Exact registered names deliberately differ from the conceptual dotted M07–M10 names; consumer code must use only the registered names. M09 implementation accepts user-provided bounded profiles rather than the proposed vendor cable-ID database.
+**Implemented in this draft source chain:** 38 source-registered MCP tools in `mcp/qrvai-rf-worker/src/mcp/register.ts` at the canonical Wave7 parent commit. These comprise bounded RF/core, user-supplied evidence, simulation, and educational tools exposed by the **source adapter** at `/api/mcp` only when its authentication gate is configured. This is **not** evidence of 38 integrated or live operational services: third-party feeds, device connections, authenticated user profiles and formal model/regulatory certification are not implemented by these input-only variants; production and ChatGPT host acceptance remain unverified. Exact registered names deliberately differ from the conceptual dotted M07–M10 names; consumer code must use only the registered names. M09 implementation accepts user-provided bounded profiles rather than the proposed vendor cable-ID database.
 
-**Real deployment status:** protected Vercel feature-branch preview READY; HTTPS no-token request returns 503 (expected fail-closed). Real credentialed tools/list, tools/call, production and ChatGPT @QRVAI host acceptance remain blocked/unverified.
+**Real deployment status:** a protected Vercel preview built for the exact canonical Wave7 SHA; that preview was READY. Previous unauthenticated requests were fail-closed, but a fresh credentialed HTTPS MCP exchange (`initialize`, `tools/list`, `tools/call`), production deployment, and ChatGPT host acceptance have **not been established**. Build readiness does not imply operational readiness.
 
 | Candidate ID | Concept method | Engine | Access class | Implementation | Registered MCP name |
 |---|---|---|---|---|---|
