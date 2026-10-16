@@ -1,0 +1,7 @@
+# Phase 4.2.5 — SDK-scoped MCP server (draft)
+
+The testable `createAuthorizedServer(principal)` restricts the MCP SDK registered tool handles per request. The authorized tool set is computed using `authorizeToolList`, and disallowed tools have their SDK registration disabled before transport connection. This aims to enforce **both** visible `tools/list` and callable `tools/call` boundaries. Four integration tests exercise the real SDK client and Streamable HTTP transport.
+
+**Security restrictions:** Never accept a principal supplied by clients, headers, or RPC arguments without validating a correctly issued access token. Existing Bearer transport intentionally remains unchanged. The implementation accesses the SDK internal `_registeredTools` registry because this version does not expose an explicit tool-visibility interface; this brittle internal dependency must be pinned, tested against the SDK version, and replaced with per-tool registration guards or public middleware before production. Abort if registry is not present. The `disable()` behavior must be verified with integration tests; no security guarantee without passing CI.
+
+Private station and logs tools remain inaccessible until a trusted server-side ownership resolver exists. The currently implemented tenant-check pure policy is NOT wired into actual stored resources. Provider setup, OAuth metadata, token exchange, PKCE, revocation and ChatGPT handshake are outstanding. Vercel previews stay protected; no merge or production promotion.
