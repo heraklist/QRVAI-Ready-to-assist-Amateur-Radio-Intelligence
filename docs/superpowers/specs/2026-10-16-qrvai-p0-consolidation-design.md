@@ -6,6 +6,10 @@
 **Canonical input:** PR #36, SHA `73feb5789d7830b4d47ea6100a971d864db8fb28`, based on the Vercel-only cumulative development lineage.  
 **Related decisions:** `docs/architecture/ADR-0003-mcp-integration-consolidation.md`, `ADR-0004-mcp-security-auth-boundaries.md`, `mcp-implementation-register.md`.
 
+## Master-plan alignment (addendum 2026-10-17)
+
+This P0 source-consolidation design is a **prerequisite within** the existing [strategic M0–M8 roadmap](../../roadmap/2026-10-14-qrvai-master-roadmap.md) and [V0–V8 delivery review gates](../../roadmap/2026-10-14-qrvai-review-gates-v0.5.md), **not** a replacement, milestone renumbering or authorization to implement all families. The [roadmap/P0 crosswalk](../../roadmap/2026-10-17-qrvai-master-plan-p0-crosswalk.md) is the normative coordination index for identifiers, dependencies, measured source status and stop gates. Completion of G0–G6 means a tested **development source baseline**, not completion of M0, release V0, host authentication, or any independent Domain Skill/Engine/Orchestrator/UI workstream.
+
 ## 1. Decision and boundaries
 
 Choose **canonical-first, selective reconciliation**. The cumulative source lineage consists of PRs **#17, #18, #19, #20, #22, #24, #25, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36**, not PR #21 or #23. As observed on 2026-10-16, PR #36 is ahead of `main` by 169 commits, behind by zero, and changes 69 paths. GitHub ancestry is not a functional review, merge approval, or production-readiness certification.
