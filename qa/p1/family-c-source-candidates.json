@@ -1,0 +1,98 @@
+[
+  {
+    "id": "ADIF-318",
+    "kind": "FORMAT_SPEC",
+    "source_url": "https://adif.org.uk/318/ADIF_318_annotated.htm",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "3.1.8",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "NOAA-SWPC",
+    "kind": "DATA_FEED_REFERENCE",
+    "source_url": "https://services.swpc.noaa.gov/products/",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "current timestamp required",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "CELESTRAK-GP-OMM",
+    "kind": "FORMAT_SPEC",
+    "source_url": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "GP/OMM; old TLE 5-digit constraint",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "WSJTX-GUIDE",
+    "kind": "SOFTWARE_MANUAL",
+    "source_url": "https://wsjt.sourceforge.io/wsjtx-main_en.html",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "3.0.1 checked",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "APRS101",
+    "kind": "FORMAT_SPEC",
+    "source_url": "https://www.aprs.org/doc/APRS101.PDF",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "1.0.1",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "WINLINK-TERMS",
+    "kind": "LEGAL_CONDITIONAL",
+    "source_url": "https://winlink.org/terms_conditions",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "jurisdiction-specific",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "DX-CLUSTER-CANDIDATE",
+    "kind": "PROVIDER_CANDIDATE",
+    "source_url": "https://www.dxsummit.fi/",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "unintegrated",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  },
+  {
+    "id": "CONTEST-RULES-CANDIDATE",
+    "kind": "ORGANIZER_CANDIDATE",
+    "source_url": "https://www.arrl.org/contests",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "event-specific",
+    "checked_at": "2026-10-17T13:00:00Z",
+    "review_state": "UNREVIEWED",
+    "rights_state": "UNVERIFIED",
+    "provider_connected": false,
+    "use_boundary": "Reference or candidate only; no QRVAI API integration, rights decision, fresh observed data or TX authorization."
+  }
+]
