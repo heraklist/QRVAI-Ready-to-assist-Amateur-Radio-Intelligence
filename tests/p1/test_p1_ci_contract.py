@@ -45,3 +45,7 @@ class P1CIContractTests(unittest.TestCase):
     def test_missing_qa_path_filter_fails_closed(self):
         content=WORKFLOW.read_text(encoding="utf8")
         self.assertTrue(workflow_errors(content.replace("'qa/p1/**'","'qa/wrong/**'")))
+
+    def test_v0_archive_sha_is_guarded_not_just_printed(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        self.assertIn('assert fingerprint == "eb2fb505e1e2ad24b4b5a0aea07137a7e56a8b4888c33017055cb103aba6fe7f"',content)
