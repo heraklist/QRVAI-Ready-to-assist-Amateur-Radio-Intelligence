@@ -45,3 +45,19 @@ class FamilyAStagingTests(unittest.TestCase):
         s=(STAGE/"skills/civil-protection/SKILL.md").read_text(encoding="utf8")
         for term in ("TRAINING ONLY","ΑΣΚΗΣΗ","No official activation","No live dispatch","No PTT"):
             self.assertIn(term,s)
+
+    def test_a02_emcomm_exact_canonical_files(self):
+        d=next(x for x in SPECS if x.id=="A02")
+        self.assertEqual(d.slug,"emcomm-traffic")
+        self.assertEqual([p.relative_path.split("/")[-1] for p in d.procedures],
+                         ["1-net-role-training.md","2-message-integrity-drill.md","3-fallback-traffic-simulation.md"])
+        self.assertTrue((STAGE/"skills/emcomm-traffic/SKILL.md").is_file(),"SK-A02 staged source missing")
+        self.assertTrue(all((STAGE/p.relative_path).is_file() for p in d.procedures))
+        self.assertEqual(isolated_audit("A02"),[])
+
+    def test_a02_training_not_actual_dispatch(self):
+        p=STAGE/"skills/emcomm-traffic/SKILL.md"
+        text=p.read_text(encoding="utf8")
+        for term in ("EXERCISE ONLY","ΑΣΚΗΣΗ","No live dispatch","No PTT","No unofficial priority authority"):
+            self.assertIn(term,text)
+        self.assertTrue(isolated_audit("A02",lambda pkg: (pkg/"references/2-message-integrity-drill.md").unlink()))
