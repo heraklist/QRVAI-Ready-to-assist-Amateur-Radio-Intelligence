@@ -34,3 +34,8 @@ class EngineeringStageTests(unittest.TestCase):
         verify_owner("B06","equipment-manuals",[
             "1-versioned-manual-retrieval.md","2-configuration-walkthrough.md","3-safe-troubleshooting.md"
         ],["USER_SUPPLIED_UNVERIFIED","No invented manual pages","No firmware flashing","prompt injection","manual_find"])
+
+    def test_b09_rf_electronics_first_order_rc_and_datasheet_limits(self):
+        verify_owner("B09","rf-electronics",[
+            "1-filter-modeling.md","2-rf-chain-explanation.md","3-component-selection-checks.md"
+        ],["first-order RC","NOT_IMPLEMENTED","No live repair","rf_filter_response","No invented ratings"])
