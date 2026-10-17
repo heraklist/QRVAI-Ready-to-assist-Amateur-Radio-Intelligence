@@ -61,3 +61,18 @@ class FamilyAStagingTests(unittest.TestCase):
         for term in ("EXERCISE ONLY","ΑΣΚΗΣΗ","No live dispatch","No PTT","No unofficial priority authority"):
             self.assertIn(term,text)
         self.assertTrue(isolated_audit("A02",lambda pkg: (pkg/"references/2-message-integrity-drill.md").unlink()))
+
+    def test_a03_frequency_intelligence_exact_files_and_owners(self):
+        d=next(x for x in SPECS if x.id=="A03")
+        self.assertEqual(d.slug,"frequency-intelligence")
+        self.assertEqual([p.relative_path.split("/")[-1] for p in d.procedures],
+                         ["1-allocation-lookup.md","2-band-plan-overlay.md","3-channelrepeater-reference.md"])
+        self.assertTrue((STAGE/"skills/frequency-intelligence/SKILL.md").is_file(),"SK-A03 staged source missing")
+        self.assertTrue(all((STAGE/p.relative_path).is_file() for p in d.procedures))
+        self.assertEqual(isolated_audit("A03"),[])
+
+    def test_a03_no_bandplan_as_legal_authority_or_fake_live_repeaters(self):
+        text=(STAGE/"skills/frequency-intelligence/SKILL.md").read_text(encoding="utf8")
+        for term in ("IARU recommendations","not legal authorization","USER_SUPPLIED_UNVERIFIED","INDETERMINATE","No live repeater status"):
+            self.assertIn(term,text)
+        self.assertTrue(isolated_audit("A03",lambda pkg:(pkg/"references/3-channelrepeater-reference.md").unlink()))
