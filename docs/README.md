@@ -1,6 +1,10 @@
 # QRVAI Architecture Documentation Index
 
-**Updated:** 2026-10-15 · **State:** GitHub main has five V0 Skills and four implemented read-only RF tools. Vercel-only MCP backend is in [Draft PR #17](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/17); the Vercel project is linked but no verified HTTPS deployment, Plugin Creator release, or host E2E exists. Cloudflare is not a runtime option.
+**Updated:** 2026-10-17 · **Current development:** five V0 Skills are in `main`; **38 source-registered** MCP methods are present on cumulative **Draft** branches. Intended backend is **Vercel-only**. Actual production MCP, issuer/OAuth, Plugin Creator installation, and ChatGPT host E2E are **NOT CONNECTED** or verified. Source registration does not imply provider integration.
+
+## Current development status (2026-10-17)
+
+The present architectural record is the [P0 Master Roadmap crosswalk](roadmap/2026-10-17-qrvai-master-plan-p0-crosswalk.md), the [P0 implementation plan](superpowers/plans/2026-10-16-qrvai-p0-consolidation.md), and [Draft PR #38](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/38). Five V0 Skills remain a Skills-only portable package with no root `mcp.json`; 38 source-registered MCP names on development branches include user-supplied/simulated tools, not 38 independently proven operational provider services. This new status supersedes the dated 2026-10-15 counts in the historical section below, without claiming a merge to `main` or an installation.
 
 ## Start here
 
@@ -35,6 +39,6 @@
 
 **Still blocked or not executed:** the legacy private creator-record `plugins_6acf47f502dc8191bf542fe040d484d8` remains saved and must not be updated/reused. The owner found no Delete action in personal plugin management; [Issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) tracks record deletion and possible name collision. There has been **no new Plugin Creator `create_plugin` call**, no fresh QRVAI private release, no installation, and no ChatGPT-client end-to-end `@QRVAI` or follow-up routing test.
 
-**Future architecture is not deployed:** 24 separate Domain Skills, 18 engines, 38 proposed MCP methods, four independent orchestrators and 36 MCP Apps remain conceptual. Of the proposed tools, **four** RF calculators are implemented in source, **34 are still unimplemented**. V0 itself ships no `mcp.json`, CAT/PTT integration, emergency dispatch, live provider adapter, or private Academy content. The active Vercel-only development branch retains release gates for safe deployment.
+**2026-10-15 historical snapshot (superseded for Draft source):** 24 Domain Skills, 18 full engines, four orchestrators and 36 MCP Apps were proposals; four RF calculators were present then. The cumulative 2026-10-17 Draft lineage now has **38 source-registered** MCP methods, mostly bounded offline, without equivalent host/provider readiness. V0 itself ships no `mcp.json`, CAT/PTT integration, emergency dispatch, live provider adapter, or private Academy content. The active Vercel-only development branch retains release gates for safe deployment.
 
 **Next gates:** Vercel preview target must be unambiguously verified (two mis-targeted or unspecified build attempts were canceled); then verify real HTTPS protocol, protected authentication compatibility, quotas and provider logs before production. New private ChatGPT plugin creation and `@QRVAI` host acceptance remain separate, deferred gates.
