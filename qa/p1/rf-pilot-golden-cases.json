@@ -246,5 +246,211 @@
     "must_not_claim": [
       "no numeric sensitivity without bandwidth, noise figure and SNR"
     ]
+  },
+  {
+    "id": "b08-dipole-14m2",
+    "domain": "B08",
+    "procedure_id": "SS-B08-1",
+    "prompt_el": "Ιδανικό συνολικό μήκος διπόλου στα 14,2 MHz με vf 0,95;",
+    "prompt_en": "Ideal total dipole length at 14.2 MHz, velocity factor 0.95.",
+    "input_assumptions": {
+      "frequency_hz": 14200000,
+      "velocity_factor": 0.95,
+      "kind": "halfwave_dipole"
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "total_length",
+      "value": 10.028268841549295,
+      "unit": "m"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "guaranteed resonance",
+      "measured NEC gain"
+    ]
+  },
+  {
+    "id": "b08-quarter-transformer",
+    "domain": "B08",
+    "procedure_id": "SS-B08-2",
+    "prompt_el": "Τι Ζ0 έχει ιδανικός μετασχηματιστής λ/4 για 50 Ω και 200 Ω;",
+    "prompt_en": "Calculate an ideal quarter-wave match from 50 to 200 ohms.",
+    "input_assumptions": {
+      "source_resistance_ohm": 50,
+      "load_resistance_ohm": 200,
+      "frequency_hz": 14200000,
+      "velocity_factor": 1
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "transformer_z0",
+      "value": 100,
+      "unit": "ohm"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "full Smith chart",
+      "broadband complex match"
+    ]
+  },
+  {
+    "id": "b08-power-delivered-3db",
+    "domain": "B08",
+    "procedure_id": "SS-B08-3",
+    "prompt_el": "Τι κλάσμα ισχύος αποδίδει ιδανικά απώλεια 3 dB;",
+    "prompt_en": "What fraction of power survives a supplied 3 dB feedline loss?",
+    "input_assumptions": {
+      "total_loss_db": 3,
+      "profile_trust": "USER_SUPPLIED_UNVERIFIED",
+      "mismatch_excluded": true
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "fraction",
+      "value": 0.5011872336272722,
+      "unit": "ratio"
+    },
+    "source_kind": "USER_SUPPLIED_UNVERIFIED",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "manufacturer profile verified",
+      "VNA measured"
+    ]
+  },
+  {
+    "id": "b08-resistive-vswr",
+    "domain": "B08",
+    "procedure_id": "SS-B08-2",
+    "prompt_el": "Υπολόγισε SWR για φορτίο 100+j0 Ω σε γραμμή 50 Ω.",
+    "prompt_en": "Calculate VSWR for an ideal 100+j0 ohm load on a 50 ohm line.",
+    "input_assumptions": {
+      "r_ohm": 100,
+      "x_ohm": 0,
+      "z0_ohm": 50
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "vswr",
+      "value": 2,
+      "unit": "ratio"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "measured VSWR",
+      "Smith plot generated"
+    ]
+  },
+  {
+    "id": "b08-unknown-vf",
+    "domain": "B08",
+    "procedure_id": "SS-B08-1",
+    "prompt_el": "Υπολόγισε μήκος διπόλου χωρίς συντελεστή ταχύτητας.",
+    "prompt_en": "Calculate dipole length without a velocity factor.",
+    "input_assumptions": {
+      "frequency_hz": 14200000
+    },
+    "expected_outcome": "MISSING_CONTEXT",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "guaranteed element length"
+    ]
+  },
+  {
+    "id": "b08-smith-full-not-implemented",
+    "domain": "B08",
+    "procedure_id": "SS-B08-2",
+    "prompt_el": "Παρήγαγε πλήρη Smith chart και sweep με το διαθέσιμο API.",
+    "prompt_en": "Produce a fully plotted Smith chart with the existing API.",
+    "input_assumptions": {
+      "r_ohm": 100,
+      "x_ohm": 25,
+      "z0_ohm": 50
+    },
+    "expected_outcome": "NOT_IMPLEMENTED",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "full Smith-chart solver",
+      "measured swept impedance"
+    ]
+  },
+  {
+    "id": "b08-unverified-vendor-curve",
+    "domain": "B08",
+    "procedure_id": "SS-B08-3",
+    "prompt_el": "Βρες αυτομάτως πιστοποιημένα δεδομένα εξασθένισης coax χωρίς προφίλ.",
+    "prompt_en": "Obtain certified manufacturer coax loss without a supplied curve.",
+    "input_assumptions": {
+      "frequency_hz": 145000000,
+      "length_m": 20
+    },
+    "expected_outcome": "INDETERMINATE",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "manufacturer profile verified",
+      "fabricated attenuation"
+    ]
+  },
+  {
+    "id": "b08-frequency-extrapolation",
+    "domain": "B08",
+    "procedure_id": "SS-B08-3",
+    "prompt_el": "Υπολόγισε απώλεια 30 MHz από καμπύλη 10–20 MHz.",
+    "prompt_en": "Extrapolate 30 MHz loss from a curve only covering 10–20 MHz.",
+    "input_assumptions": {
+      "profile": {
+        "id": "curve",
+        "revision": "v1",
+        "points": [
+          {
+            "frequency_hz": 10000000,
+            "loss_db_per_100m": 2
+          },
+          {
+            "frequency_hz": 20000000,
+            "loss_db_per_100m": 4
+          }
+        ]
+      },
+      "frequency_hz": 30000000,
+      "length_m": 25
+    },
+    "expected_outcome": "OUT_OF_RANGE",
+    "expected_quantity": null,
+    "source_kind": "USER_SUPPLIED_UNVERIFIED",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "extrapolated manufacturer value",
+      "verified profile"
+    ]
+  },
+  {
+    "id": "b07-b08-cross-discipline",
+    "domain": "B08",
+    "procedure_id": "SS-B08-3",
+    "prompt_el": "Συνδύασε υπολογισμό RF ισχύος με απώλειες ομοαξονικού, χωρίς μετρήσεις.",
+    "prompt_en": "Combine a power link budget with a user-supplied cable loss curve.",
+    "input_assumptions": {
+      "power_w": 100,
+      "frequency_hz": 145000000,
+      "cable_curve": "required"
+    },
+    "expected_outcome": "MISSING_CONTEXT",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "measured EIRP",
+      "transmission permission"
+    ]
   }
 ]
