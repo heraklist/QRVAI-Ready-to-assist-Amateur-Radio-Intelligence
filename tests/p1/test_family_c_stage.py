@@ -36,3 +36,6 @@ class CFamilyStagingTests(unittest.TestCase):
 
     def test_c15_fspl_is_not_ionospheric_forecast(self):
         verify_c_owner("C15","propagation",("spaceweather_indices","propagation_path","live_feed:false","real_world_prediction:false","No guaranteed path opening"))
+
+    def test_c16_receive_only_versioned_no_cat_ptt(self):
+        verify_c_owner("C16","digital-modes",("digital_setup_guide","simulated:true","No PTT","No CAT writes","NOT_IMPLEMENTED"))
