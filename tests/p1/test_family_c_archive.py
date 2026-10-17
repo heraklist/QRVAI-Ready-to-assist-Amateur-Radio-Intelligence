@@ -17,3 +17,66 @@ class FamilyCInheritanceTests(unittest.TestCase):
             z=build_review_zip(root,Path(temp)/"inherited-52.zip",old.SPECS,old.OWNERS)
             self.assertEqual(validate_review_zip(z,old.EXPECTED),[])
             self.assertEqual(sha256(z.read_bytes()).hexdigest(),P13_SHA)
+
+
+from shutil import copytree
+from zipfile import ZipFile,ZipInfo,ZIP_DEFLATED
+import stat
+
+C_FAMILY=frozenset(f"C{i}" for i in range(14,22))
+CUMULATIVE=old.OWNERS|C_FAMILY
+CURRENT=old.STAGE
+SPEC=old.SPECS
+SOURCE_PATHS=frozenset("p1-domain-skills/"+relative for d in SPEC if d.id in CUMULATIVE
+    for relative in (f"skills/{d.slug}/SKILL.md",*(p.relative_path for p in d.procedures)))
+
+class FamilyC84FileArchiveTests(unittest.TestCase):
+    def test_all_84_markdown_files_byte_identical_two_builds(self):
+        self.assertEqual(len(CUMULATIVE),21)
+        self.assertEqual(len(SOURCE_PATHS),84)
+        self.assertEqual(audit_stage(CURRENT,SPEC,CUMULATIVE),[])
+        with TemporaryDirectory() as temp:
+            p=Path(temp)
+            a=build_review_zip(CURRENT,p/"one.zip",SPEC,CUMULATIVE)
+            b=build_review_zip(CURRENT,p/"two.zip",SPEC,CUMULATIVE)
+            self.assertEqual(sha256(a.read_bytes()).hexdigest(),sha256(b.read_bytes()).hexdigest())
+            self.assertEqual(validate_review_zip(a,SOURCE_PATHS),[])
+            with ZipFile(a) as z:
+                names=z.namelist()
+                self.assertEqual(set(names),SOURCE_PATHS)
+                self.assertEqual(len(names),84)
+                self.assertEqual(sum(name.endswith("/SKILL.md") for name in names),21)
+                self.assertEqual(sum(name.endswith(".md") and not name.endswith("/SKILL.md") for name in names),63)
+                self.assertFalse(any(name.endswith("plugin.json") for name in names))
+
+    def test_85th_member_plugin_or_path_traversal_fails_closed(self):
+        with TemporaryDirectory() as temp:
+            p=Path(temp);original=build_review_zip(CURRENT,p/"base.zip",SPEC,CUMULATIVE)
+            for name in ("p1-domain-skills/plugin.json","../secrets.txt","p1-domain-skills/skills/contests-portable/.env"):
+                dest=p/"tampered.zip"
+                with ZipFile(original) as src, ZipFile(dest,"w",ZIP_DEFLATED) as out:
+                    for item in src.infolist():out.writestr(item,src.read(item))
+                    extra=ZipInfo(name)
+                    extra.create_system=3
+                    extra.external_attr=(stat.S_IFREG|0o644)<<16
+                    extra.compress_type=ZIP_DEFLATED
+                    out.writestr(extra,"must reject")
+                self.assertTrue(validate_review_zip(dest,SOURCE_PATHS),name)
+
+    def test_wrong_c21_owner_symlink_and_85th_source_file_rejected(self):
+        with TemporaryDirectory() as temp:
+            root=Path(temp)
+            dest=root/"source"
+            copytree(CURRENT,dest,symlinks=True)
+            target=dest/"skills/contests-portable/references/3-field-operations-review.md"
+            original=target.read_text(encoding="utf8")
+            target.write_text(original.replace("**Owner:** SK-C21","**Owner:** SK-C20"),encoding="utf8")
+            self.assertTrue(audit_stage(dest,SPEC,CUMULATIVE))
+            target.write_text(original,encoding="utf8")
+            target.unlink()
+            target.symlink_to(dest/"skills/operating-dx/SKILL.md")
+            self.assertTrue(audit_stage(dest,SPEC,CUMULATIVE))
+            target.unlink()
+            target.write_text(original,encoding="utf8")
+            (dest/"skills/contests-portable/plugin.json").write_text("{}")
+            self.assertTrue(audit_stage(dest,SPEC,CUMULATIVE))
