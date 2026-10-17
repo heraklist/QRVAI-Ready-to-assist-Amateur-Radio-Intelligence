@@ -35,7 +35,7 @@ jobs:
           assert len(specs)==24
           assert sum(len(x.procedures) for x in specs)==72
           stage=root/"staging/p1-domain-skills"
-          assert audit_stage(stage,specs,frozenset({"B07"}))==[]
+          assert audit_stage(stage,specs,frozenset({"B07","B08"}))==[]
           assert validate_routing_cases(root/"qa/p1/domain-routing-cases.json",specs)==[]
           print("P1_REGISTRY=24/72")
           print("P1_STAGE=1/24,3/72")
