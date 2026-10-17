@@ -25,6 +25,10 @@ REQUIRED=(
     "P1_STAGE_ARCHIVE_FILES=84",
     "P1_FAMILY_A_CASES=30",
     "P1_FAMILY_B_CASES=36",
+    "P1_FAMILY_C_CASES=48",
+    "P1_FAMILY_C_SS_COVERED=24/24",
+    "P1_C_PROVIDER_LINKS=NOT_CONNECTED",
+    "P1_C_TX=NOT_ENABLED",
     "P1_FAMILY_B_SS_COVERED=18/18",
     "P1_STATION_BRIDGE=NOT_CONNECTED",
     "P1_FAMILY_A_SS_COVERED=15/15",
@@ -99,3 +103,11 @@ class P1CIContractTests(unittest.TestCase):
         self.assertIn(owners,content)
         self.assertNotIn("id-token: write",content)
         self.assertNotIn("vercel --prod",content)
+
+    def test_family_c_metrics_and_absent_radio_are_mandatory(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        for token in ("P1_FAMILY_C_CASES=48","P1_FAMILY_C_SS_COVERED=24/24",
+                      "P1_C_PROVIDER_LINKS=NOT_CONNECTED","P1_C_TX=NOT_ENABLED"):
+            self.assertTrue(workflow_errors(content.replace(token,"REMOVED")),token)
+        self.assertNotIn("id-token: write",content)
+        self.assertNotIn("workflow_dispatch:",content)
