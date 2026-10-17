@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --experimental-strip-types --test test/power.spec.ts test/link-budget.spec.ts test/impedance.spec.ts test/feedline.spec.ts test/validation.spec.ts test/register.spec.ts test/protocol.spec.ts test/http-limits.spec.ts test/source-boundary.spec.ts test/release-gates.spec.ts test/vercel-protocol.spec.ts test/wave1.spec.ts test/wave2.spec.ts test/wave3.spec.ts test/wave4.spec.ts test/wave5.spec.ts test/wave6.spec.ts test/wave7.spec.ts test/oauth-security.spec.ts test/oauth-signed.spec.ts test/authz-policy.spec.ts test/rpc-authz.spec.ts test/scoped-server.spec.ts test/scoped-server-public-boundary.spec.ts test/concurrent-clients.spec.ts test/verified-mcp.spec.ts",
+    "test": "node --experimental-strip-types --test test/power.spec.ts test/link-budget.spec.ts test/impedance.spec.ts test/feedline.spec.ts test/validation.spec.ts test/register.spec.ts test/protocol.spec.ts test/http-limits.spec.ts test/source-boundary.spec.ts test/release-gates.spec.ts test/vercel-protocol.spec.ts test/wave1.spec.ts test/wave2.spec.ts test/wave3.spec.ts test/wave4.spec.ts test/wave5.spec.ts test/wave6.spec.ts test/wave7.spec.ts test/oauth-security.spec.ts test/oauth-signed.spec.ts test/authz-policy.spec.ts test/rpc-authz.spec.ts test/scoped-server.spec.ts test/scoped-server-public-boundary.spec.ts test/concurrent-clients.spec.ts test/verified-mcp.spec.ts test/p0-consolidation.spec.ts test/p0-status-docs.spec.ts",
     "typecheck": "tsc --noEmit",
     "verify:https": "node scripts/verify-https.mjs"
   },
