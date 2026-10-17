@@ -39,3 +39,8 @@ class EngineeringStageTests(unittest.TestCase):
         verify_owner("B09","rf-electronics",[
             "1-filter-modeling.md","2-rf-chain-explanation.md","3-component-selection-checks.md"
         ],["first-order RC","NOT_IMPLEMENTED","No live repair","rf_filter_response","No invented ratings"])
+
+    def test_b10_magnitude_samples_are_not_calibrated_vna(self):
+        verify_owner("B10","rf-measurements",[
+            "1-vna-trace-interpretation.md","2-spectrumtest-setup.md","3-measurement-reconciliation.md"
+        ],["measurements_inspect_trace","NOT_IMPLEMENTED","No calibrated VNA","No live measurements","Touchstone"])
