@@ -42,3 +42,6 @@ class CFamilyStagingTests(unittest.TestCase):
 
     def test_c17_no_live_packet_forward_or_location_leak(self):
         verify_c_owner("C17","packet-networks",("packet_route_preview","simulated:true","No APRS-IS write","No Winlink send","private location"))
+
+    def test_c18_signed_offset_no_repeater_operational_proof(self):
+        verify_c_owner("C18","repeaters-dvoice",("repeater_channel_preview","spectrum_find_repeaters","verified:false","live_status_known:false","No invented tones"))
