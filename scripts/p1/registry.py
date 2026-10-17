@@ -50,7 +50,7 @@ def _parts(text: str, headings: list[re.Match[str]]) -> list[str]:
 
 
 def _field(body: str, label: str, domain: str) -> str:
-    line = re.search(r"^\*\*" + re.escape(label) + r":\*\*\s*(.*?)\s*$", body, re.M)
+    line = re.search(r"^\*\*" + re.escape(label) + r":\*\*[ \t]*(.*?)[ \t]*$", body, re.M)
     if not line or not line.group(1).strip():
         raise ValueError(f"{domain}: missing {label}")
     return line.group(1).strip()
