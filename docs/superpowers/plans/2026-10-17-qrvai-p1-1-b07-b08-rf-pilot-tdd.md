@@ -1,4 +1,4 @@
-# QRVAI P1.1 — B07/B08 RF Domain Skill Pilot — Native TDD Implementation Plan
+# QRVAI P1.1 — B07/B08 RF Domain Skill Pilot — TDD Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans **only after the owner separately approves THIS plan and selects a method**. Read superpowers:test-driven-development and verification-before-completion before writing source files.
 
