@@ -91,3 +91,18 @@ class FamilyAStagingTests(unittest.TestCase):
         for term in ("ALLOWED/NOT_ALLOWED/INDETERMINATE","INDETERMINATE","NOT_IMPLEMENTED","Never issue a licence","CEPT/HAREC","authorized:false"):
             self.assertIn(term,text)
         self.assertTrue(isolated_audit("A04",lambda pkg:(pkg/"references/3-crossborder-explanation.md").unlink()))
+
+    def test_a05_rf_safety_emc_canonical_package(self):
+        d=next(x for x in SPECS if x.id=="A05")
+        self.assertEqual(d.slug,"rf-safety-emc")
+        self.assertEqual([p.relative_path.split("/")[-1] for p in d.procedures],
+                         ["1-rf-exposure-worksheet.md","2-interference-troubleshooting.md","3-installation-risk-review.md"])
+        self.assertTrue((STAGE/"skills/rf-safety-emc/SKILL.md").is_file(),"SK-A05 staged source missing")
+        self.assertTrue(all((STAGE/p.relative_path).is_file() for p in d.procedures))
+        self.assertEqual(isolated_audit("A05"),[])
+
+    def test_a05_never_certifies_radiation_or_unsafe_electrical_work(self):
+        t=(STAGE/"skills/rf-safety-emc/SKILL.md").read_text(encoding="utf8")
+        for term in ("compliance_established:false","not RF exposure certification","qualified personnel","No live measurements","No mains repairs"):
+            self.assertIn(term,t)
+        self.assertTrue(isolated_audit("A05",lambda pkg:(pkg/"references/1-rf-exposure-worksheet.md").unlink()))
