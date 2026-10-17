@@ -51,3 +51,6 @@ class CFamilyStagingTests(unittest.TestCase):
 
     def test_c20_adif318_preview_not_full_roundtrip_or_award_cert(self):
         verify_c_owner("C20","logbook-awards",("adif_validate","log_award_progress","saved:false","award_certified:false","No LoTW upload","NOT_IMPLEMENTED"))
+
+    def test_c21_sorted_utc_slots_not_event_calendar_or_contest_score(self):
+        verify_c_owner("C21","contests-portable",("contest_plan","official_schedule:false","No invented contest scoring","No activation approval","No PTT"))
