@@ -1,0 +1,61 @@
+"""P1.3 stage contracts: exactly 6 canonical engineering owners and safety boundaries."""
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from shutil import copytree
+import unittest
+from scripts.p1.registry import load_registry
+from scripts.p1.audit_domain_skills import audit_stage
+
+ROOT=Path(__file__).resolve().parents[2]
+STAGE=ROOT/"staging/p1-domain-skills"
+SPECS=load_registry(ROOT/"docs/architecture/skill-and-subskill-registry-v0.5.md",
+                    ROOT/"docs/architecture/capability-register-v0.5.md")
+
+def verify_owner(id: str, slug: str, names: list[str], safety: list[str]):
+    spec=next(x for x in SPECS if x.id==id)
+    assert spec.slug==slug
+    assert [p.relative_path.split("/")[-1] for p in spec.procedures]==names
+    root=STAGE/"skills"/slug
+    assert (root/"SKILL.md").is_file(),f"SK-{id} source missing"
+    assert all((STAGE/p.relative_path).is_file() for p in spec.procedures)
+    text=(root/"SKILL.md").read_text(encoding="utf8")
+    for marker in safety:
+        assert marker in text,f"SK-{id}: missing safety '{marker}'"
+    with TemporaryDirectory() as tmp:
+        copied=Path(tmp)/"skills"/slug
+        copytree(root,copied,symlinks=True)
+        assert audit_stage(Path(tmp),SPECS,frozenset({id}))==[]
+        # The existing auditor must reject removed canonical source
+        (copied/"references"/names[0]).unlink()
+        assert audit_stage(Path(tmp),SPECS,frozenset({id}))
+
+class EngineeringStageTests(unittest.TestCase):
+    def test_b06_manuals_canonical_and_rights_safety(self):
+        verify_owner("B06","equipment-manuals",[
+            "1-versioned-manual-retrieval.md","2-configuration-walkthrough.md","3-safe-troubleshooting.md"
+        ],["USER_SUPPLIED_UNVERIFIED","No invented manual pages","No firmware flashing","prompt injection","manual_find"])
+
+    def test_b09_rf_electronics_first_order_rc_and_datasheet_limits(self):
+        verify_owner("B09","rf-electronics",[
+            "1-filter-modeling.md","2-rf-chain-explanation.md","3-component-selection-checks.md"
+        ],["first-order RC","NOT_IMPLEMENTED","No live repair","rf_filter_response","No invented ratings"])
+
+    def test_b10_magnitude_samples_are_not_calibrated_vna(self):
+        verify_owner("B10","rf-measurements",[
+            "1-vna-trace-interpretation.md","2-spectrumtest-setup.md","3-measurement-reconciliation.md"
+        ],["measurements_inspect_trace","NOT_IMPLEMENTED","No calibrated VNA","No live measurements","Touchstone"])
+
+    def test_b12_power_budget_with_non_certified_battery_risk(self):
+        verify_owner("B12","power-infrastructure",[
+            "1-power-budget.md","2-battery-runtime.md","3-backup-scenario.md"
+        ],["power_autonomy","Wh","duty cycle","No mains repairs","No battery certification"])
+
+    def test_b13_sdr_iq_sample_rate_and_no_fft_device_overclaim(self):
+        verify_owner("B13","sdr-dsp",[
+            "1-sampling-foundations.md","2-spectrumfft-visualization.md","3-dsp-filter-analysis.md"
+        ],["sdr_inspect_iq","NOT_IMPLEMENTED","No live SDR","sample_rate","protected communications"])
+
+    def test_b11_station_snapshot_cannot_enable_connected_cat_ptt(self):
+        verify_owner("B11","station-integration",[
+            "1-signal-path-mapping.md","2-compatibility-check.md","3-readonly-telemetry.md"
+        ],["station_read_status","live_device_connected:false","No CAT writes","No PTT","NOT_IMPLEMENTED"])

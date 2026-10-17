@@ -22,14 +22,22 @@ EXPECTED=frozenset(
     for rel in (f"skills/{spec.slug}/SKILL.md",*(p.relative_path for p in spec.procedures))
 )
 
+def copy_family_a_baseline(destination: Path) -> Path:
+    """Isolate immutable seven-Skill P1.2 baseline from additive P1.3 source staging."""
+    for spec in SPECS:
+        if spec.id in OWNERS:
+            copytree(STAGE/"skills"/spec.slug,destination/"skills"/spec.slug)
+    return destination
+
 class FamilyAArchiveTests(unittest.TestCase):
     def test_canonical_28_file_source_zip_is_deterministic(self):
         self.assertEqual(len(EXPECTED),28)
-        self.assertEqual(audit_stage(STAGE,SPECS,OWNERS),[])
         with TemporaryDirectory() as tmp:
             out=Path(tmp)
-            a=build_review_zip(STAGE,out/"a.zip",SPECS,OWNERS)
-            b=build_review_zip(STAGE,out/"b.zip",SPECS,OWNERS)
+            subset=copy_family_a_baseline(out/"baseline")
+            self.assertEqual(audit_stage(subset,SPECS,OWNERS),[])
+            a=build_review_zip(subset,out/"a.zip",SPECS,OWNERS)
+            b=build_review_zip(subset,out/"b.zip",SPECS,OWNERS)
             self.assertEqual(sha256(a.read_bytes()).digest(),sha256(b.read_bytes()).digest())
             self.assertEqual(validate_review_zip(a,EXPECTED),[])
             with ZipFile(a) as z:
@@ -40,7 +48,8 @@ class FamilyAArchiveTests(unittest.TestCase):
     def test_29th_manifest_and_path_escape_are_rejected(self):
         with TemporaryDirectory() as tmp:
             out=Path(tmp)
-            orig=build_review_zip(STAGE,out/"valid.zip",SPECS,OWNERS)
+            subset=copy_family_a_baseline(out/"baseline")
+            orig=build_review_zip(subset,out/"valid.zip",SPECS,OWNERS)
             for bogus in ("p1-domain-skills/plugin.json","../secrets.txt"):
                 changed=out/"tampered.zip"
                 with ZipFile(orig) as src, ZipFile(changed,"w",ZIP_DEFLATED) as target:
@@ -56,7 +65,7 @@ class FamilyAArchiveTests(unittest.TestCase):
     def test_missing_a04_owner_or_symlink_fails_before_packaging(self):
         with TemporaryDirectory() as tmp:
             clone=Path(tmp)/"staged"
-            copytree(STAGE,clone,symlinks=True)
+            copy_family_a_baseline(clone)
             source=clone/"skills/regulatory-licensing/references/2-transmission-rule-evaluation.md"
             original=source.read_text(encoding="utf8")
             source.write_text(original.replace("**Owner:** SK-A04","**Owner:** SK-A03"),encoding="utf8")
