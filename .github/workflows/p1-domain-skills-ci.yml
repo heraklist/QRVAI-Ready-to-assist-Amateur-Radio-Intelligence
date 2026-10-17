@@ -62,5 +62,7 @@ jobs:
               with zipfile.ZipFile(archive) as zip_file:
                   assert len(zip_file.namelist()) == 12
               print("V0_ARCHIVE_FILES=12")
-              print("V0_ARCHIVE_SHA256=" + sha256(archive.read_bytes()).hexdigest())
+              fingerprint = sha256(archive.read_bytes()).hexdigest()
+              assert fingerprint == "eb2fb505e1e2ad24b4b5a0aea07137a7e56a8b4888c33017055cb103aba6fe7f", "V0 archive changed"
+              print("V0_ARCHIVE_SHA256=" + fingerprint)
           PY
