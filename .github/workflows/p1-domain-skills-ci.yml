@@ -41,7 +41,29 @@ jobs:
           print("P1_STAGE=7/24,21/72")
           print("P1_HOST_E2E=NOT_EXECUTED")
           PY
-      - name: Verify deterministic eight-file review-only staged source archive
+      - name: Explicit Family A fixture and legal-authority honesty gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          corpus=json.loads(Path("qa/p1/family-a-routing-and-safety-cases.json").read_text(encoding="utf8"))
+          authorities=json.loads(Path("qa/p1/family-a-source-evidence-candidates.json").read_text(encoding="utf8"))
+          expected={f"SS-A{n:02d}-{k}" for n in range(1,6) for k in (1,2,3)}
+          actual={row["procedure_id"] for row in corpus}
+          assert len(corpus)==30 and actual==expected
+          assert len({r["id"] for r in corpus})==30
+          assert len(authorities)==7
+          assert all(r["legal_review_state"]=="UNREVIEWED" and r["permission_assertion"] is False
+                     and r["effective_from"] is None for r in authorities)
+          assert not any(row["domain"] in ("A03","A04") and
+                         row["source_kind"] in ("UNREVIEWED_SOURCE","USER_SUPPLIED_UNVERIFIED") and
+                         row["expected_outcome"] in ("SYNTHETIC_ALLOWED","SYNTHETIC_NOT_ALLOWED") for row in corpus)
+          print("P1_FAMILY_A_CASES=30")
+          print("P1_FAMILY_A_SS_COVERED=15/15")
+          print("P1_AUTHORITY_CANDIDATES=7")
+          print("P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED")
+          PY
+      - name: Verify deterministic approved P1 source-only review archive
         run: |
           python - <<'PY'
           from pathlib import Path
