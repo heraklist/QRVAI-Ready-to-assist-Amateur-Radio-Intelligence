@@ -10,6 +10,7 @@ on:
       - 'docs/**'
       - 'tests/v0/**'
       - 'qa/v0/**'
+      - 'qa/mcp/**'
       - 'scripts/v0/**'
       - 'requirements-v0-dev.txt'
       - '.github/workflows/v0-ci.yml'
