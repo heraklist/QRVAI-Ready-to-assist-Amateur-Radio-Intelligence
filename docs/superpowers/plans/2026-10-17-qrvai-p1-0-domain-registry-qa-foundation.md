@@ -104,14 +104,14 @@ Five high-risk input classes, with an explicit negative fixture in the owning ta
 
 **Interfaces:**
 - Consumes Task 1 `DomainSpec` and `load_registry`, existing `scripts.v0.validate.validate_skill` and `scripts.v0.audit_content.validate_local_references` (pure validation, no modification).
-- Produces `audit_stage(root: Path, specs: tuple[DomainSpec, ...], required_ids: frozenset[str]) -> list[str]`. `root` = `staging/p1-domain-skills` in real CI; `required_ids` = explicitly approved subset for a P1 slice, **empty for P1.0**. Successful audit returns `[]`; nonzero errors make caller fail.
+- Produces `audit_stage(root: Path, specs: tuple[DomainSpec, ...], required_ids: frozenset[str]) -> list[str]`. `root` = `staging/p1-domain-skills` in real CI; `required_ids` = explicitly approved subset for a P1 slice, **empty for P1.0**. Successful audit returns `[]`; nonzero errors make caller fail. For P1.0, missing/nonexistent stage root plus an empty `required_ids` is valid and creates no directory. A missing root with a nonempty required set must fail closed.
 
 - [ ] **Step 1: Write RED tests** for an empty staging directory and expected empty set, and a `TemporaryDirectory` with `skills/rf-engineering/SKILL.md` plus **exact** B07 refs, using minimal valid frontmatter (`name: rf-engineering`, `description: ...`), owner/SS IDs, required-context/output/stop sections and scoped links; `audit_stage(..., frozenset({"B07"})) == []`.
 - [ ] **Step 2: Run RED:** `python -m unittest discover -s tests/p1 -p 'test_stage_audit.py' -v`; expected missing `audit_stage`, rather than a passing skipped case.
 - [ ] **Step 3: Implement audit** by deriving the set of allowed **one `SKILL.md` + three registry-specific reference paths per required Domain**. Enforce no extra files (including `plugin.json` / `mcp.json`), duplicate IDs, missing/renamed files, symlinks anywhere below stage root, unexpected path case, over-1 MiB Markdown, inconsistent frontmatter/parent/SS declarations, content with no trigger/output/stop, broken or unsafe links and explicit prohibited install/credential claims. Do not invoke any MCP/Plugin Creator API or create staged content.
 - [ ] **Step 4: Run GREEN** on success fixtures.
 - [ ] **Step 5: Add RED→GREEN corruption tests:** delete `skills/rf-engineering/references/2-link-budget-analysis.md`; add unexpected `skills/rf-engineering/plugin.json`; symlink `references/1-rf-unit-algebra.md` to a file outside temp root; include Markdown link `[oops](../../../../outside.md)`; spoof frontmatter `name: live-radio-transmit`; truncate a mandatory stop clause. Require specific nonempty errors for each.
-- [ ] **Step 6: Run GREEN:** `python -m unittest discover -s tests/p1 -p 'test_stage_audit.py' -v`; expected all PASS. Commit only the two files.
+- [ ] **Step 6: Run GREEN:** `python -m unittest discover -s tests/p1 -p 'test_stage_audit.py' -v`; expected all PASS. Commit: `git add scripts/p1/audit_domain_skills.py tests/p1/test_stage_audit.py && git commit -m "test(p1): enforce isolated staged Skill integrity"`.
 
 ### Task 3: Bilingual routing and safety-fixture contract (not runtime NLP)
 
@@ -141,7 +141,7 @@ Five high-risk input classes, with an explicit negative fixture in the owning ta
 - [ ] **Step 3: Implement strict `validate_routing_cases`** (JSON type/duplicate/ID checks, no arbitrary external link or secret required). For high-risk `legal` cases with no official source require `INDETERMINATE` or `REFUSE`; emergency cases must prohibit dispatch/PTT; hardware cases must prohibit CAT/PTT/TX; privacy cases must prohibit records disclosure. The fixture schema must demand these declared guardrail strings. **Do not implement keyword matching or mislabel static fixture checks as host routing accuracy.**
 - [ ] **Step 4: Add ≥16 bilingual QA cases** spanning all four Families and all eight risk classes, explicitly including A03/A04 legal ambiguity, A01/A02 training only, B07 RF unit calculation, B08 no fabricated NEC diagram, B11 prohibited TX, C14/C15 stale live observations, C20 private ADIF, D22 certification and D24 roster consent. Keep prompt language meaningful rather than mechanical translation.
 - [ ] **Step 5: Test corrupted variants** (empty Greek prompt, duplicated ID, `expected_domains:["X99"]`, `expected_outcome:"AUTHORIZED_TX"`, legal case falsely marked `DIRECT`, missing emergency no-PTT guardrail); each returns a nonempty error list.
-- [ ] **Step 6: Run GREEN**, command from Step 2, commit three files. Reviewer explicitly validates Greek/English sample intent, not only JSON syntax.
+- [ ] **Step 6: Run GREEN**, command from Step 2. Commit: `git add scripts/p1/routing_cases.py tests/p1/test_routing_cases.py qa/p1/domain-routing-cases.json && git commit -m "test(p1): add bilingual routing expectations and safety guards"`. Reviewer explicitly validates Greek/English sample intent, not only JSON syntax.
 
 ### Task 4: Deterministic staged-source ZIP, fail-closed metadata
 
@@ -159,7 +159,7 @@ Five high-risk input classes, with an explicit negative fixture in the owning ta
 - [ ] **Step 3: Implement ZIP builder** guarded by `audit_stage == []` and a nonempty approved `required_ids`, strict sorted paths, `ZipInfo` fixed date/POSIX regular file permissions and DEFLATED compression, no staged directory external references, no network or credentials. P1.0 can validate fixture build; **no real staged source bundle will be published**.
 - [ ] **Step 4: Run GREEN** on deterministic build.
 - [ ] **Step 5: Add negative ZIP tests** for extra member/`../secret`, duplicate members, symlink metadata, overly large single entry, unsupported compression/encrypted flags, greater-than-200 compression ratio and secret-bearing unexpected `.env`. `validate_review_zip` must check *all* metadata before any `read()`, and return errors without extracting.
-- [ ] **Step 6: Run GREEN** with Python unit tests, commit builder/test, and record source-only status `STAGED_SK=0` / `STAGED_SS=0`.
+- [ ] **Step 6: Run GREEN** with Python unit tests. Commit: `git add scripts/p1/build_staging_archive.py tests/p1/test_staging_archive.py && git commit -m "test(p1): add deterministic review-only staging archive"`. Record source-only status `STAGED_SK=0` / `STAGED_SS=0`.
 
 ### Task 5: P1 GitHub Actions + unchanged V0 regression
 
@@ -177,7 +177,7 @@ Five high-risk input classes, with an explicit negative fixture in the owning ta
 - [ ] **Step 3: Add path-filtered PR workflow** that checks out exact PR SHA via pinned GitHub checkout action (existing verified SHA `11d5960a326750d5838078e36cf38b85af677262`), Python 3.11 setup action `a26af69be951a213d495a4c3e4e4022e16d87065`, `python -m pip install -r requirements-v0-dev.txt`, P1 and V0 unittest commands. It should run registry parser and current-stage auditor with empty expected subset, clean V0 catalog and deterministic V0 ZIP validation. No deployment secrets; avoid adding \`workflow_dispatch\` production paths or permission upgrades.
 - [ ] **Step 4: Run GREEN locally when a checkout is available**, or via real GitHub Actions for the exact branch commit; inspect logs, not just workflow badges. Explicitly verify **0/24 Skills, 0/72 Sub-skills**, **24/72 planned definitions**, **five V0 Skills** and strict ZIP **12 files**.
 - [ ] **Step 5: Add CI negative test**: replace the V0 invocation with a missing command in a temporary workflow text fixture; `test_p1_ci_contract.py` must fail validation. Also test missing `qa/p1/**` path filter. Restore actual workflow and rerun GREEN.
-- [ ] **Step 6: Commit CI/tests**; verify no files in `qrvai/` changed by `git diff --name-only <P1_DESIGN_SHA>...HEAD`.
+- [ ] **Step 6: Commit CI/tests** with `git add .github/workflows/p1-domain-skills-ci.yml tests/p1/test_p1_ci_contract.py && git commit -m "ci(p1): verify stage audit and V0 on every P1 source change"`. Verify no files in `qrvai/` changed by `git diff --name-only a8d93fe5d78ec375c67adc09c7b04a8ed478f3a8...HEAD`; if PR #39 head changed before creating the implementation branch, re-establish its approved SHA first.
 
 ### Task 6: Evidence ledger, independent review request and Draft-only handoff
 
@@ -190,7 +190,7 @@ Five high-risk input classes, with an explicit negative fixture in the owning ta
 
 - [ ] **Step 1: Inspect output from Tasks 1–5** including full Python test log, P1 audit, 12-file V0 ZIP and any independent reviewer notes; fail handoff for an unaddressed Critical/Important issue.
 - [ ] **Step 2: Write ledger** with traceability to approved P1 spec, registry and P0 base; include explicit link to the new P1 implementation Draft PR, stage counts, exact previous fully tested SHA, known limits and stop gates.
-- [ ] **Step 3: Commit only the ledger**; the workflow `qa/p1/**` path filter MUST trigger **another** P1 full job on this final SHA. No self-referential "future SHA" claim in the ledger.
+- [ ] **Step 3: Commit only the ledger** with `git add qa/p1/P1-0-EVIDENCE-2026-10-17.md && git commit -m "docs(p1): record stage-zero CI evidence and deferred host gates"`. The workflow `qa/p1/**` path filter MUST trigger **another** P1 full job on this final SHA. No self-referential "future SHA" claim in the ledger.
 - [ ] **Step 4: Verify final-SHA CI** by matching workflow `head_sha` to PR `head_sha` and observing full passing P1 and V0 jobs, archive hash and explicit negatives. If failing/pending, mark status `BLOCKED` / `PENDING`, do not report completion.
 - [ ] **Step 5: Whole-branch review:** compare approved design HEAD → implementation Draft HEAD and ensure no `qrvai/`, `mcp/`, Vercel, Plugin Creator, auth/secret or hardware changes; independent code review before merge/release remains separately required. If an isolated review capability is unavailable, record `INDEPENDENT_REVIEW=NOT_EXECUTED`.
 - [ ] **Step 6: Post exact-SHA receipt in Draft PR** with real Actions URLs, commit SHA, counts, test failures=0, truthfully labeled test types and unresolved host gates. Leave every PR Draft, do not merge or install the plugin.
