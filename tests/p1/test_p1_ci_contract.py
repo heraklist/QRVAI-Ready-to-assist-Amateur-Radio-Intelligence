@@ -21,8 +21,8 @@ REQUIRED=(
     "validate_archive(archive)",
     "V0_ARCHIVE_FILES=12",
     "P1_REGISTRY=24/72",
-    "P1_STAGE=4/24,12/72",
-    "P1_STAGE_ARCHIVE_FILES=16",
+    "P1_STAGE=5/24,15/72",
+    "P1_STAGE_ARCHIVE_FILES=20",
     "build_review_zip(",
     "validate_review_zip(",
     "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
@@ -60,11 +60,11 @@ class P1CIContractTests(unittest.TestCase):
 
     def test_rf_and_8_file_zip_gate_fail_when_removed(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=16","P1_STAGE_ARCHIVE_FILES=0")))
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=20","P1_STAGE_ARCHIVE_FILES=0")))
         self.assertTrue(workflow_errors(text.replace("npm run typecheck","echo skip-typecheck")))
         self.assertTrue(workflow_errors(text.replace("build_review_zip(","build_unreviewed_zip(")))
 
     def test_stage_count_does_not_regress_to_b07_only_or_zero(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE=4/24,12/72","P1_STAGE=2/24,6/72")))
-        self.assertIn('frozenset({"B07","B08","A01","A02"})',text)
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE=5/24,15/72","P1_STAGE=2/24,6/72")))
+        self.assertIn('frozenset({"B07","B08","A01","A02","A03"})',text)
