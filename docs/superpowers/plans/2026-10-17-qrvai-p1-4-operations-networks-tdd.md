@@ -71,6 +71,12 @@ Every `SKILL.md` must have original canonical slug in YAML `name`, a bounded `de
 
 **Interfaces:** produce `validate_family_c_candidates(path: Path) -> list[str]` requiring ≥8 unique bounded source refs (ADIF 3.1.8 official, NOAA/SWPC, WSJT-X 3.0.1, CelesTrak OMM context, APRS 1.0.1, Winlink terms, repeater/award/contest conditional sources). Record `checked_at` timezone-aware, `source_url` (HTTPS or null when user supplied), `source_type`, `review_state`, `provider_connected:false`, `rights_state` and explicit version/retrieval/consent notes; no claim that all online references are unusable, only that **the app has no connector for them**.
 
+
+**C14 exact canonical SS obligations:**
+- `SS-C14-1` / `skills/operating-dx/references/1-operating-procedure.md`: **teach SSB/CW, calling, split, pileups and etiquette**
+- `SS-C14-2` / `skills/operating-dx/references/2-dx-observation-reading.md`: **distinguish verified spot data from predictions**
+- `SS-C14-3` / `skills/operating-dx/references/3-operating-scenario-plan.md`: **recommend permissible time/band strategies with uncertainty**
+
 - [ ] **Step 1 RED:** Tests `test_candidates_are_versioned_no_live_connections` and `test_c14_unverified_spot_not_current` must fail with missing manifest/C14 source files; explicitly assert source allowlist and entire C14 3 canonical references.
 - [ ] **Step 2 verify RED:** Run `python -m unittest discover -s tests/p1 -p 'test_family_c_*.py' -v` in CI after committing tests, ensure expected missing source failures (not missing import/syntax).
 - [ ] **Step 3 GREEN:** Add provenance manifest (public format documents as research only), SK-C14 and SS-C14-1/2/3. Cite user-supplied reception reports only as `USER_SUPPLIED_UNVERIFIED`; teach operating etiquette as source-backed conditional training, no authenticated DX reports/live cluster/confirmed callsigns or on-air transmission. Preserve exact canonical duties.
@@ -214,6 +220,8 @@ Every `SKILL.md` must have original canonical slug in YAML `name`, a bounded `de
 ### Task 10: ≥48 Greek+English C-family static routing/privacy cases (RED→GREEN)
 
 **Files:** create `tests/p1/test_family_c_cases.py`; after RED create `qa/p1/family-c-operating-scenarios.json`. Extend `tests/p1/test_family_c_physics.py` for numeric distinctions when appropriate.
+
+**Validators:** `validate_family_c_candidates(path: Path) -> list[str]` accepts `review_state: UNREVIEWED`, `rights_state: UNVERIFIED`, `provider_connected: false` for every candidate; these flags describe absence of app integration rather than denying that the public specification exists. `validate_family_c_cases` accepts `source_kind` only in `{USER_SUPPLIED_UNVERIFIED, FORMAT_SPEC_PUBLIC_REFERENCE, SOURCE_CANDIDATE_UNREVIEWED, IDEAL_MODEL, TRAINING_TEMPLATE}` and rejects fields/values that claim any live authenticated data source, packet upload, TX or message disclosure.
 
 **Interfaces:** `validate_family_c_cases(path: Path) -> list[str]`. Exact case fields: `id`, `domain`, `procedure_id`, `prompt_el`, `prompt_en`, `expected_domains` (1–3 registry canonical owners, always includes primary), `risk_class`, `expected_outcome` (`PARTIAL|INDETERMINATE|NOT_IMPLEMENTED|REFUSE|IDEAL_MODEL`), `source_kind`, `fixture_basis`, `must_not_claim` nonempty. No raw legal/radio actions or real callsigns.
 
