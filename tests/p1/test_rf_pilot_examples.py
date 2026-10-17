@@ -33,7 +33,7 @@ class RFPilotGoldenTests(unittest.TestCase):
             self.assertTrue(row["input_assumptions"])
         self.assertEqual(byid["b07-rx-link"]["input_assumptions"]["path_loss_db"],100)
         self.assertIn("sensitivity",byid["b07-link-margin"]["input_assumptions"])
-        self.assertIn("no numeric sensitivity",byid["b07-noise-incomplete"]["must_not_claim"])
+        self.assertIn("no numeric sensitivity", " ".join(byid["b07-noise-incomplete"]["must_not_claim"]))
 
     def test_b07_invalid_and_incomplete_inputs_have_no_guessed_number(self):
         byid={r["id"]:r for r in self.rows if r["domain"]=="B07"}
