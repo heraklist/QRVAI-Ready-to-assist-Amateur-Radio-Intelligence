@@ -80,3 +80,28 @@ class FamilyC84FileArchiveTests(unittest.TestCase):
             target.write_text(original,encoding="utf8")
             (dest/"skills/contests-portable/plugin.json").write_text("{}")
             self.assertTrue(audit_stage(dest,SPEC,CUMULATIVE))
+
+    def test_casefold_duplicate_and_oversize_stage_rejected(self):
+        with TemporaryDirectory() as tmp:
+            target=Path(tmp)/"source"
+            copytree(CURRENT,target,symlinks=True)
+            source=target/"skills/operating-dx/SKILL.md"
+            duplicate=target/"skills/operating-dx/skill.md"
+            duplicate.write_text(source.read_text(encoding="utf8"),encoding="utf8")
+            errors=audit_stage(target,SPEC,CUMULATIVE)
+            self.assertTrue(any("case-fold duplicate" in e for e in errors),errors)
+            duplicate.unlink()
+            source.write_text("A"*1_048_577,encoding="utf8")
+            errors=audit_stage(target,SPEC,CUMULATIVE)
+            self.assertTrue(any("oversize" in e for e in errors),errors)
+
+    def test_zip_ratio_guard_rejects_highly_compressible_modified_member(self):
+        with TemporaryDirectory() as tmp:
+            p=Path(tmp);baseline=build_review_zip(CURRENT,p/"baseline.zip",SPEC,CUMULATIVE)
+            edited=p/"ratio.zip"
+            with ZipFile(baseline) as inp,ZipFile(edited,"w",ZIP_DEFLATED,compresslevel=9) as out:
+                for info in inp.infolist():
+                    data=b"A"*60_000 if info.filename=="p1-domain-skills/skills/operating-dx/SKILL.md" else inp.read(info)
+                    out.writestr(info,data)
+            errors=validate_review_zip(edited,SOURCE_PATHS)
+            self.assertTrue(any("compression ratio" in e for e in errors),errors)
