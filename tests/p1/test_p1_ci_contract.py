@@ -23,6 +23,10 @@ REQUIRED=(
     "P1_REGISTRY=24/72",
     "P1_STAGE=7/24,21/72",
     "P1_STAGE_ARCHIVE_FILES=28",
+    "P1_FAMILY_A_CASES=30",
+    "P1_FAMILY_A_SS_COVERED=15/15",
+    "P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED",
+    "P1_AUTHORITY_CANDIDATES=7",
     "build_review_zip(",
     "validate_review_zip(",
     "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
@@ -68,3 +72,15 @@ class P1CIContractTests(unittest.TestCase):
         text=WORKFLOW.read_text(encoding="utf8")
         self.assertTrue(workflow_errors(text.replace("P1_STAGE=7/24,21/72","P1_STAGE=2/24,6/72")))
         self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05"})',text)
+
+    def test_family_a_metrics_and_review_gate_must_run(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        for removed in ("P1_FAMILY_A_CASES=30","P1_FAMILY_A_SS_COVERED=15/15","P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED","P1_AUTHORITY_CANDIDATES=7"):
+            self.assertTrue(workflow_errors(content.replace(removed,"REMOVED")))
+
+    def test_p1_ci_must_be_readonly_and_not_deploy(self):
+        c=WORKFLOW.read_text(encoding="utf8")
+        self.assertNotIn("secrets.",c)
+        self.assertNotIn("actions/upload-artifact",c)
+        self.assertNotIn("vercel --prod",c)
+        self.assertNotIn("plugin_creator",c.lower())
