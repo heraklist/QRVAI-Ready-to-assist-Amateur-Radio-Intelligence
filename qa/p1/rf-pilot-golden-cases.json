@@ -1,0 +1,250 @@
+[
+  {
+    "id": "b07-power-100w",
+    "domain": "B07",
+    "procedure_id": "SS-B07-1",
+    "prompt_el": "Μετέτρεψε 100 W σε dBm.",
+    "prompt_en": "Convert 100 W to dBm.",
+    "input_assumptions": {
+      "value": 100,
+      "unit": "W"
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "power",
+      "value": 50,
+      "unit": "dBm"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-power-1mw",
+    "domain": "B07",
+    "procedure_id": "SS-B07-1",
+    "prompt_el": "Πόσα dBm είναι 1 mW;",
+    "prompt_en": "How many dBm are 1 mW?",
+    "input_assumptions": {
+      "value": 1,
+      "unit": "mW"
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "power",
+      "value": 0,
+      "unit": "dBm"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-power-1w",
+    "domain": "B07",
+    "procedure_id": "SS-B07-1",
+    "prompt_el": "Πόσα dBW είναι 1 W;",
+    "prompt_en": "Convert 1 W to dBW.",
+    "input_assumptions": {
+      "value": 1,
+      "unit": "W"
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "power",
+      "value": 0,
+      "unit": "dBW"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-rx-link",
+    "domain": "B07",
+    "procedure_id": "SS-B07-2",
+    "prompt_el": "Υπολόγισε την ιδανική λήψη με απώλεια διαδρομής 100 dB.",
+    "prompt_en": "Calculate received power with a supplied 100 dB path loss.",
+    "input_assumptions": {
+      "tx_w": 1,
+      "tx_gain_dbi": 2,
+      "tx_loss_db": 1,
+      "path_loss_db": 100,
+      "rx_gain_dbi": 2,
+      "rx_loss_db": 1,
+      "rx_sensitivity_dbm": -100,
+      "sensitivity": -100
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "received_power",
+      "value": -68,
+      "unit": "dBm"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-link-margin",
+    "domain": "B07",
+    "procedure_id": "SS-B07-2",
+    "prompt_el": "Υπολόγισε περιθώριο ζεύξης για ευαισθησία −100 dBm.",
+    "prompt_en": "Compute link margin for −100 dBm sensitivity.",
+    "input_assumptions": {
+      "tx_w": 1,
+      "tx_gain_dbi": 2,
+      "tx_loss_db": 1,
+      "path_loss_db": 100,
+      "rx_gain_dbi": 2,
+      "rx_loss_db": 1,
+      "rx_sensitivity_dbm": -100,
+      "sensitivity": -100
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "margin",
+      "value": 32,
+      "unit": "dB"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-swr",
+    "domain": "B07",
+    "procedure_id": "SS-B07-3",
+    "prompt_el": "Υπολόγισε SWR για φορτίο 100 Ω και γραμμή 50 Ω.",
+    "prompt_en": "Calculate VSWR for 100-ohm resistive load on 50-ohm line.",
+    "input_assumptions": {
+      "r_ohm": 100,
+      "x_ohm": 0,
+      "z0_ohm": 50
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "vswr",
+      "value": 2,
+      "unit": "ratio"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-return-loss",
+    "domain": "B07",
+    "procedure_id": "SS-B07-3",
+    "prompt_el": "Υπολόγισε Return Loss για 100 Ω σε 50 Ω.",
+    "prompt_en": "Calculate return loss for 100 ohms into 50 ohms.",
+    "input_assumptions": {
+      "r_ohm": 100,
+      "x_ohm": 0,
+      "z0_ohm": 50
+    },
+    "expected_outcome": "DIRECT",
+    "expected_quantity": {
+      "name": "return_loss",
+      "value": 9.542425094393248,
+      "unit": "dB"
+    },
+    "source_kind": "IDEAL_MODEL",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "verified physical measurement",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-power-zero",
+    "domain": "B07",
+    "procedure_id": "SS-B07-1",
+    "prompt_el": "Μετέτρεψε 0 W σε dBm.",
+    "prompt_en": "Convert zero W to dBm.",
+    "input_assumptions": {
+      "value": 0,
+      "unit": "W"
+    },
+    "expected_outcome": "OUT_OF_RANGE",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "undefined log of zero",
+      "transmit authorization"
+    ]
+  },
+  {
+    "id": "b07-unknown-unit",
+    "domain": "B07",
+    "procedure_id": "SS-B07-1",
+    "prompt_el": "Μετέτρεψε 100 V σε dBm χωρίς αντίσταση.",
+    "prompt_en": "Convert 100 volts to dBm with no impedance.",
+    "input_assumptions": {
+      "value": 100,
+      "unit": "V"
+    },
+    "expected_outcome": "MISSING_CONTEXT",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "power derived from voltage without resistance"
+    ]
+  },
+  {
+    "id": "b07-missing-path-loss",
+    "domain": "B07",
+    "procedure_id": "SS-B07-2",
+    "prompt_el": "Υπολόγισε εμβέλεια χωρίς απώλειες διαδρομής.",
+    "prompt_en": "Calculate link performance with unspecified path loss.",
+    "input_assumptions": {
+      "tx_w": 1,
+      "tx_gain_dbi": 2
+    },
+    "expected_outcome": "MISSING_CONTEXT",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "guaranteed RF coverage",
+      "fabricated path loss"
+    ]
+  },
+  {
+    "id": "b07-noise-incomplete",
+    "domain": "B07",
+    "procedure_id": "SS-B07-3",
+    "prompt_el": "Βγάλε ευαισθησία χωρίς BW, NF και SNR.",
+    "prompt_en": "Calculate receiver sensitivity without bandwidth, NF or SNR.",
+    "input_assumptions": {
+      "T_kelvin": 290
+    },
+    "expected_outcome": "MISSING_CONTEXT",
+    "expected_quantity": null,
+    "source_kind": "INDETERMINATE",
+    "tolerance": 0.000001,
+    "must_not_claim": [
+      "no numeric sensitivity without bandwidth, noise figure and SNR"
+    ]
+  }
+]
