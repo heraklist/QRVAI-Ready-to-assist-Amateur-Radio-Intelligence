@@ -65,7 +65,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** `python -m unittest discover -s tests/p1 -p 'test_family_b_physics.py' -v`; expected missing candidate JSON error/assertion, not a broken import.
 - [ ] **Step 3 (GREEN):** Add public normative format URL metadata and rights-unverified manufacturer candidate instructions with no vendor PDF bytes, no fake firmware/page, no test personal data. Unknown revision is null, not guessed.
 - [ ] **Step 4 (negative):** Mutate source to verified rights, `capability_available:true`, non-HTTPS unsafe link or embedded token/PII: metadata validation must fail. Record the required bounds.
-- [ ] **Step 5 (verification/commit):** Focused GREEN, then same-SHA P1/V0/Node full CI, with baseline **7/24,21/72,28** unchanged; record job/run.
+- [ ] **Step 5 (verification/commit):** Focused GREEN, then same-SHA P1/V0/Node full CI, with baseline **7/24,21/72,28** unchanged; record the real job/run after the candidate commit.
 
 ### Task 2: B06 Equipment Manuals RED→GREEN
 
@@ -75,7 +75,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** focused `python -m unittest discover -s tests/p1 -p 'test_family_b_stage.py' -v` must fail because `SK-B06` staged entrypoint is missing.
 - [ ] **Step 3 (GREEN sources):** SS-B06-1 explains rights-aware exact model/revision excerpt retrieval without actual HTTP fetch; SS-B06-2 only gives documented menu/port setup with cited page+firmware; SS-B06-3 reversible non-invasive checks; `manual_find`/`manual_answer_cited` receive user excerpts only, `equipment_diagnose` handles only the three enumerated symptoms.
 - [ ] **Step 4 (negative):** Mismatched model, invented page, missing firmware, malicious embedded manual instruction and unexpected copyrighted `manual.pdf` must fail source or corpus audit.
-- [ ] **Step 5 (CI/commit):** Allowlist add B06, print **P1_STAGE=8/24,24/72** and **P1_STAGE_ARCHIVE_FILES=32**, run P1/V0/Node all green and commit.
+- [ ] **Step 5 (CI/commit):** Allowlist add B06, print **P1_STAGE=8/24,24/72** and **P1_STAGE_ARCHIVE_FILES=32**, commit the candidate and verify its exact-SHA P1/V0/Node CI is green; fix with further TDD commits if it is red.
 
 ### Task 3: B09 RF Electronics RED→GREEN
 
@@ -85,17 +85,17 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** focused test must fail due to missing staged B09 Skill, not code-import failures.
 - [ ] **Step 3 (GREEN sources):** SS-B09-1 bounded RC response (current `rf_filter_response` only), SS-B09-2 conceptual mixer/oscillator/gain/linearity without made-up IP3/NF, SS-B09-3 rated component comparison only from supplied datasheets with voltage/thermal caveats.
 - [ ] **Step 4 (negative):** reject missing/negative R/C or units, false "measured filter curve", undocumented component safety ratings and unsafe live repair.
-- [ ] **Step 5 (CI/commit):** Allowlist B09 stage **9/24,27/72**, ZIP **36**, same-SHA full P1/V0/RF green before commit.
+- [ ] **Step 5 (CI/commit):** Allowlist B09 stage **9/24,27/72**, ZIP **36**, commit candidate, verify exact-SHA full P1/V0/RF CI green, and repair in a fresh test-backed commit if needed.
 
 ### Task 4: B10 Test Equipment & Diagnostics RED→GREEN
 
 **Files:** stage four `skills/rf-measurements/` docs; extend stage, physics, safety tests; CI/contract.
 
-- [ ] **Step 1 (RED test):** Require B10 exact filenames and an independent user-supplied scalar trace: (144 MHz,−10 dB), (145 MHz,−20 dB), (146 MHz,−5 dB) ⇒ minimum −20 dB, maximum −5 dB, dip 145 MHz; these are **NOT** a calibrated S11/S21/Touchtone parser output.
+- [ ] **Step 1 (RED test):** Require B10 exact filenames and an independent user-supplied scalar trace: (144 MHz,−10 dB), (145 MHz,−20 dB), (146 MHz,−5 dB) ⇒ minimum −20 dB, maximum −5 dB, dip 145 MHz; these are **NOT** a calibrated S11/S21/Touchstone parser output.
 - [ ] **Step 2 (run RED):** observe missing B10 staged Skill.
 - [ ] **Step 3 (GREEN sources):** SS-B10-1 document complex S-parameter/reference impedance requirements from official Touchstone **2.1** and mark full parser `NOT_IMPLEMENTED`; SS-B10-2 instrument power/attenuator setup as informational with model-specific limits unknown; SS-B10-3 compare supplied trace vs ideal with uncertainty and missing calibration.
 - [ ] **Step 4 (negative):** missing phase/reference impedance, guessed port mapping, fabricated VNA accuracy, analyzer input-power overload advice must fail.
-- [ ] **Step 5 (CI/commit):** Owners **10/24,30/72**, ZIP **40**; full same-SHA P1/V0/Node PASS before commit.
+- [ ] **Step 5 (CI/commit):** Owners **10/24,30/72**, ZIP **40**; commit the candidate and verify complete P1/V0/Node CI PASS at its exact SHA before completion.
 
 ### Task 5: B12 Power Infrastructure RED→GREEN
 
@@ -105,7 +105,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** missing B12 source test fails correctly.
 - [ ] **Step 3 (GREEN sources):** SS-B12-1 weighted W/Wh + duty math; SS-B12-2 sensitivity to usable fraction/degradation/temperature; SS-B12-3 backup/solar as labelled scenarios with unknown real irradiance. `power_autonomy` is only ideal constant-load arithmetic.
 - [ ] **Step 4 (negative):** Ah without voltage, missing load, nonpositive capacity, unsafe lithium/mains repairs or guaranteed outage autonomy must fail.
-- [ ] **Step 5 (CI/commit):** Owners **11/24,33/72**, ZIP **44**; P1/V0/Node full green and commit.
+- [ ] **Step 5 (CI/commit):** Owners **11/24,33/72**, ZIP **44**; commit the candidate and verify full same-SHA P1/V0/Node CI green before marking this task complete.
 
 ### Task 6: B13 SDR & DSP RED→GREEN
 
@@ -115,7 +115,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** fail specifically for missing `SK-B13`.
 - [ ] **Step 3 (GREEN sources):** SS-B13-1 Nyquist/alias/decimation with complex-vs-real context; SS-B13-2 explain FFT resolution/window/leakage and explicitly mark live FFT/waterfall `NOT_IMPLEMENTED`; SS-B13-3 describe DSP-filter/demodulation concepts without actual radio decoding. SigMF \`metadata\` is public format context, not automatically parsed binary or permission to intercept.
 - [ ] **Step 4 (negative):** reject missing sample rate, fake SDR connection, unredacted `core:author`/geolocation, unwarranted station identification, signal decryption/interception and "full FFT result" from `sdr_inspect_iq`.
-- [ ] **Step 5 (CI/commit):** Owners **12/24,36/72**, ZIP **48**; full same-SHA suites green and commit.
+- [ ] **Step 5 (CI/commit):** Owners **12/24,36/72**, ZIP **48**; commit candidate, then verify same-SHA full suites green before marking complete.
 
 ### Task 7: B11 Station Integration LAST, no hardware connection
 
@@ -125,7 +125,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** fail from missing SK-B11, not a host API error.
 - [ ] **Step 3 (GREEN sources):** SS-B11-1 schematic topology with unverified directed edges; SS-B11-2 verify ports/protocol/driver/firmware only from documented compatible source, no live probing; SS-B11-3 explain future *opt-in read-only* state design but mark actual telemetry `NOT_IMPLEMENTED`. No bridge, secrets or hardware code.
 - [ ] **Step 4 (negative):** user requests to key rig, toggle CAT/serial, change frequency/power, read a remote device without consent or assert connected state must return refusal/`NOT_IMPLEMENTED`.
-- [ ] **Step 5 (CI/commit):** Final fixed owners `{"A01","A02","A03","A04","A05","B06","B07","B08","B09","B10","B11","B12","B13"}`; stage **13/24,39/72**, ZIP **52**. Run full P1/V0/Node green before commit.
+- [ ] **Step 5 (CI/commit):** Final fixed owners `{"A01","A02","A03","A04","A05","B06","B07","B08","B09","B10","B11","B12","B13"}`; stage **13/24,39/72**, ZIP **52**. Run commit candidate and verify full P1/V0/Node green at that exact SHA before marking complete.
 
 ### Task 8: ≥36 bilingual engineering fixtures with all 18 procedure IDs
 
@@ -135,7 +135,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (run RED):** missing corpus fails real test.
 - [ ] **Step 3 (GREEN):** Author 36+ Greek/English cases: 6 B06 manual source/firmware, 6 B09 ideal RF/components, 6 B10 supplied trace/uncertainty, 6 B12 W/Wh/duty, 6 B13 IQ/theoretical FFT/privacy, 6 B11 snapshot/no CAT. Add mix `["B06","B11"]`, `["B09","B10"]`, `["B12","A01"]`, `["B13","B10"]` with explicit author-chosen owner order.
 - [ ] **Step 4 (negative):** mutate duplicate ID, wrong canonical SS, empty Greek or English, false verified vendor manual, fake complex S11 calibration, arbitrary LC solver, incorrect units, personal SigMF author/geo, `live_device_connected:true`, PTT command, unsafe battery repair. Verify tests reject each.
-- [ ] **Step 5 (GREEN/commit):** Verify all golden source assumptions with tolerances and provenance; run P1/V0/Node full suite, record observed denominators, commit.
+- [ ] **Step 5 (GREEN/commit):** Verify all golden source assumptions with tolerances and provenance; commit candidate, run exact-SHA P1/V0/Node full CI, and record only observed green denominators.
 
 ### Task 9: Full 52-file archive, CI regression and guardrails
 
@@ -145,7 +145,7 @@ Every `SKILL.md`: YAML `name`/`description`, `# SK-Bxx`, `**Trigger:**`, `**Requ
 - [ ] **Step 2 (GREEN):** Audit exact canonical source-file allowlist (13×4=52) and perform two build runs in temp directories; assert byte-for-byte SHA equality and 52 member filenames, 13 Skill entrypoints, 39 internal references. Never upload generated ZIP.
 - [ ] **Step 3 (negative):** reject 53rd plugin manifest, malicious traversal, symlink, duplicate filename, oversize/ZIP bomb, wrong B11 owner or casefold collision; do not weaken `audit_stage` or archive preflight.
 - [ ] **Step 4 (regression):** Preserve prior A01–A05, B07–B08, ≥30 Family A cases and 7 unreviewed legal sources; unchanged V0 49+ tests, 5 original skills, immutable 12-member ZIP hash equality; Node 22 `npm ci --ignore-scripts`, `npm run typecheck` and `npm test` inside same read-only pinned CI.
-- [ ] **Step 5 (GREEN/commit):** Run actual same-SHA GitHub Actions P1/V0/Node; record observed numeric totals and generated P1 SHA (not predicted), commit verified CI/tests.
+- [ ] **Step 5 (GREEN/commit):** Run actual same-SHA GitHub Actions P1/V0/Node; record observed numeric totals and generated P1 SHA (not predicted), commit candidate CI/tests, verify its exact-SHA Actions logs and repair any failing candidate with focused RED→GREEN.
 
 ### Task 10: Whole-branch author-side source/security review
 
