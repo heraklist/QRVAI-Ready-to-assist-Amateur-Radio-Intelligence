@@ -54,3 +54,8 @@ class EngineeringStageTests(unittest.TestCase):
         verify_owner("B13","sdr-dsp",[
             "1-sampling-foundations.md","2-spectrumfft-visualization.md","3-dsp-filter-analysis.md"
         ],["sdr_inspect_iq","NOT_IMPLEMENTED","No live SDR","sample_rate","protected communications"])
+
+    def test_b11_station_snapshot_cannot_enable_connected_cat_ptt(self):
+        verify_owner("B11","station-integration",[
+            "1-signal-path-mapping.md","2-compatibility-check.md","3-readonly-telemetry.md"
+        ],["station_read_status","live_device_connected:false","No CAT writes","No PTT","NOT_IMPLEMENTED"])
