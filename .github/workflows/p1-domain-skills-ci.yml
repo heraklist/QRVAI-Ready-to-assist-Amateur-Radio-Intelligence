@@ -22,7 +22,7 @@ jobs:
       - run: python -m pip install -r requirements-v0-dev.txt
       - name: P1 unit tests
         run: python -m unittest discover -s tests/p1 -p 'test_*.py' -v
-      - name: P1 canonical identities, empty staging and bilingual fixtures
+      - name: P1 canonical identities, staged owners and bilingual fixtures
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -35,13 +35,35 @@ jobs:
           assert len(specs)==24
           assert sum(len(x.procedures) for x in specs)==72
           stage=root/"staging/p1-domain-skills"
-          assert audit_stage(stage,specs,frozenset({"B07","B08"}))==[]
+          assert audit_stage(stage,specs,frozenset({"B07","B08","A01","A02","A03","A04","A05"}))==[]
           assert validate_routing_cases(root/"qa/p1/domain-routing-cases.json",specs)==[]
           print("P1_REGISTRY=24/72")
-          print("P1_STAGE=2/24,6/72")
+          print("P1_STAGE=7/24,21/72")
           print("P1_HOST_E2E=NOT_EXECUTED")
           PY
-      - name: Verify deterministic eight-file review-only staged source archive
+      - name: Explicit Family A fixture and legal-authority honesty gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          corpus=json.loads(Path("qa/p1/family-a-routing-and-safety-cases.json").read_text(encoding="utf8"))
+          authorities=json.loads(Path("qa/p1/family-a-source-evidence-candidates.json").read_text(encoding="utf8"))
+          expected={f"SS-A{n:02d}-{k}" for n in range(1,6) for k in (1,2,3)}
+          actual={row["procedure_id"] for row in corpus}
+          assert len(corpus)==30 and actual==expected
+          assert len({r["id"] for r in corpus})==30
+          assert len(authorities)==7
+          assert all(r["legal_review_state"]=="UNREVIEWED" and r["permission_assertion"] is False
+                     and r["effective_from"] is None for r in authorities)
+          assert not any(row["domain"] in ("A03","A04") and
+                         row["source_kind"] in ("UNREVIEWED_SOURCE","USER_SUPPLIED_UNVERIFIED") and
+                         row["expected_outcome"] in ("SYNTHETIC_ALLOWED","SYNTHETIC_NOT_ALLOWED") for row in corpus)
+          print("P1_FAMILY_A_CASES=30")
+          print("P1_FAMILY_A_SS_COVERED=15/15")
+          print("P1_AUTHORITY_CANDIDATES=7")
+          print("P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED")
+          PY
+      - name: Verify deterministic approved P1 source-only review archive
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -54,14 +76,14 @@ jobs:
           specs = load_registry(Path("docs/architecture/skill-and-subskill-registry-v0.5.md"),
                                 Path("docs/architecture/capability-register-v0.5.md"))
           stage = Path("staging/p1-domain-skills")
-          owners = frozenset({"B07","B08"})
+          owners = frozenset({"B07","B08","A01","A02","A03","A04","A05"})
           assert audit_stage(stage,specs,owners)==[]
           expected = frozenset(
               "p1-domain-skills/" + relative
               for d in specs if d.id in owners
               for relative in (f"skills/{d.slug}/SKILL.md",*(p.relative_path for p in d.procedures))
           )
-          assert len(expected)==8
+          assert len(expected)==28
           with TemporaryDirectory() as temporary:
               target = Path(temporary)
               one = build_review_zip(stage,target/"review-1.zip",specs,owners)
@@ -70,8 +92,8 @@ jobs:
               assert a==b,"review ZIP must be byte-identical"
               assert validate_review_zip(one,expected)==[]
               with ZipFile(one) as z:
-                  assert len(z.namelist())==8
-              print("P1_STAGE_ARCHIVE_FILES=8")
+                  assert len(z.namelist())==28
+              print("P1_STAGE_ARCHIVE_FILES=28")
               print("P1_STAGE_ARCHIVE_SHA256="+a)
           PY
       - name: Preserve V0 regression suite

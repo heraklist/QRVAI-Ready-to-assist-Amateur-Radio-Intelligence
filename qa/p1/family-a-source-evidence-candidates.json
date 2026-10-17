@@ -1,0 +1,79 @@
+[
+  {
+    "source_id": "GRC-EETT-EKKZS-2025",
+    "canonical_url": "https://www.eett.gr/nomiko-plaisio/egkrisi-ethnikou-kanonismou-katanomis-zonon-sychnotiton-ekkzs/",
+    "issuer": "ΕΕΤΤ",
+    "layer": "BINDING_INSTRUMENT",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "ΕΚΚΖΣ 24549 ΕΞ 2025: candidate instrument; annex and operative version not reviewed",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  },
+  {
+    "source_id": "GRC-EETT-INDEX",
+    "canonical_url": "https://www.eett.gr/parochoi/fasma-radiosychnotiton/nomothetiko-kanonistiko-plaisio/?_sft_plaisio_cat=fasma-radiosychnotiton",
+    "issuer": "ΕΕΤΤ",
+    "layer": "ADMINISTRATIVE_GUIDANCE",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "Radio-spectrum legal index; no derived amateur privilege",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  },
+  {
+    "source_id": "GRC-GOV-LICENCE",
+    "canonical_url": "https://www.gov.gr/ipiresies/polites-kai-kathemerinoteta/telepikoinonies/ekdose-adeias-radioerasitekhne",
+    "issuer": "Gov.gr",
+    "layer": "ADMINISTRATIVE_GUIDANCE",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "Amateur licensing administrative entrypoint, not operator entitlement",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  },
+  {
+    "source_id": "GRC-GOV-FOREIGN",
+    "canonical_url": "https://www.gov.gr/el/services/1001879/ekdoses-adeias-radioerasitekhne-se-antistoikhia-me-adeia-exoterikou-sv0",
+    "issuer": "Gov.gr",
+    "layer": "ADMINISTRATIVE_GUIDANCE",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "Foreign-licence reciprocity procedure, not automatic portable authority",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  },
+  {
+    "source_id": "IARU-R1-BANDPLAN",
+    "canonical_url": "https://www.iaru-r1.org/on-the-air/band-plans/",
+    "issuer": "IARU Region 1",
+    "layer": "TECHNICAL_RECOMMENDATION",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "Region 1 voluntary recommendations, not national law",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  },
+  {
+    "source_id": "ITU-R-M1042",
+    "canonical_url": "https://www.itu.int/rec/R-REC-M.1042/en",
+    "issuer": "ITU-R",
+    "layer": "TECHNICAL_RECOMMENDATION",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "Disaster communications recommendation, not local agency dispatch permission",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  },
+  {
+    "source_id": "GRC-GGPP-EXERCISE",
+    "canonical_url": "https://civilprotection.gov.gr/deltia-tupou/kateythyntiries-odigies-gia-shediasmo-diexagogi-askiseon-politikis-prostasias-apo-tin",
+    "issuer": "ΓΓΠΠ",
+    "layer": "TRAINING_TEMPLATE",
+    "checked_at": "2026-10-17T08:05:00Z",
+    "instrument": "Public exercise guidance candidate; not live activation",
+    "effective_from": null,
+    "legal_review_state": "UNREVIEWED",
+    "permission_assertion": false
+  }
+]
