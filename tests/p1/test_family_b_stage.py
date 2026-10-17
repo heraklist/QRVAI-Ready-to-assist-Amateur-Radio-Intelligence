@@ -44,3 +44,8 @@ class EngineeringStageTests(unittest.TestCase):
         verify_owner("B10","rf-measurements",[
             "1-vna-trace-interpretation.md","2-spectrumtest-setup.md","3-measurement-reconciliation.md"
         ],["measurements_inspect_trace","NOT_IMPLEMENTED","No calibrated VNA","No live measurements","Touchstone"])
+
+    def test_b12_power_budget_with_non_certified_battery_risk(self):
+        verify_owner("B12","power-infrastructure",[
+            "1-power-budget.md","2-battery-runtime.md","3-backup-scenario.md"
+        ],["power_autonomy","Wh","duty cycle","No mains repairs","No battery certification"])
