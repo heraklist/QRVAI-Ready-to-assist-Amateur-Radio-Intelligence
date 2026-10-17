@@ -94,3 +94,9 @@ class RFPilotGoldenTests(unittest.TestCase):
             self.assertIn(r["source_kind"],("IDEAL_MODEL","USER_SUPPLIED_UNVERIFIED","INDETERMINATE"))
             self.assertTrue(r["must_not_claim"])
         self.assertIn("b07-b08-cross-discipline",all_ids)
+
+    def test_b07_b08_cross_domain_requires_both_owners_and_safe_ambiguity(self):
+        case=next(r for r in self.rows if r["id"]=="b07-b08-cross-discipline")
+        self.assertEqual(case["expected_domains"],["B07","B08"])
+        self.assertEqual(case["expected_outcome"],"MISSING_CONTEXT")
+        self.assertIn("transmission permission",case["must_not_claim"])
