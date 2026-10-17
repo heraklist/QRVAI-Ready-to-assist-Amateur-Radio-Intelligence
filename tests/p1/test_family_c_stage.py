@@ -33,3 +33,6 @@ def verify_c_owner(id: str, slug: str, required: tuple[str,...]):
 class CFamilyStagingTests(unittest.TestCase):
     def test_c14_unverified_spot_not_current(self):
         verify_c_owner("C14","operating-dx",("dx_reception_reports","provider_authenticated:false","No fabricated real-time DX spots","No PTT"))
+
+    def test_c15_fspl_is_not_ionospheric_forecast(self):
+        verify_c_owner("C15","propagation",("spaceweather_indices","propagation_path","live_feed:false","real_world_prediction:false","No guaranteed path opening"))
