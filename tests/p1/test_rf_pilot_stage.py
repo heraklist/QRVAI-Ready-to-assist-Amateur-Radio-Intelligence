@@ -53,3 +53,35 @@ class RFPilotStageTests(unittest.TestCase):
         s=(p/"SKILL.md").read_text(encoding="utf-8")
         self.assertIn("No automatic transmission",s)
         self.assertIn("No verified physical measurements",s)
+
+    def test_b08_four_exact_canonical_paths_and_valid_source(self):
+        d=next(x for x in SPECS if x.id=="B08")
+        self.assertEqual(d.slug,"antenna-feedline")
+        self.assertEqual([p.id for p in d.procedures],["SS-B08-1","SS-B08-2","SS-B08-3"])
+        self.assertEqual([p.relative_path.split("/")[-1] for p in d.procedures],
+                         ["1-antenna-geometry.md","2-matchingsmith-chart.md","3-feedline-performance.md"])
+        self.assertTrue((STAGE/"skills/antenna-feedline/SKILL.md").is_file(),"B08 Skill source not staged")
+        self.assertTrue(all((STAGE/p.relative_path).is_file() for p in d.procedures))
+        self.assertEqual(isolated_audit("B08"),[])
+
+    def test_b08_missing_or_swapped_owner_and_extra_paths_rejected(self):
+        def no_ref(pkg):
+            (pkg/"references/2-matchingsmith-chart.md").unlink()
+        def spoof_owner(pkg):
+            p=pkg/"references/2-matchingsmith-chart.md"
+            p.write_text(p.read_text().replace("**Owner:** SK-B08","**Owner:** SK-B07"))
+        def extra(pkg):
+            (pkg/"references/new-sdr.md").write_text("# Unsafe orphan")
+        def link(pkg):
+            (pkg/"references/3-feedline-performance.md").unlink()
+            (pkg/"references/3-feedline-performance.md").symlink_to(pkg/"SKILL.md")
+        for corrupt in (no_ref,spoof_owner,extra,link):
+            self.assertTrue(isolated_audit("B08",corrupt))
+
+    def test_b08_not_full_smith_solver_or_measured_nec_plot(self):
+        root=STAGE/"skills/antenna-feedline"
+        content=(root/"SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("No fabricated NEC radiation diagram",content)
+        self.assertIn("No guaranteed real-world gain",content)
+        self.assertIn("No automatic transmission",content)
+        self.assertFalse((root/"mcp.json").exists())
