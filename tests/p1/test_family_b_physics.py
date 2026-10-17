@@ -66,3 +66,51 @@ class EngineeringSourceTests(unittest.TestCase):
                 x=copy.deepcopy(rows);x[i][field]=value
                 p.write_text(json.dumps(x),encoding="utf8")
                 self.assertTrue(validate_engineering_candidates(p),f"{field} bypass")
+
+
+class EngineeringNumericalBoundaries(unittest.TestCase):
+    def test_first_order_rc_is_ideal_not_arbitrary_network(self):
+        import math
+        r=1000.0;c=1e-6
+        cutoff=1/(2*math.pi*r*c)
+        self.assertAlmostEqual(cutoff,159.15494309189535,places=10)
+        amplitude=1/math.sqrt(2)
+        gain_db=20*math.log10(amplitude)
+        self.assertAlmostEqual(gain_db,-3.010299956639812,places=10)
+        source=(ROOT/"staging/p1-domain-skills/skills/rf-electronics/SKILL.md").read_text()
+        self.assertIn("first-order RC",source)
+        self.assertIn("NOT_IMPLEMENTED",source)
+
+    def test_scalar_trace_cannot_supply_complex_s11(self):
+        samples=[(144e6,-10.),(145e6,-20.),(146e6,-5.)]
+        self.assertEqual(min(db for _,db in samples),-20.)
+        self.assertEqual(max(db for _,db in samples),-5.)
+        self.assertEqual(min(samples,key=lambda t:t[1])[0],145e6)
+        source=(ROOT/"staging/p1-domain-skills/skills/rf-measurements/SKILL.md").read_text()
+        self.assertIn("Touchstone",source)
+        self.assertIn("NOT_IMPLEMENTED",source)
+        self.assertIn("No calibrated VNA",source)
+
+    def test_duty_weighted_ideal_runtime(self):
+        self.assertEqual(10*0.8+60*0.2,20.)
+        self.assertAlmostEqual(240*0.8/20,9.6)
+        source=(ROOT/"staging/p1-domain-skills/skills/power-infrastructure/SKILL.md").read_text()
+        self.assertIn("No battery certification",source)
+        self.assertIn("No mains repairs",source)
+
+    def test_iq_pair_statistics_not_fft_or_signal_identification(self):
+        iq=[(1,0),(0,1),(-1,0),(0,-1)]
+        power=sum(i*i+q*q for i,q in iq)/len(iq)
+        peak=max((i*i+q*q)**0.5 for i,q in iq)
+        self.assertEqual(power,1)
+        self.assertEqual(peak,1)
+        self.assertEqual(1e6/1024,976.5625)
+        source=(ROOT/"staging/p1-domain-skills/skills/sdr-dsp/SKILL.md").read_text()
+        for claim in ("NOT_IMPLEMENTED","No live SDR","protected communications"):
+            self.assertIn(claim,source)
+
+    def test_station_source_only_never_live_ptt_or_cat(self):
+        s=(ROOT/"staging/p1-domain-skills/skills/station-integration/SKILL.md").read_text()
+        for required in ("live_device_connected:false","No CAT writes","No PTT","NOT_IMPLEMENTED","station_read_status"):
+            self.assertIn(required,s)
+        # This is a static source-safety check; no live device or host call.
