@@ -17,14 +17,22 @@ OWNERS=frozenset({"A01","A02","A03","A04","A05","B06","B07","B08","B09","B10","B
 EXPECTED=frozenset("p1-domain-skills/"+relative for d in SPECS if d.id in OWNERS
     for relative in (f"skills/{d.slug}/SKILL.md",*(p.relative_path for p in d.procedures)))
 
+def copy_family_b_baseline(destination: Path) -> Path:
+    """Preserve P1.3 thirteen-owner 52-file staging independently of additive Family C."""
+    for d in SPECS:
+        if d.id in OWNERS:
+            copytree(STAGE/"skills"/d.slug,destination/"skills"/d.slug,symlinks=True)
+    return destination
+
 class EngineeringArchiveTests(unittest.TestCase):
     def test_exact_52_file_stage_rebuilds_byte_identical(self):
         self.assertEqual(len(EXPECTED),52)
-        self.assertEqual(audit_stage(STAGE,SPECS,OWNERS),[])
         with TemporaryDirectory() as tmp:
             out=Path(tmp)
-            a=build_review_zip(STAGE,out/"1.zip",SPECS,OWNERS)
-            b=build_review_zip(STAGE,out/"2.zip",SPECS,OWNERS)
+            subset=copy_family_b_baseline(out/"source")
+            self.assertEqual(audit_stage(subset,SPECS,OWNERS),[])
+            a=build_review_zip(subset,out/"1.zip",SPECS,OWNERS)
+            b=build_review_zip(subset,out/"2.zip",SPECS,OWNERS)
             self.assertEqual(sha256(a.read_bytes()).hexdigest(),sha256(b.read_bytes()).hexdigest())
             self.assertEqual(validate_review_zip(a,EXPECTED),[])
             with ZipFile(a) as z:
@@ -36,7 +44,8 @@ class EngineeringArchiveTests(unittest.TestCase):
 
     def test_53rd_file_and_escape_are_rejected(self):
         with TemporaryDirectory() as tmp:
-            d=Path(tmp);base=build_review_zip(STAGE,d/"original.zip",SPECS,OWNERS)
+            d=Path(tmp);subset=copy_family_b_baseline(d/"source")
+            base=build_review_zip(subset,d/"original.zip",SPECS,OWNERS)
             for bogus in ("p1-domain-skills/plugin.json","../secrets.txt"):
                 dst=d/"tamper.zip"
                 with ZipFile(base) as source,ZipFile(dst,"w",ZIP_DEFLATED) as target:
@@ -47,7 +56,7 @@ class EngineeringArchiveTests(unittest.TestCase):
 
     def test_b11_wrong_owner_symlink_and_hidden_53rd_source_rejected(self):
         with TemporaryDirectory() as tmp:
-            d=Path(tmp);copytree(STAGE,d/"source",symlinks=True)
+            d=Path(tmp);copy_family_b_baseline(d/"source")
             src=d/"source"
             target=src/"skills/station-integration/references/3-readonly-telemetry.md"
             original=target.read_text(encoding="utf8")
