@@ -35,7 +35,7 @@ test("P0 exactly maps 38 distinct M IDs to names, table rows and public SDK tool
  assert.equal(new Set(descriptorNames).size,38);
  assert.ok(descriptorNames.every(x=>classifyTool(x)!==null));
  const doc=readFileSync(registryPath,"utf8");
- const entries=[...doc.matchAll(/^\|\s*(M\d{2})\s*\|[^\n]*?\|\s*`([a-z0-9_]+)`\s*\|\s*$/gm)].map(x=>[x[1],x[2]]);
+ const entries=[...doc.matchAll(/^\|\s*(M\d{2})\s*\|[^\n]*?\|\s*`([a-z0-9_]+)`\s*\|\s*$/gm)].map(x=>[x[1],x[2]] as const);
  assert.equal(entries.length,38,"implementation register must have exactly 38 ID/name rows");
  assert.deepEqual(sorted(entries.map(x=>x[0])),ids);
  assert.deepEqual(new Map(entries),new Map(IMPLEMENTED_TOOLS.map(x=>[x.candidate_id,x.name])));
