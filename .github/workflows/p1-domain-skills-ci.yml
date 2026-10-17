@@ -38,7 +38,7 @@ jobs:
           assert audit_stage(stage,specs,frozenset({"B07","B08"}))==[]
           assert validate_routing_cases(root/"qa/p1/domain-routing-cases.json",specs)==[]
           print("P1_REGISTRY=24/72")
-          print("P1_STAGE=1/24,3/72")
+          print("P1_STAGE=2/24,6/72")
           print("P1_HOST_E2E=NOT_EXECUTED")
           PY
       - name: Preserve V0 regression suite
