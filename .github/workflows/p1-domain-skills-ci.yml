@@ -63,6 +63,27 @@ jobs:
           print("P1_AUTHORITY_CANDIDATES=7")
           print("P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED")
           PY
+      - name: Family B source and bilingual safety expectations, no connected bridge
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from tests.p1.test_family_b_cases import validate_family_b_cases
+          from tests.p1.test_family_b_physics import validate_engineering_candidates
+          source=Path("qa/p1/family-b-engineering-source-candidates.json")
+          fixtures=Path("qa/p1/family-b-engineering-cases.json")
+          assert validate_engineering_candidates(source)==[]
+          assert validate_family_b_cases(fixtures)==[]
+          rows=json.loads(fixtures.read_text(encoding="utf8"))
+          assert len(rows)==36
+          assert {r["procedure_id"] for r in rows}=={f"SS-B{d:02d}-{n}" for d in (6,9,10,11,12,13) for n in (1,2,3)}
+          assert len([r for r in rows if len(r["expected_domains"])>1])>=4
+          text=(Path("staging/p1-domain-skills/skills/station-integration/SKILL.md").read_text(encoding="utf8"))
+          assert "live_device_connected:false" in text and "No PTT" in text
+          print("P1_FAMILY_B_CASES=36")
+          print("P1_FAMILY_B_SS_COVERED=18/18")
+          print("P1_STATION_BRIDGE=NOT_CONNECTED")
+          PY
       - name: Verify deterministic approved P1 source-only review archive
         run: |
           python - <<'PY'
