@@ -21,7 +21,7 @@ REQUIRED=(
     "validate_archive(archive)",
     "V0_ARCHIVE_FILES=12",
     "P1_REGISTRY=24/72",
-    "P1_STAGE=0/24,0/72",
+    "P1_STAGE=1/24,3/72",
     "P1_HOST_E2E=NOT_EXECUTED",
 )
 
