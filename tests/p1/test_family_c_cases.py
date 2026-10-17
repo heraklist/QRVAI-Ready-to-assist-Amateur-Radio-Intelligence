@@ -62,7 +62,7 @@ class CFamilyCaseTests(unittest.TestCase):
                  (0,"expected_domains",["Q99"]),(0,"procedure_id","SS-C21-1"),
                  (0,"must_not_claim",["ok"]),(6,"risk_class","packet_send"),
                  (12,"expected_outcome","VERIFIED"),(30,"source_kind","LIVE_NOAA"),
-                 (36,"prompt_en","sk-proj-abcd"),(42,"expected_domains",["C21"]))
+                 (36,"prompt_en","sk-proj-abcd"),(42,"expected_domains",["C20"]))
         with TemporaryDirectory() as tmp:
             path=Path(tmp)/"invalid.json"
             for i,k,v in changes:
