@@ -45,3 +45,6 @@ class CFamilyStagingTests(unittest.TestCase):
 
     def test_c18_signed_offset_no_repeater_operational_proof(self):
         verify_c_owner("C18","repeaters-dvoice",("repeater_channel_preview","spectrum_find_repeaters","verified:false","live_status_known:false","No invented tones"))
+
+    def test_c19_supplied_elevation_is_not_sgp4_doppler(self):
+        verify_c_owner("C19","satellites-weak-signal",("satellite_pass","orbit_computed:false","No computed Doppler","No SGP4","OMM"))
