@@ -95,7 +95,7 @@ All above file names must be prefixed `staging/p1-domain-skills/` when created. 
 - [ ] **Step 4 (negative):** `test_cannot_turn_advisory_or_unreviewed_excerpt_into_permission` rejects `ALLOWED` for user excerpts, IARU bandplan and metadata-only records. Test a mutated dictionary in a temporary file; no actual operating permission lookup.
 - [ ] **Step 5 (GREEN):** Focused P1 test then full P1/V0/RF suite at exact SHA (CI). Commit tests/metadata only after GREEN; stage still B07/B08 **2/24,6/72**, review ZIP 8; no new A package yet.
 
-### Task 2: RED canonical A01 and A02 staged Skill contracts
+### Task 2: RED canonical A01 staged Skill contracts
 
 **Files:** create `tests/p1/test_family_a_stage.py` covering A01 first, then append A02 in Task 4. Use `load_registry(...)` and the same `isolated_audit` pattern as `tests/p1/test_rf_pilot_stage.py`.
 
@@ -155,7 +155,7 @@ All above file names must be prefixed `staging/p1-domain-skills/` when created. 
 
 - [ ] **Step 1 (RED):** Write `test_family_a_thirty_bilingual_cases_all_procedures`: require **≥30** records, **≥6 per A Domain**, all **15 procedure IDs**, nonempty distinct `prompt_el`/`prompt_en`, `expected_domains` (1–3 real canonical owners), `risk_class`, `expected_outcome`, `source_kind` and nonempty `must_not_claim`. Before data exists, observe missing file RED.
 - [ ] **Step 2 (GREEN):** Author training inventory/outage/message repeat/role fixtures (A01/A02), Greek allocation/recency/bandplan overlays (A03), legal/CEPT/unknown-licence cases (A04), exposure/EMC/electrical hazard cases (A05), including three mixed-owner scenarios `["A01","A02"]`, `["A03","A04"]` and `["A05","B07"]`. All operational legal cases abstain without primary expert-approved evidence.
-- [ ] **Step 3 (negative):** Mutation tests reject ID duplication, unknown owner, missing Greek/English prompt, missing source timestamp, `priority dispatch`, false `ALLOWED` from `IARU_RECOMMENDATION`, false `compliance_established:true`, fake official live repeater, unredacted victim info or unsafe electrical steps.
+- [ ] **Step 3 (negative):** Mutation tests reject ID duplication, unknown owner, missing Greek/English prompt, false source-verification flag, `priority dispatch`, false `ALLOWED` from `IARU_RECOMMENDATION`, false `compliance_established:true`, fake official live repeater, unredacted victim info or unsafe electrical steps.
 - [ ] **Step 4 (GREEN):** Focused and full P1 tests pass. **Important:** existing 18 general bilingual cases and 20 RF cases remain; the new ≥30 are separate QA evidence, **not** installed host E2E test requests. Commit source cases plus tests.
 
 ### Task 9: CI regression hardening and exactly 28-file ZIP provenance
