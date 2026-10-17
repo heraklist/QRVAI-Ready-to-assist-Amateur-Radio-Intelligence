@@ -13,3 +13,6 @@ test("M19 rejects unfamiliar symptom",()=>assert.throws(()=>equipmentDiagnose({s
 test("M31 validates correctly sized user supplied ADIF field",()=>{const r=adifValidate({adif:"<CALL:5>SV1AA<EOR>"});assert.equal(r.valid,true);assert.equal(r.records,1);assert.deepEqual(r.fields,["CALL"]);assert.equal(r.saved,false)});
 test("M31 rejects truncated ADIF fields",()=>{const r=adifValidate({adif:"<CALL:6>SV1AA<EOR>"});assert.equal(r.valid,false)});
 test("M31 rejects oversized input",()=>assert.throws(()=>adifValidate({adif:"x".repeat(4097)})));
+
+test("M31 P0 private ADIF data remains absent from validation output",()=>{const sample="<EOH><CALL:4>SV1A<BAND:3>20M<EOR>";const r=adifValidate({adif:sample});assert.equal(r.valid,true);assert.equal(r.records,1);assert.equal(r.saved,false);assert.deepEqual(r.fields,["CALL","BAND"]);assert.ok(!JSON.stringify(r).includes("SV1A"));});
+test("M31 P0 invalid field length omits raw input",()=>{const r=adifValidate({adif:"<EOH><CALL:9>ABC<EOR>"});assert.equal(r.valid,false);assert.equal(r.records,0);assert.ok(!JSON.stringify(r).includes("ABC"));});
