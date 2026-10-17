@@ -1,0 +1,8 @@
+# SS-B08-2 — Matching / Smith Chart
+
+**Owner:** SK-B08
+**Responsibility:** evaluate impedance locus and matching-network feasibility
+**Required input:** Declared source/load resistance in ohms (positive) and design frequency/velocity factor for an ideal resistive quarter-wave transformer; for reflection, complex load R+jX and positive real Z0. A Smith chart requires frequency-sweep complex impedance samples and a chart renderer, neither supplied by the existing source tools.
+**Procedure:** For lossless purely resistive terminations, the quarter-wave transformer characteristic impedance is √(R_source×R_load), length c×velocity_factor/(4×frequency_hz). The registered `antenna_matching` accepts exactly `{"source_resistance_ohm":50,"load_resistance_ohm":200,"frequency_hz":14200000,"velocity_factor":1}`; it cannot optimize complex broadband networks. Registered `rf_impedance` accepts only `r_ohm`, `x_ohm`, `z0_ohm` for one ideal load and can compute |Γ|, VSWR, phase and return loss. A plotted Smith chart, measured impedance locus and physical matching network certification are **NOT_IMPLEMENTED**. Never mislabel raw reflection coefficients as a chart.
+**Output:** For purely resistive 50 Ω ↔ 200 Ω, ideal quarter-wave transformer Z0=100 Ω at design frequency; not broadband or complex matching. At a 100+j0 Ω load into 50 Ω, ideal |Γ|=1/3, VSWR=2. Display units and assumptions, not a fabricated Smith plot.
+**Error/stop:** Missing/negative impedances, unknown reactance or electrical length, unsupported frequency sweep or full Smith chart demand => MISSING_CONTEXT or NOT_IMPLEMENTED. Do not state measured VSWR or guaranteed antenna match.
