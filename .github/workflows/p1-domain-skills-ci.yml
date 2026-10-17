@@ -1,0 +1,68 @@
+name: QRVAI P1 Domain Skills CI
+on:
+  pull_request:
+    paths:
+      - 'staging/p1-domain-skills/**'
+      - 'scripts/p1/**'
+      - 'tests/p1/**'
+      - 'qa/p1/**'
+      - 'docs/architecture/skill-and-subskill-registry-v0.5.md'
+      - 'docs/architecture/capability-register-v0.5.md'
+      - '.github/workflows/p1-domain-skills-ci.yml'
+jobs:
+  p1-v0-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements-v0-dev.txt
+      - name: P1 unit tests
+        run: python -m unittest discover -s tests/p1 -p 'test_*.py' -v
+      - name: P1 canonical identities, empty staging and bilingual fixtures
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from scripts.p1.registry import load_registry
+          from scripts.p1.audit_domain_skills import audit_stage
+          from scripts.p1.routing_cases import validate_routing_cases
+          root=Path(".")
+          specs=load_registry(root/"docs/architecture/skill-and-subskill-registry-v0.5.md",
+                              root/"docs/architecture/capability-register-v0.5.md")
+          assert len(specs)==24
+          assert sum(len(x.procedures) for x in specs)==72
+          stage=root/"staging/p1-domain-skills"
+          assert audit_stage(stage,specs,frozenset())==[]
+          assert validate_routing_cases(root/"qa/p1/domain-routing-cases.json",specs)==[]
+          print("P1_REGISTRY=24/72")
+          print("P1_STAGE=0/24,0/72")
+          print("P1_HOST_E2E=NOT_EXECUTED")
+          PY
+      - name: Preserve V0 regression suite
+        run: python -m unittest discover -s tests/v0 -p 'test_*.py' -v
+      - name: Preserve V0 strict archive
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from hashlib import sha256
+          from scripts.v0.audit_content import audit_catalog
+          from scripts.v0.build_archive import build_archive, validate_archive
+          root = Path("qrvai")
+          result = audit_catalog(root)
+          assert result["violations"] == [], result["violations"]
+          assert len(result["skill_names"]) == 5
+          with TemporaryDirectory() as tmp:
+              archive = build_archive(root, Path(tmp)/"v0.zip")
+              assert validate_archive(archive) == []
+              import zipfile
+              with zipfile.ZipFile(archive) as zip_file:
+                  assert len(zip_file.namelist()) == 12
+              print("V0_ARCHIVE_FILES=12")
+              fingerprint = sha256(archive.read_bytes()).hexdigest()
+              assert fingerprint == "eb2fb505e1e2ad24b4b5a0aea07137a7e56a8b4888c33017055cb103aba6fe7f", "V0 archive changed"
+              print("V0_ARCHIVE_SHA256=" + fingerprint)
+          PY
