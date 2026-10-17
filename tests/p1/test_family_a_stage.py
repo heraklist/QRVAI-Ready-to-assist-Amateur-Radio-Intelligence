@@ -76,3 +76,18 @@ class FamilyAStagingTests(unittest.TestCase):
         for term in ("IARU recommendations","not legal authorization","USER_SUPPLIED_UNVERIFIED","INDETERMINATE","No live repeater status"):
             self.assertIn(term,text)
         self.assertTrue(isolated_audit("A03",lambda pkg:(pkg/"references/3-channelrepeater-reference.md").unlink()))
+
+    def test_a04_regulatory_licensing_canonical_paths(self):
+        d=next(x for x in SPECS if x.id=="A04")
+        self.assertEqual(d.slug,"regulatory-licensing")
+        self.assertEqual([p.relative_path.split("/")[-1] for p in d.procedures],
+                         ["1-licence-context.md","2-transmission-rule-evaluation.md","3-crossborder-explanation.md"])
+        self.assertTrue((STAGE/"skills/regulatory-licensing/SKILL.md").is_file(),"SK-A04 staged source missing")
+        self.assertTrue(all((STAGE/p.relative_path).is_file() for p in d.procedures))
+        self.assertEqual(isolated_audit("A04"),[])
+
+    def test_a04_legal_authority_fail_closed(self):
+        text=(STAGE/"skills/regulatory-licensing/SKILL.md").read_text(encoding="utf8")
+        for term in ("ALLOWED/NOT_ALLOWED/INDETERMINATE","INDETERMINATE","NOT_IMPLEMENTED","Never issue a licence","CEPT/HAREC","authorized:false"):
+            self.assertIn(term,text)
+        self.assertTrue(isolated_audit("A04",lambda pkg:(pkg/"references/3-crossborder-explanation.md").unlink()))
