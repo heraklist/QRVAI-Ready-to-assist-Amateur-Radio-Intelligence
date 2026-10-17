@@ -22,7 +22,7 @@ jobs:
       - run: python -m pip install -r requirements-v0-dev.txt
       - name: P1 unit tests
         run: python -m unittest discover -s tests/p1 -p 'test_*.py' -v
-      - name: P1 canonical identities, empty staging and bilingual fixtures
+      - name: P1 canonical identities, staged owners and bilingual fixtures
         run: |
           python - <<'PY'
           from pathlib import Path
