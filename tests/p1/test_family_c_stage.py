@@ -39,3 +39,6 @@ class CFamilyStagingTests(unittest.TestCase):
 
     def test_c16_receive_only_versioned_no_cat_ptt(self):
         verify_c_owner("C16","digital-modes",("digital_setup_guide","simulated:true","No PTT","No CAT writes","NOT_IMPLEMENTED"))
+
+    def test_c17_no_live_packet_forward_or_location_leak(self):
+        verify_c_owner("C17","packet-networks",("packet_route_preview","simulated:true","No APRS-IS write","No Winlink send","private location"))
