@@ -24,6 +24,9 @@ REQUIRED=(
     "P1_STAGE=13/24,39/72",
     "P1_STAGE_ARCHIVE_FILES=52",
     "P1_FAMILY_A_CASES=30",
+    "P1_FAMILY_B_CASES=36",
+    "P1_FAMILY_B_SS_COVERED=18/18",
+    "P1_STATION_BRIDGE=NOT_CONNECTED",
     "P1_FAMILY_A_SS_COVERED=15/15",
     "P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED",
     "P1_AUTHORITY_CANDIDATES=7",
@@ -84,3 +87,15 @@ class P1CIContractTests(unittest.TestCase):
         self.assertNotIn("actions/upload-artifact",c)
         self.assertNotIn("vercel --prod",c)
         self.assertNotIn("plugin_creator",c.lower())
+
+    def test_family_b_qa_and_bridge_metrics_are_mandatory(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        for required in ("P1_FAMILY_B_CASES=36","P1_FAMILY_B_SS_COVERED=18/18","P1_STATION_BRIDGE=NOT_CONNECTED"):
+            self.assertTrue(workflow_errors(content.replace(required,"REMOVED")))
+
+    def test_all_thirteen_owners_staged_not_six_only(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        owners='frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11"})'
+        self.assertIn(owners,content)
+        self.assertNotIn("id-token: write",content)
+        self.assertNotIn("vercel --prod",content)
