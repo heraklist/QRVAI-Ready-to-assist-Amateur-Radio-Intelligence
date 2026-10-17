@@ -49,3 +49,8 @@ class EngineeringStageTests(unittest.TestCase):
         verify_owner("B12","power-infrastructure",[
             "1-power-budget.md","2-battery-runtime.md","3-backup-scenario.md"
         ],["power_autonomy","Wh","duty cycle","No mains repairs","No battery certification"])
+
+    def test_b13_sdr_iq_sample_rate_and_no_fft_device_overclaim(self):
+        verify_owner("B13","sdr-dsp",[
+            "1-sampling-foundations.md","2-spectrumfft-visualization.md","3-dsp-filter-analysis.md"
+        ],["sdr_inspect_iq","NOT_IMPLEMENTED","No live SDR","sample_rate","protected communications"])
