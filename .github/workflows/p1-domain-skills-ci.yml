@@ -84,6 +84,42 @@ jobs:
           print("P1_FAMILY_B_SS_COVERED=18/18")
           print("P1_STATION_BRIDGE=NOT_CONNECTED")
           PY
+      - name: Family C bilingual provenance and non-operational source gates
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from tests.p1.test_family_c_candidates import validate_family_c_candidates
+          from tests.p1.test_family_c_cases import validate_family_c_cases
+          candidates=Path("qa/p1/family-c-source-candidates.json")
+          fixtures=Path("qa/p1/family-c-operating-scenarios.json")
+          assert validate_family_c_candidates(candidates)==[]
+          assert validate_family_c_cases(fixtures)==[]
+          sources=json.loads(candidates.read_text(encoding="utf8"))
+          cases=json.loads(fixtures.read_text(encoding="utf8"))
+          assert len(sources)>=8
+          assert all(x["provider_connected"] is False and x["review_state"]=="UNREVIEWED"
+                     and x["rights_state"]=="UNVERIFIED" for x in sources)
+          assert len(cases)==48
+          assert {r["procedure_id"] for r in cases}=={f"SS-C{d}-{n}" for d in range(14,22) for n in (1,2,3)}
+          assert len([r for r in cases if len(r["expected_domains"])>1])>=6
+          for slug,marker in (
+              ("operating-dx","provider_authenticated:false"),
+              ("propagation","live_feed:false"),
+              ("digital-modes","No PTT"),
+              ("packet-networks","No APRS-IS write"),
+              ("repeaters-dvoice","verified:false"),
+              ("satellites-weak-signal","orbit_computed:false"),
+              ("logbook-awards","saved:false"),
+              ("contests-portable","official_schedule:false")
+          ):
+              txt=Path("staging/p1-domain-skills/skills",slug,"SKILL.md").read_text(encoding="utf8")
+              assert marker in txt
+          print("P1_FAMILY_C_CASES=48")
+          print("P1_FAMILY_C_SS_COVERED=24/24")
+          print("P1_C_PROVIDER_LINKS=NOT_CONNECTED")
+          print("P1_C_TX=NOT_ENABLED")
+          PY
       - name: Verify deterministic approved P1 source-only review archive
         run: |
           python - <<'PY'
