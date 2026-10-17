@@ -451,6 +451,10 @@
     "must_not_claim": [
       "measured EIRP",
       "transmission permission"
+    ],
+    "expected_domains": [
+      "B07",
+      "B08"
     ]
   }
 ]
