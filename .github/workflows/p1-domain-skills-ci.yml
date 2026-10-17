@@ -35,10 +35,10 @@ jobs:
           assert len(specs)==24
           assert sum(len(x.procedures) for x in specs)==72
           stage=root/"staging/p1-domain-skills"
-          assert audit_stage(stage,specs,frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19"}))==[]
+          assert audit_stage(stage,specs,frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20"}))==[]
           assert validate_routing_cases(root/"qa/p1/domain-routing-cases.json",specs)==[]
           print("P1_REGISTRY=24/72")
-          print("P1_STAGE=19/24,57/72")
+          print("P1_STAGE=20/24,60/72")
           print("P1_HOST_E2E=NOT_EXECUTED")
           PY
       - name: Explicit Family A fixture and legal-authority honesty gate
@@ -97,14 +97,14 @@ jobs:
           specs = load_registry(Path("docs/architecture/skill-and-subskill-registry-v0.5.md"),
                                 Path("docs/architecture/capability-register-v0.5.md"))
           stage = Path("staging/p1-domain-skills")
-          owners = frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19"})
+          owners = frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20"})
           assert audit_stage(stage,specs,owners)==[]
           expected = frozenset(
               "p1-domain-skills/" + relative
               for d in specs if d.id in owners
               for relative in (f"skills/{d.slug}/SKILL.md",*(p.relative_path for p in d.procedures))
           )
-          assert len(expected)==76
+          assert len(expected)==80
           with TemporaryDirectory() as temporary:
               target = Path(temporary)
               one = build_review_zip(stage,target/"review-1.zip",specs,owners)
@@ -113,8 +113,8 @@ jobs:
               assert a==b,"review ZIP must be byte-identical"
               assert validate_review_zip(one,expected)==[]
               with ZipFile(one) as z:
-                  assert len(z.namelist())==76
-              print("P1_STAGE_ARCHIVE_FILES=76")
+                  assert len(z.namelist())==80
+              print("P1_STAGE_ARCHIVE_FILES=80")
               print("P1_STAGE_ARCHIVE_SHA256="+a)
           PY
       - name: Preserve V0 regression suite
