@@ -48,3 +48,6 @@ class CFamilyStagingTests(unittest.TestCase):
 
     def test_c19_supplied_elevation_is_not_sgp4_doppler(self):
         verify_c_owner("C19","satellites-weak-signal",("satellite_pass","orbit_computed:false","No computed Doppler","No SGP4","OMM"))
+
+    def test_c20_adif318_preview_not_full_roundtrip_or_award_cert(self):
+        verify_c_owner("C20","logbook-awards",("adif_validate","log_award_progress","saved:false","award_certified:false","No LoTW upload","NOT_IMPLEMENTED"))
