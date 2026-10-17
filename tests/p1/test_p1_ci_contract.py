@@ -21,8 +21,8 @@ REQUIRED=(
     "validate_archive(archive)",
     "V0_ARCHIVE_FILES=12",
     "P1_REGISTRY=24/72",
-    "P1_STAGE=7/24,21/72",
-    "P1_STAGE_ARCHIVE_FILES=28",
+    "P1_STAGE=8/24,24/72",
+    "P1_STAGE_ARCHIVE_FILES=32",
     "P1_FAMILY_A_CASES=30",
     "P1_FAMILY_A_SS_COVERED=15/15",
     "P1_LEGAL_PRIMARY_RULES_EXPERT_VALIDATED=0/UNVERIFIED",
@@ -64,14 +64,14 @@ class P1CIContractTests(unittest.TestCase):
 
     def test_rf_and_8_file_zip_gate_fail_when_removed(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=28","P1_STAGE_ARCHIVE_FILES=0")))
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=32","P1_STAGE_ARCHIVE_FILES=0")))
         self.assertTrue(workflow_errors(text.replace("npm run typecheck","echo skip-typecheck")))
         self.assertTrue(workflow_errors(text.replace("build_review_zip(","build_unreviewed_zip(")))
 
     def test_stage_count_does_not_regress_to_b07_only_or_zero(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE=7/24,21/72","P1_STAGE=2/24,6/72")))
-        self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05"})',text)
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE=8/24,24/72","P1_STAGE=2/24,6/72")))
+        self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05","B06"})',text)
 
     def test_family_a_metrics_and_review_gate_must_run(self):
         content=WORKFLOW.read_text(encoding="utf8")
