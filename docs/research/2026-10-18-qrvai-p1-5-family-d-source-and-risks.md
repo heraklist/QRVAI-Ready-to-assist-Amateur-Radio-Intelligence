@@ -22,9 +22,9 @@ For all external sources: `review_state: UNREVIEWED_FOR_INTEGRATION`, `rights_st
 
 | Registered MCP tool name | Actual source implementation (no live host) | Future Domain / limit |
 |---|---|---|
-| `academy_exercise` (M36) | `wave2.ts` function `academyExercise`; accepts `topic: rf_power | antenna_basics` and `locale: el | en`, optional answer index 0..2. One fixed question/options, deterministic correctness flag, `M36-v1`. | D22: **no CW generation, no WPM scoring, no official question bank, no learner profiles** |
+| `academy_exercise` (M36) | `wave2.ts` function `academyExercise`; accepts `topic: rf_power` or `antenna_basics` and `locale: el` or `en`, optional answer index 0..2. One fixed question/options, deterministic correctness flag, `M36-v1`. | D22: **no CW generation, no WPM scoring, no official question bank, no learner profiles** |
 | `maker_project_review` (M37) | `wave3.ts` function `makerProjectReview`; user project name, `supply_voltage_v` >0 and <=30, 1..24 component aliases, `certified:false` and warnings. | D23: **no verified pinout/current/EMC/circuit certification, GPIO/USB/CAT/PTT or bench action** |
-| `club_workshop_plan` (M38) | `wave3.ts` function `clubWorkshopPlan`; `antenna_basics | digital_modes`, participants 1..100, duration 30..240 min. Returns deterministic `simulated:true` agenda. | D24: **no member registry, mentor consent, club asset DB, session booking, reminder or real calendar** |
+| `club_workshop_plan` (M38) | `wave3.ts` function `clubWorkshopPlan`; `antenna_basics` or `digital_modes`, participants 1..100, duration 30..240 min. Returns deterministic `simulated:true` agenda. | D24: **no member registry, mentor consent, club asset DB, session booking, reminder or real calendar** |
 
 These methods are **source-registered and SDK-testable** under the 38-method cumulative Draft, **not live third-party integrations or an installed @QRVAI plugin**. Keep methods/schemas byte-for-byte unchanged in P1.5; changing behaviour requires separate P2 or V-slice approval and new TDD.
 
