@@ -38,3 +38,6 @@ class FamilyDStageTests(unittest.TestCase):
 
     def test_d23_30v_preview_never_certifies_or_flashes(self):
         verify_d_owner("D23","radio-maker",("maker_project_review","certified:false","No firmware flashing","No CAT/PTT","NOT_IMPLEMENTED"))
+
+    def test_d24_roster_calendar_and_minors_fail_closed(self):
+        verify_d_owner("D24","clubs-mentoring",("club_workshop_plan","simulated:true","No personal roster","No calendar write","NOT_PERSISTED"))
