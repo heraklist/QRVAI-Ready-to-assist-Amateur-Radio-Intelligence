@@ -4,25 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --experimental-strip-types --test test/power.spec.ts test/link-budget.spec.ts test/impedance.spec.ts test/feedline.spec.ts test/validation.spec.ts test/register.spec.ts test/protocol.spec.ts test/http-limits.spec.ts test/source-boundary.spec.ts test/release-gates.spec.ts",
+    "test": "node --experimental-strip-types --test test/power.spec.ts test/link-budget.spec.ts test/impedance.spec.ts test/feedline.spec.ts test/validation.spec.ts test/register.spec.ts test/protocol.spec.ts test/http-limits.spec.ts test/source-boundary.spec.ts test/release-gates.spec.ts test/vercel-protocol.spec.ts test/wave1.spec.ts test/wave2.spec.ts",
     "typecheck": "tsc --noEmit",
-    "test:worker": "vitest run --config vitest.worker.config.ts",
-    "build:check": "wrangler deploy --dry-run --outdir dist-preview"
+    "verify:https": "node scripts/verify-https.mjs"
   },
   "engines": {
     "node": ">=22.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.3.1",
-    "agents": "0.28.1",
     "zod": "4.2.1"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "2.3.1",
     "@types/node": "22.15.30",
-    "typescript": "5.9.3",
-    "@cloudflare/vitest-plugin": "1.4.2",
-    "vitest": "4.1.0",
-    "wrangler": "4.135.0"
+    "typescript": "5.9.3"
   }
 }

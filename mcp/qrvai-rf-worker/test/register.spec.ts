@@ -11,7 +11,7 @@ test("a real SDK v2 server exposes four RF calculators and returns 50 dBm", asyn
     await server.connect(serverTransport);
     await client.connect(clientTransport);
     const result=await client.listTools();
-    assert.deepEqual(result.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"]);
+    assert.deepEqual(result.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss","core_capabilities","antenna_geometry","antenna_matching","rf_filter_response","power_autonomy","geo_bearing","station_signal_path","packet_route_preview","emcomm_drill","emcomm_readiness","academy_exercise"]);
     assert.ok(result.tools[0]?.annotations?.readOnlyHint);
     const good=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
     assert.notEqual(good.isError,true);

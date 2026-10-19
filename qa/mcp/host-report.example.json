@@ -2,15 +2,6 @@
   "status": "NOT_EXECUTED",
   "simulated": false,
   "exactSourceSha": null,
-  "accountFreePlanVerified": {
-    "passed": false
-  },
-  "quotaVerified": {
-    "passed": false
-  },
-  "measuredWorkerCpu": {
-    "passed": false
-  },
   "deployedEndpointVerified": {
     "passed": false
   },
@@ -32,5 +23,20 @@
   "observedFollowUp": {
     "passed": false
   },
-  "notes": "Template for later owner-authorized real Cloudflare/host evidence. Never claim observed results without links."
+  "notes": "Template for later Vercel-only HTTPS, auth and ChatGPT host acceptance evidence. No deployment or host invocation has been verified.",
+  "vercelPlanVerified": {
+    "passed": false
+  },
+  "vercelQuotaVerified": {
+    "passed": false
+  },
+  "vercelFunctionObserved": {
+    "passed": false
+  },
+  "vercelPreviewTargetVerified": {
+    "passed": false
+  },
+  "authCompatibilityVerified": {
+    "passed": false
+  }
 }

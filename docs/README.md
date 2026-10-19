@@ -1,6 +1,6 @@
 # QRVAI Architecture Documentation Index
 
-**Updated:** 2026-10-15 · **State:** V0 Skills-only package and ONE RF MCP Worker hosting THREE read-only calculation tools are implemented as **source in GitHub main** (merged PRs #9 and #11). Neither a Cloudflare Worker nor a fresh ChatGPT Plugin is deployed or host-tested. The remaining architecture catalog is proposed.
+**Updated:** 2026-10-15 · **State:** GitHub main has five V0 Skills and four implemented read-only RF tools. Vercel-only MCP backend is in [Draft PR #17](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/17); the Vercel project is linked but no verified HTTPS deployment, Plugin Creator release, or host E2E exists. Cloudflare is not a runtime option.
 
 ## Start here
 
@@ -32,6 +32,6 @@
 
 **Still blocked or not executed:** the legacy private creator-record `plugins_6acf47f502dc8191bf542fe040d484d8` remains saved and must not be updated/reused. The owner found no Delete action in personal plugin management; [Issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3) tracks record deletion and possible name collision. There has been **no new Plugin Creator `create_plugin` call**, no fresh QRVAI private release, no installation, and no ChatGPT-client end-to-end `@QRVAI` or follow-up routing test.
 
-**Future architecture is not deployed:** 24 separate Domain Skills, 18 engines, 38 candidate MCP methods, four independent orchestrators and 36 MCP Apps are **proposals**. The source on `main` now includes three deterministic RF calculation tools: power conversion, link budget, and impedance/VSWR, still **undeployed**. The V0 plugin package itself ships no `mcp.json`, CAT/PTT integration, emergency dispatch, live provider adapter or private Academy question bank. The earlier in-place migration design was rejected.
+**Future architecture is not deployed:** 24 separate Domain Skills, 18 engines, 38 proposed MCP methods, four independent orchestrators and 36 MCP Apps remain conceptual. Of the proposed tools, **four** RF calculators are implemented in source, **34 are still unimplemented**. V0 itself ships no `mcp.json`, CAT/PTT integration, emergency dispatch, live provider adapter, or private Academy content. The active Vercel-only development branch retains release gates for safe deployment.
 
-**Next gates:** independently review source/CI if available; complete the old-account identity/namespace prerequisites; explicitly authorize a *new private* plugin creation and host acceptance when those gates are satisfied. GitHub merge into `main`, ChatGPT plugin creation/installation and publication are **distinct decisions**.
+**Next gates:** Vercel preview target must be unambiguously verified (two mis-targeted or unspecified build attempts were canceled); then verify real HTTPS protocol, protected authentication compatibility, quotas and provider logs before production. New private ChatGPT plugin creation and `@QRVAI` host acceptance remain separate, deferred gates.

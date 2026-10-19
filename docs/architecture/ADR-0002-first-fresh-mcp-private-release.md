@@ -1,36 +1,24 @@
-# ADR-0002 — First fresh QRVAI plugin should include the already-real MCP server
+# ADR-0002 — First clean QRVAI plugin needs a real Vercel MCP endpoint
 
-**Date:** 2026-10-15  
-**Decision:** APPROVED AS SOURCE ARCHITECTURE; runtime activation still requires separate proof  
-**Scope:** Future clean new Plugin Creator identity and its first private release, not the historical account record.
+**Date:** 2026-10-15
+**Decision:** VERCEL-ONLY BACKEND; first fresh Plugin Creator release blocked pending verified HTTPS transport, authentication compatibility, and explicit owner release authorization.
 
-## Context
+## Decision and technical scope
 
-The Skills-only V0 package contains exactly five authored Skills but no remote `mcp.json`. New source in GitHub main contains a stateless Cloudflare Worker MCP with three read-only tools: `rf_power_convert`, `rf_link_budget`, and `rf_impedance`. There is no known deployed HTTPS endpoint. Public OpenAI plugin submission guidance states that adding an MCP server to an existing skills-only plugin is not currently supported; this does not by itself prove identical private Plugin Creator behavior.
+QRVAI uses a single stateless MCP registry with four **implemented** read-only RF tools: `rf_power_convert`, `rf_link_budget`, `rf_impedance`, and `rf_feedline_loss`. The sole intended backend is a **Vercel Node.js Function** at `/api/mcp`. Cloudflare was a historical experiment and is **not** a runtime dependency, backup, or deployment target. The V0 package contains five existing Skills; the proposed catalog of 38 MCP tools is **not** implemented.
 
-## Decision
+A clean new Plugin Creator identity, distinct from the historical account-created `qrvai`, should be assembled from the five V0 Skills and a root `mcp.json` **only when** the actual Vercel HTTPS endpoint, target authentication method and ChatGPT plugin contract are verified. Do not insert dummy MCP URLs or repurpose old plugin IDs.
 
-The first **new** account-created QRVAI private plugin should be a clean package with the five existing V0 Skills **and**, only after a real deployed and tested remote endpoint exists, a portable root `mcp.json`. The public endpoint is an independently deployable service; installing a private plugin does NOT restrict anonymous access to a no-OAuth Worker.
+## Release gates
 
-Do **not** create a skills-only QRVAI account record as a placeholder, attach a nonexistent or dummy MCP URL, reuse/update the old owner-created `qrvai` plugin ID, import legacy Academy assets, enable PTT/CAT writes, or assert host acceptance prior to a genuine ChatGPT E2E.
+1. GitHub exact SHA: npm lockfile `npm ci --ignore-scripts`, TypeScript, MCP SDK protocol tests, V0 Python suite, and source integrity PASS.
+2. Vercel project root `mcp/qrvai-rf-worker`, Node 22, non-production preview; verify provider reports `target: preview` **before accepting** any deployment. Unexpected production targeting must be canceled.
+3. Unique `QRVAI_MCP_BEARER_TOKEN` as a protected Vercel secret; default behavior 503 fail-closed. A static bearer token is **not a claim of ChatGPT OAuth compatibility**. Verify host-required flow, credential management, rotation, rate limiting, quotas and abuse controls.
+4. Actual HTTPS evidence: initialize, tools/list, four tools/call, repeated stateless requests, negative authorization and Origin tests, correct response headers, plus Vercel build/runtime logs and cost limits.
+5. Only after staging, perform a distinct production approval/promotion. Plugin Creator installation and an actual `@QRVAI` host E2E are **deferred**, not silently assumed.
 
-## Release gates in order
+## Rejected
 
-1. Source integrity and CI on exact merged commit; published canonical JSON Schema validation; license and dependency assessment.
-2. Confirm Cloudflare actual plan/billing permission, no-cost posture and abuse controls; deploy the exact verified bundle in controlled staging, measure real CPU and test protocol over HTTPS. Explicitly separate deployment from public exposure.
-3. Verify correct URL and transport from real `initialize`, `tools/list`, `tools/call` against staging. Record safe redacted results and rollback plan. Do not infer this from Wrangler dry-run.
-4. Assemble first clean, distinct-ID plugin using the actual `mcp.json` URL with V0 Skills, without the old creator record. Resolve account deletion/name collision [Issue #3](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/3).
-5. **Deferred at owner's request:** ChatGPT plugin installation and real `@QRVAI` invocation/follow-up on supported clients. Avoid claims of completion until observed.
+Cloudflare backend or fallback; anonymous public calculators; staged deployment represented as production proof; skills-only placeholder plugin; reuse of the historical plugin; fake or unverified manufacturer data; unapproved CAT/PTT or radio transmission.
 
-## Rejected alternatives
-
-- A dummy or publicly unresolved MCP URL.
-- In-place update or silent migration from legacy QRVAI.
-- A brand-new standalone calculation engine duplicating M07.
-- Assuming a merged repository proves account or host deployment.
-
-## Continuing scope
-
-M09 (coax feedline loss) depends on versioned, permissioned real cable profile sources before promising cable-ID/frequency lookups. All remaining Families, 24 Domains, 72 Sub-capabilities, 18 conceptual engines, 38 planned tools and 36 UI concepts remain staged roadmap work. Do not describe them as deployed.
-
-**Host integration pending is an explicit product-stage choice, not evidence that Cloudflare account prerequisites are resolved.**
+See [Vercel-only MCP runbook](../../docs/runbooks/qrvai-rf-mcp-vercel.md) and [development PR #17](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/17).
