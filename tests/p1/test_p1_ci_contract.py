@@ -26,6 +26,11 @@ REQUIRED=(
     "P1_FAMILY_A_CASES=30",
     "P1_FAMILY_B_CASES=36",
     "P1_FAMILY_C_CASES=48",
+    "P1_FAMILY_D_CASES=18",
+    "P1_FAMILY_D_SS_COVERED=9/9",
+    "P1_D_EXTERNAL_ACCOUNTS=NOT_CONNECTED",
+    "P1_D_DEVICE_ACTIONS=NOT_ENABLED",
+    "P1_D_CLUB_DATA=NOT_PERSISTED",
     "P1_FAMILY_C_SS_COVERED=24/24",
     "P1_C_PROVIDER_LINKS=NOT_CONNECTED",
     "P1_C_TX=NOT_ENABLED",
@@ -109,5 +114,14 @@ class P1CIContractTests(unittest.TestCase):
         for token in ("P1_FAMILY_C_CASES=48","P1_FAMILY_C_SS_COVERED=24/24",
                       "P1_C_PROVIDER_LINKS=NOT_CONNECTED","P1_C_TX=NOT_ENABLED"):
             self.assertTrue(workflow_errors(content.replace(token,"REMOVED")),token)
+        self.assertNotIn("id-token: write",content)
+        self.assertNotIn("workflow_dispatch:",content)
+
+    def test_family_d_workflow_refuses_accounts_device_and_club_storage(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        for marker in ("P1_FAMILY_D_CASES=18","P1_FAMILY_D_SS_COVERED=9/9",
+                       "P1_D_EXTERNAL_ACCOUNTS=NOT_CONNECTED",
+                       "P1_D_DEVICE_ACTIONS=NOT_ENABLED","P1_D_CLUB_DATA=NOT_PERSISTED"):
+            self.assertTrue(workflow_errors(content.replace(marker,"OMITTED")),marker)
         self.assertNotIn("id-token: write",content)
         self.assertNotIn("workflow_dispatch:",content)
