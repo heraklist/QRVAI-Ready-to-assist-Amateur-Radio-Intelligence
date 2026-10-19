@@ -23,7 +23,7 @@ test("Vercel MCP API exposes all four registered read-only RF tools through Stre
   try {
     await client.connect(transport);
     const list=await client.listTools();
-    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"]);
+    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss","core_capabilities","antenna_geometry","antenna_matching","rf_filter_response","power_autonomy","geo_bearing"]);
     const power=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
     assert.equal((power.structuredContent as {dBm:number}).dBm,50);
     const line=await client.callTool({name:"rf_feedline_loss",arguments:{profile:{id:"synthetic-coax",revision:"fixture-1",points:[{frequency_hz:10_000_000,loss_db_per_100m:4},{frequency_hz:1_000_000_000,loss_db_per_100m:8}]},frequency_hz:100_000_000,length_m:20,connector_loss_db:0.5,interpolation_method:"log_frequency"}});

@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
+import {describeWave1,antennaGeometry,antennaMatching,filterResponse,powerAutonomy,geoBearing} from "../rf/wave1.ts";
 import { convertPower, PowerInputError } from "../rf/power.ts";
 import { calculateLinkBudget, LinkBudgetInputError } from "../rf/link-budget.ts";
 import { calculateImpedance, ImpedanceInputError } from "../rf/impedance.ts";
@@ -150,5 +151,48 @@ export function createServer(): McpServer {
       return {content:[{type:"text" as const,text:"INVALID_INPUT: feedline calculation failed"}],isError:true};
     }
   });
+
+  const positive=z.number().finite().positive();
+  const velocity=z.number().finite().positive().max(1);
+  const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
+  function response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
+  function failed(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
+  server.registerTool("core_capabilities",{
+    title:"Implemented QRVAI MCP tools",description:"Discover ten implemented read-only RF/core MCP tools; never claims unimplemented candidates.",
+    inputSchema:z.strictObject({}),
+    outputSchema:z.strictObject({tools:z.array(z.strictObject({candidate_id:z.string(),name:z.string(),scope:z.string()})),implemented_count:z.number().int().positive()}),
+    annotations:ro
+  },async()=>response({tools:describeWave1(),implemented_count:describeWave1().length}));
+  server.registerTool("antenna_geometry",{
+    title:"Ideal antenna geometry",description:"Ideal halfwave dipole or quarterwave monopole length; no end effects or measured resonance.",
+    inputSchema:z.strictObject({kind:z.enum(["halfwave_dipole","quarterwave_monopole"]),frequency_hz:positive,velocity_factor:velocity}),
+    outputSchema:z.strictObject({total_length_m:positive,element_length_m:positive,formula_revision:z.literal("M11-v1"),assumptions:z.string()}),
+    annotations:ro
+  },async(args)=>{try{return response(antennaGeometry(args))}catch(e){return failed(e)}});
+  server.registerTool("antenna_matching",{
+    title:"Ideal quarter-wave transformer",description:"Lossless impedance transformer for strictly resistive terminations at design frequency.",
+    inputSchema:z.strictObject({source_resistance_ohm:positive,load_resistance_ohm:positive,frequency_hz:positive,velocity_factor:velocity}),
+    outputSchema:z.strictObject({transformer_z0_ohm:positive,quarter_wave_length_m:positive,formula_revision:z.literal("M12-v1"),assumptions:z.string()}),
+    annotations:ro
+  },async(args)=>{try{return response(antennaMatching(args))}catch(e){return failed(e)}});
+  server.registerTool("rf_filter_response",{
+    title:"First-order RC filter response",description:"Ideal single-pole lowpass/highpass magnitude and gain; no network simulation.",
+    inputSchema:z.strictObject({kind:z.enum(["lowpass","highpass"]),frequency_hz:positive,resistance_ohm:positive,capacitance_f:positive}),
+    outputSchema:z.strictObject({magnitude:positive,gain_db:z.number().finite(),formula_revision:z.literal("M13-v1"),assumptions:z.string()}),
+    annotations:ro
+  },async(args)=>{try{return response(filterResponse(args))}catch(e){return failed(e)}});
+  server.registerTool("power_autonomy",{
+    title:"Ideal battery runtime",description:"Estimate constant-load hours from nominal battery Wh, load watts and explicit usable fraction.",
+    inputSchema:z.strictObject({battery_wh:positive,average_load_w:positive,usable_fraction:velocity}),
+    outputSchema:z.strictObject({runtime_h:positive,formula_revision:z.literal("M22-v1"),assumptions:z.string()}),
+    annotations:ro
+  },async(args)=>{try{return response(powerAutonomy(args))}catch(e){return failed(e)}});
+  server.registerTool("geo_bearing",{
+    title:"Spherical azimuth and range",description:"Great-circle initial bearing and approximate spherical range; not precision geodesy.",
+    inputSchema:z.strictObject({from_lat_deg:z.number().finite().min(-90).max(90),from_lon_deg:z.number().finite().min(-180).max(180),to_lat_deg:z.number().finite().min(-90).max(90),to_lon_deg:z.number().finite().min(-180).max(180)}),
+    outputSchema:z.strictObject({initial_bearing_deg:z.number().finite().min(0).max(360),distance_km:positive,formula_revision:z.literal("M25-v1"),assumptions:z.string()}),
+    annotations:ro
+  },async(args)=>{try{return response(geoBearing(args))}catch(e){return failed(e)}});
+
   return server;
 }
