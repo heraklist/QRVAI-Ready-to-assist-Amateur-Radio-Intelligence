@@ -1,73 +1,47 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
-
-test("Cloudflare Worker exposes real stateless modern MCP over /mcp", async () => {
-  const { default: worker } = await import("../src/index.ts");
-  const received: string[]=[];
-  const transport = new StreamableHTTPClientTransport(new URL("https://test.local/mcp"),{
-    fetch: async (url, init)=>{
-      const request=new Request(url,init);
-      received.push(request.method+" "+new URL(request.url).pathname);
-      return worker.fetch(request,{},{} as never);
-    }
-  });
-  const client = new Client({name:"qrvai-worker-test",version:"0.1.0"},{versionNegotiation:{mode:"auto"}});
+const secret="protocol-test-only-secure-token-123456789";
+const names=["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"];
+async function fetchMcp(url: URL|string, init?: RequestInit): Promise<Response> {
+  const {handleMcpRequest}=await import("../api/mcp.ts");
+  const request=new Request(url,init);
+  request.headers.set("authorization","Bearer "+secret);
+  return handleMcpRequest(request,secret);
+}
+test("Vercel exposes stateless modern MCP over /api/mcp",async()=>{
+  const transport=new StreamableHTTPClientTransport(new URL("https://test.local/api/mcp"),{fetch:fetchMcp});
+  const client=new Client({name:"qrvai-vercel-protocol",version:"0.1.0"},{versionNegotiation:{mode:"auto"}});
   try {
     await client.connect(transport);
-    const tools=await client.listTools();
-    assert.deepEqual(tools.tools.map(x=>x.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"]);
+    const list=await client.listTools();
+    assert.deepEqual(list.tools.map(x=>x.name),names);
     const good=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
     assert.equal((good.structuredContent as {dBm:number}).dBm,50);
     const again=await client.callTool({name:"rf_power_convert",arguments:{value:1,unit:"mW"}});
     assert.equal((again.structuredContent as {dBm:number}).dBm,0);
-    assert.ok(received.some(x=>x.endsWith("/mcp")));
-  } finally { await client.close(); }
+  } finally {await client.close();}
 });
-test("unknown Worker route returns 404",async()=>{
-  const {default:worker}=await import("../src/index.ts");
-  const response=await worker.fetch(new Request("https://test.local/unknown"),{},{} as never);
+test("unknown Vercel route returns 404",async()=>{
+  const response=await fetchMcp("https://test.local/unknown",{method:"POST",body:"{}",headers:{"content-type":"application/json"}});
   assert.equal(response.status,404);
 });
-
-
-test("review: successful MCP responses never enable wildcard browser CORS", async () => {
-  const {default:worker} = await import("../src/index.ts");
-  const cors: Array<string|null> = [];
-  const transport = new StreamableHTTPClientTransport(new URL("https://qrvai.test/mcp"),{
-    fetch: async (url,init) => {
-      const result = await worker.fetch(new Request(url,init),{},{} as never);
-      cors.push(result.headers.get("access-control-allow-origin"));
-      return result;
+test("successful MCP responses never enable wildcard browser CORS",async()=>{
+  const values:(string|null)[]=[];
+  const transport=new StreamableHTTPClientTransport(new URL("https://test.local/api/mcp"),{
+    fetch:async(url,init)=>{
+      const response=await fetchMcp(url,init);
+      values.push(response.headers.get("access-control-allow-origin"));
+      return response;
     }
   });
-  const client = new Client({name:"review-cors-test",version:"0.1.0"},{versionNegotiation:{mode:"auto"}});
-  try {
-    await client.connect(transport);
-    const list = await client.listTools();
-    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"]);
-    assert.ok(cors.length>0);
-    assert.ok(cors.every(header=>header!=="*"),"MCP handler must not allow arbitrary browser origins");
-  } finally { await client.close(); }
+  const client=new Client({name:"qrvai-cors-test",version:"0.1.0"});
+  try{await client.connect(transport);await client.listTools();assert.ok(values.length>0);assert.ok(values.every(x=>x!=="*"));}finally{await client.close();}
 });
-
-
-test("review: MCP SDK refuses hostile browser Origins while allowing origin-less clients", async () => {
-  const { default:worker } = await import("../src/index.ts");
-  const envelope=JSON.stringify({
-    jsonrpc:"2.0",id:1,method:"initialize",
-    params:{protocolVersion:"2025-06-18",capabilities:{},clientInfo:{name:"browser-threat-test",version:"0.1.0"}}
-  });
-  for (const hostileOrigin of ["https://attacker.example", "null", "file://example"]) {
-    const result=await worker.fetch(new Request("https://qrvai.test/mcp",{
-      method:"POST",
-      headers:{
-        "content-type":"application/json",
-        accept:"application/json, text/event-stream",
-        origin:hostileOrigin
-      },
-      body:envelope
-    }),{},{} as never);
-    assert.equal(result.status,403,"Origin must be rejected: "+hostileOrigin);
+test("MCP refuses hostile browser Origins while allowing origin-less clients",async()=>{
+  const body=JSON.stringify({jsonrpc:"2.0",id:1,method:"initialize",params:{protocolVersion:"2025-06-18",capabilities:{},clientInfo:{name:"browser-threat-test",version:"0.1.0"}}});
+  for(const origin of ["https://attacker.example","null","file://example"]){
+    const response=await fetchMcp("https://test.local/api/mcp",{method:"POST",headers:{"content-type":"application/json",accept:"application/json, text/event-stream",origin},body});
+    assert.equal(response.status,403,origin);
   }
 });

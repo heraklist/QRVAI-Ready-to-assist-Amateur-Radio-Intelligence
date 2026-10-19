@@ -11,7 +11,7 @@ const fixture = () => JSON.parse(readFileSync(fileURLToPath(new URL("../../../qa
 test("deployment and QRVAI host evidence is BLOCKED by default",async()=>{
   const {checkReleaseGates}=await readGate();
   const errors=checkReleaseGates(fixture());
-  assert.ok(errors.some(x=>x.includes("accountFreePlanVerified")),errors.join("; "));
+  assert.ok(errors.some(x=>x.includes("vercelPlanVerified")),errors.join("; "));
   assert.ok(errors.some(x=>x.includes("hostInvocationObserved")),errors.join("; "));
   assert.ok(errors.some(x=>x.includes("oldCreatorRecordAbsent")),errors.join("; "));
 });
@@ -39,7 +39,7 @@ test("simulation fixture cannot masquerade as observed host proof",async()=>{
 function syntheticCompleteReport(): Record<string, any> {
   const result: Record<string,any> = fixture();
   const receipt=()=>({passed:true,evidenceUrl:"https://example.invalid/not-a-real-receipt",observedAt:"2026-10-15T10:00:00Z"});
-  for(const name of ["accountFreePlanVerified","quotaVerified","measuredWorkerCpu",
+  for(const name of ["vercelPlanVerified","vercelQuotaVerified","vercelFunctionObserved","vercelPreviewTargetVerified","authCompatibilityVerified",
     "deployedEndpointVerified","oldCreatorRecordAbsent","qrvaiNamespaceAvailable",
     "freshPluginCreateAuthorized","newPluginIdDistinct","hostInvocationObserved","observedFollowUp"]){
       result[name]=receipt();
@@ -48,7 +48,9 @@ function syntheticCompleteReport(): Record<string, any> {
   result.status="EXECUTED_PASS";
   result.exactSourceSha="a".repeat(40);
   result.newPluginIdDistinct.newPluginId="plugins_synthetic_new_identity";
-  result.measuredWorkerCpu.cpuMs=0.5;
+  result.vercelFunctionObserved.durationMs=25;
+  result.vercelPreviewTargetVerified.target="preview";
+  result.authCompatibilityVerified.method="oauth-or-owner-approved";
   result.hostInvocationObserved.conversationAlreadyOpen=true;
   result.hostInvocationObserved.client="synthetic-test-client";
   result.hostInvocationObserved.conversationId="synthetic-session-A";

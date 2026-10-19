@@ -1,12 +1,13 @@
-# QRVAI RF MCP — Host acceptance (NOT EXECUTED)
+# QRVAI RF MCP — Vercel-only host acceptance (NOT EXECUTED)
 
-**Purpose:** a separately authorized private-plugin test after a verified Cloudflare endpoint exists and Issue #3 is resolved. This is a runbook, not a test result.
+**Purpose:** gated acceptance for the *first new* QRVAI private plugin after a verified Vercel HTTPS MCP endpoint is available. This is a runbook, not execution evidence.
 
-1. Verify the current and separate authorization for **Cloudflare Worker creation/deployment**; if absent, STOP. Do not modify the old creator record.
-2. Confirm Free plan and quotas on the real connected Cloudflare account, then measure the **real deployed** stateless `/mcp` endpoint: authenticate neither the user nor their station information; call real MCP `initialize`, `tools/list` and `tools/call` with 100 W→50 dBm and 1 mW→0 dBm. Capture exact deployed version, HTTPS URL, timestamp, CPU readings and errors.
-3. Confirm private/plugin lifecycle actually permits registration of the now-real MCP endpoint alongside the five Skills, and that old `qrvai` backend identity was deleted and name made available. Do not create a replacement or add `qrvai/mcp.json` until independently cleared and **owner explicitly authorizes** new account creation.
-4. In a **previously opened ChatGPT conversation** on the owner's target client, use `@QRVAI` if client offers it, then ask for 100 W in dBm. Verify real tool invocation and reply with units and no repeated OAuth consent. Send a second follow-up: 1 mW in dBW; verify context is preserved and the actual tool returns -30 dBW.
-5. Record timestamps and verifiable host/source receipts in a new private report; avoid publishing conversation IDs/tokens/callsigns in the public repository. Use a securely redacted reference and do not claim an independently verified result from a fabricated JSON fixture.
-6. If ANY gate is unsupported or failed, record **BLOCKED** rather than inventing tools, resource URLs or passing flags. The public GitHub source merge is separate from private account creation and hosting release.
+1. Verify exact source SHA and clean GitHub CI; the Node.js Vercel Function is the only deployment backend at `/api/mcp`. Do not deploy, configure, or invoke Cloudflare.
+2. Verify the Vercel team's plan and usage controls, Vercel project and nonproduction deployment protection; preview deployment MUST be reported with `target: preview`. An unexpected production target must be canceled. Validate protected `QRVAI_MCP_BEARER_TOKEN` storage and fail-closed 503 without secret; 401 with invalid authorization.
+3. Establish supported real ChatGPT/plugin MCP client authentication method (including OAuth if required). Bearer integration credentials alone do not demonstrate ChatGPT client compatibility. Record observed evidence, not presumed support.
+4. Verify actual TLS and MCP initialize, tools/list and tools/call against the Vercel URL using a valid test credential. Check all four implemented read-only RF tools, 100 W = 50 dBm, 1 mW = 0 dBm, malformed requests, hostile Origin, request size and rate limiting; capture redacted response status, duration, and audit logs.
+5. Only after verified HTTPS, quotas and distinct-ID account clearance, create the new Plugin Creator record with the five V0 Skills and actual MCP descriptor. Never reuse the historical `qrvai` creator record or publish dummy URLs. Installation and real `@QRVAI` invocation remain deferred until separately authorized.
+6. Verify the first `@QRVAI` invocation and follow-up occur in the **same previously opened conversation**; retain redacted receipts outside the public repo.
+7. If any gate fails, record BLOCKED / NOT_EXECUTED. A passing offline receipt-shape check never proves real deployment or client execution.
 
-The example `qa/mcp/host-report.example.json` defaults to NOT_EXECUTED, and `scripts/check-release-gates.mjs` returns BLOCKED on it. The CLI validates evidence structure only; it does **not** verify third-party URLs or prove a real Cloudflare/ChatGPT event.
+`qa/mcp/host-report.example.json` is intentionally NOT_EXECUTED, and `scripts/check-release-gates.mjs` must reject it. Historical Cloudflare specifications are archival design history, not active deployment requirements.
