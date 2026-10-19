@@ -30,15 +30,23 @@ SPEC=old.SPECS
 SOURCE_PATHS=frozenset("p1-domain-skills/"+relative for d in SPEC if d.id in CUMULATIVE
     for relative in (f"skills/{d.slug}/SKILL.md",*(p.relative_path for p in d.procedures)))
 
+def copy_family_c_baseline(destination: Path) -> Path:
+    """Copy precisely the immutable 21 P1.4 source owners into an isolated stage."""
+    for domain in SPEC:
+        if domain.id in CUMULATIVE:
+            copytree(CURRENT/"skills"/domain.slug,destination/"skills"/domain.slug,symlinks=True)
+    return destination
+
 class FamilyC84FileArchiveTests(unittest.TestCase):
     def test_all_84_markdown_files_byte_identical_two_builds(self):
         self.assertEqual(len(CUMULATIVE),21)
         self.assertEqual(len(SOURCE_PATHS),84)
-        self.assertEqual(audit_stage(CURRENT,SPEC,CUMULATIVE),[])
         with TemporaryDirectory() as temp:
             p=Path(temp)
-            a=build_review_zip(CURRENT,p/"one.zip",SPEC,CUMULATIVE)
-            b=build_review_zip(CURRENT,p/"two.zip",SPEC,CUMULATIVE)
+            source=copy_family_c_baseline(p/"source")
+            self.assertEqual(audit_stage(source,SPEC,CUMULATIVE),[])
+            a=build_review_zip(source,p/"one.zip",SPEC,CUMULATIVE)
+            b=build_review_zip(source,p/"two.zip",SPEC,CUMULATIVE)
             self.assertEqual(sha256(a.read_bytes()).hexdigest(),sha256(b.read_bytes()).hexdigest())
             self.assertEqual(validate_review_zip(a,SOURCE_PATHS),[])
             with ZipFile(a) as z:
@@ -51,7 +59,8 @@ class FamilyC84FileArchiveTests(unittest.TestCase):
 
     def test_85th_member_plugin_or_path_traversal_fails_closed(self):
         with TemporaryDirectory() as temp:
-            p=Path(temp);original=build_review_zip(CURRENT,p/"base.zip",SPEC,CUMULATIVE)
+            p=Path(temp);source=copy_family_c_baseline(p/"source")
+            original=build_review_zip(source,p/"base.zip",SPEC,CUMULATIVE)
             for name in ("p1-domain-skills/plugin.json","../secrets.txt","p1-domain-skills/skills/contests-portable/.env"):
                 dest=p/"tampered.zip"
                 with ZipFile(original) as src, ZipFile(dest,"w",ZIP_DEFLATED) as out:
@@ -67,7 +76,7 @@ class FamilyC84FileArchiveTests(unittest.TestCase):
         with TemporaryDirectory() as temp:
             root=Path(temp)
             dest=root/"source"
-            copytree(CURRENT,dest,symlinks=True)
+            copy_family_c_baseline(dest)
             target=dest/"skills/contests-portable/references/3-field-operations-review.md"
             original=target.read_text(encoding="utf8")
             target.write_text(original.replace("**Owner:** SK-C21","**Owner:** SK-C20"),encoding="utf8")
@@ -84,7 +93,7 @@ class FamilyC84FileArchiveTests(unittest.TestCase):
     def test_casefold_duplicate_and_oversize_stage_rejected(self):
         with TemporaryDirectory() as tmp:
             target=Path(tmp)/"source"
-            copytree(CURRENT,target,symlinks=True)
+            copy_family_c_baseline(target)
             source=target/"skills/operating-dx/SKILL.md"
             duplicate=target/"skills/operating-dx/skill.md"
             duplicate.write_text(source.read_text(encoding="utf8"),encoding="utf8")
@@ -97,7 +106,8 @@ class FamilyC84FileArchiveTests(unittest.TestCase):
 
     def test_zip_ratio_guard_rejects_highly_compressible_modified_member(self):
         with TemporaryDirectory() as tmp:
-            p=Path(tmp);baseline=build_review_zip(CURRENT,p/"baseline.zip",SPEC,CUMULATIVE)
+            p=Path(tmp);source=copy_family_c_baseline(p/"source")
+            baseline=build_review_zip(source,p/"baseline.zip",SPEC,CUMULATIVE)
             edited=p/"ratio.zip"
             with ZipFile(baseline) as inp,ZipFile(edited,"w",ZIP_DEFLATED,compresslevel=9) as out:
                 for info in inp.infolist():
