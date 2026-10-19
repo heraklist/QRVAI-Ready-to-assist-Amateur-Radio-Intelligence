@@ -35,3 +35,6 @@ def verify_d_owner(id: str,slug: str,tokens: tuple[str,...]):
 class FamilyDStageTests(unittest.TestCase):
     def test_d22_no_state_certification_or_protected_questions(self):
         verify_d_owner("D22","radio-academy",("academy_exercise","TRAINING_ONLY","No official exam certification","CW audio NOT_IMPLEMENTED"))
+
+    def test_d23_30v_preview_never_certifies_or_flashes(self):
+        verify_d_owner("D23","radio-maker",("maker_project_review","certified:false","No firmware flashing","No CAT/PTT","NOT_IMPLEMENTED"))
