@@ -120,6 +120,32 @@ jobs:
           print("P1_C_PROVIDER_LINKS=NOT_CONNECTED")
           print("P1_C_TX=NOT_ENABLED")
           PY
+      - name: Family D bilingual source-only, safe teaching and club privacy
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from tests.p1.test_family_d_cases import validate_family_d_cases
+          source=Path("qa/p1/family-d-education-community-cases.json")
+          assert validate_family_d_cases(source)==[]
+          cases=json.loads(source.read_text(encoding="utf8"))
+          assert len(cases)==18
+          ss={f"SS-D{d}-{n}" for d in (22,23,24) for n in (1,2,3)}
+          assert {x["procedure_id"] for x in cases}==ss
+          assert sum(len(x["expected_domains"])>1 for x in cases)>=6
+          for slug, required in {
+              "radio-academy":("academy_exercise","TRAINING_ONLY","CW audio NOT_IMPLEMENTED"),
+              "radio-maker":("maker_project_review","certified:false","No CAT/PTT"),
+              "clubs-mentoring":("club_workshop_plan","simulated:true","NOT_PERSISTED"),
+          }.items():
+              doc=Path("staging/p1-domain-skills/skills",slug,"SKILL.md").read_text(encoding="utf8")
+              assert all(token in doc for token in required),slug
+          print("P1_FAMILY_D_CASES=18")
+          print("P1_FAMILY_D_SS_COVERED=9/9")
+          print("P1_D_EXTERNAL_ACCOUNTS=NOT_CONNECTED")
+          print("P1_D_DEVICE_ACTIONS=NOT_ENABLED")
+          print("P1_D_CLUB_DATA=NOT_PERSISTED")
+          PY
       - name: Verify deterministic approved P1 source-only review archive
         run: |
           python - <<'PY'
