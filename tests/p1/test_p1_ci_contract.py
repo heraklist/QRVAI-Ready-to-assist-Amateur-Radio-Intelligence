@@ -21,8 +21,8 @@ REQUIRED=(
     "validate_archive(archive)",
     "V0_ARCHIVE_FILES=12",
     "P1_REGISTRY=24/72",
-    "P1_STAGE=22/24,66/72",
-    "P1_STAGE_ARCHIVE_FILES=88",
+    "P1_STAGE=23/24,69/72",
+    "P1_STAGE_ARCHIVE_FILES=92",
     "P1_FAMILY_A_CASES=30",
     "P1_FAMILY_B_CASES=36",
     "P1_FAMILY_C_CASES=48",
@@ -71,14 +71,14 @@ class P1CIContractTests(unittest.TestCase):
 
     def test_rf_and_8_file_zip_gate_fail_when_removed(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=88","P1_STAGE_ARCHIVE_FILES=0")))
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=92","P1_STAGE_ARCHIVE_FILES=0")))
         self.assertTrue(workflow_errors(text.replace("npm run typecheck","echo skip-typecheck")))
         self.assertTrue(workflow_errors(text.replace("build_review_zip(","build_unreviewed_zip(")))
 
     def test_stage_count_does_not_regress_to_b07_only_or_zero(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE=22/24,66/72","P1_STAGE=2/24,6/72")))
-        self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21","D22"})',text)
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE=23/24,69/72","P1_STAGE=2/24,6/72")))
+        self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21","D22","D23"})',text)
 
     def test_family_a_metrics_and_review_gate_must_run(self):
         content=WORKFLOW.read_text(encoding="utf8")
@@ -99,7 +99,7 @@ class P1CIContractTests(unittest.TestCase):
 
     def test_all_thirteen_owners_staged_not_six_only(self):
         content=WORKFLOW.read_text(encoding="utf8")
-        owners='frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21","D22"})'
+        owners='frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21","D22","D23"})'
         self.assertIn(owners,content)
         self.assertNotIn("id-token: write",content)
         self.assertNotIn("vercel --prod",content)
