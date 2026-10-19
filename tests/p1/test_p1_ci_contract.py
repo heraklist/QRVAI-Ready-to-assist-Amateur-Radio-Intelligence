@@ -21,11 +21,16 @@ REQUIRED=(
     "validate_archive(archive)",
     "V0_ARCHIVE_FILES=12",
     "P1_REGISTRY=24/72",
-    "P1_STAGE=21/24,63/72",
-    "P1_STAGE_ARCHIVE_FILES=84",
+    "P1_STAGE=24/24,72/72",
+    "P1_STAGE_ARCHIVE_FILES=96",
     "P1_FAMILY_A_CASES=30",
     "P1_FAMILY_B_CASES=36",
     "P1_FAMILY_C_CASES=48",
+    "P1_FAMILY_D_CASES=18",
+    "P1_FAMILY_D_SS_COVERED=9/9",
+    "P1_D_EXTERNAL_ACCOUNTS=NOT_CONNECTED",
+    "P1_D_DEVICE_ACTIONS=NOT_ENABLED",
+    "P1_D_CLUB_DATA=NOT_PERSISTED",
     "P1_FAMILY_C_SS_COVERED=24/24",
     "P1_C_PROVIDER_LINKS=NOT_CONNECTED",
     "P1_C_TX=NOT_ENABLED",
@@ -71,14 +76,14 @@ class P1CIContractTests(unittest.TestCase):
 
     def test_rf_and_8_file_zip_gate_fail_when_removed(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=84","P1_STAGE_ARCHIVE_FILES=0")))
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE_ARCHIVE_FILES=96","P1_STAGE_ARCHIVE_FILES=0")))
         self.assertTrue(workflow_errors(text.replace("npm run typecheck","echo skip-typecheck")))
         self.assertTrue(workflow_errors(text.replace("build_review_zip(","build_unreviewed_zip(")))
 
     def test_stage_count_does_not_regress_to_b07_only_or_zero(self):
         text=WORKFLOW.read_text(encoding="utf8")
-        self.assertTrue(workflow_errors(text.replace("P1_STAGE=21/24,63/72","P1_STAGE=2/24,6/72")))
-        self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21"})',text)
+        self.assertTrue(workflow_errors(text.replace("P1_STAGE=24/24,72/72","P1_STAGE=2/24,6/72")))
+        self.assertIn('frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21","D22","D23","D24"})',text)
 
     def test_family_a_metrics_and_review_gate_must_run(self):
         content=WORKFLOW.read_text(encoding="utf8")
@@ -99,7 +104,7 @@ class P1CIContractTests(unittest.TestCase):
 
     def test_all_thirteen_owners_staged_not_six_only(self):
         content=WORKFLOW.read_text(encoding="utf8")
-        owners='frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21"})'
+        owners='frozenset({"B07","B08","A01","A02","A03","A04","A05","B06","B09","B10","B12","B13","B11","C14","C15","C16","C17","C18","C19","C20","C21","D22","D23","D24"})'
         self.assertIn(owners,content)
         self.assertNotIn("id-token: write",content)
         self.assertNotIn("vercel --prod",content)
@@ -109,5 +114,14 @@ class P1CIContractTests(unittest.TestCase):
         for token in ("P1_FAMILY_C_CASES=48","P1_FAMILY_C_SS_COVERED=24/24",
                       "P1_C_PROVIDER_LINKS=NOT_CONNECTED","P1_C_TX=NOT_ENABLED"):
             self.assertTrue(workflow_errors(content.replace(token,"REMOVED")),token)
+        self.assertNotIn("id-token: write",content)
+        self.assertNotIn("workflow_dispatch:",content)
+
+    def test_family_d_workflow_refuses_accounts_device_and_club_storage(self):
+        content=WORKFLOW.read_text(encoding="utf8")
+        for marker in ("P1_FAMILY_D_CASES=18","P1_FAMILY_D_SS_COVERED=9/9",
+                       "P1_D_EXTERNAL_ACCOUNTS=NOT_CONNECTED",
+                       "P1_D_DEVICE_ACTIONS=NOT_ENABLED","P1_D_CLUB_DATA=NOT_PERSISTED"):
+            self.assertTrue(workflow_errors(content.replace(marker,"OMITTED")),marker)
         self.assertNotIn("id-token: write",content)
         self.assertNotIn("workflow_dispatch:",content)
