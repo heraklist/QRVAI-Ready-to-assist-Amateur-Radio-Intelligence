@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "qrvai",
+  "version": "0.2.0",
+  "description": "Greek and English amateur radio assistant: 24 domain Skills and read-only RF calculation tools, with honest safety and legal boundaries.",
+  "author": {
+    "name": "heraklist"
+  },
+  "repository": "https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "QRVAI",
+        "shortDescription": "Amateur radio assistant",
+        "longDescription": "Chat-first amateur radio help in Greek and English: RF calculations through read-only tools, antennas, operating, digital modes, regulations research, emergency-communications training and education. No live radio data, transmit permission or device control.",
+        "developerName": "QRVAI",
+        "category": "Education",
+        "capabilities": [],
+        "defaultPrompt": "@QRVAI Βοήθησέ με με έναν ερασιτεχνικό ασύρματο."
+      }
+    }
+  }
+}
