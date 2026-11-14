@@ -14,14 +14,32 @@ function authorized(authorization: string | null, secret: string): boolean {
   const expected=Buffer.from(secret,"utf8");
   return received.length===expected.length && timingSafeEqual(received,expected);
 }
-/** Stateless, per-request authenticated Streamable HTTP. Deployment requires QRVAI_MCP_BEARER_TOKEN. */
+/**
+ * Owner decision (2026-11-14): the first release is PUBLIC and unauthenticated.
+ * Every registered tool is a stateless, read-only function of its own request body:
+ * nothing is stored, no account or device is reached, so there is nothing private to protect yet.
+ * Set this to false when the authentication phase starts; the endpoint then fails closed (503)
+ * until QRVAI_MCP_BEARER_TOKEN is configured.
+ */
+export const PUBLIC_UNAUTHENTICATED = true;
+
+/**
+ * Stateless Streamable HTTP. A configured QRVAI_MCP_BEARER_TOKEN is always enforced;
+ * with no token the endpoint is public only while `allowPublic` is true.
+ */
 export async function handleMcpRequest(
   request: Request,
-  secret: string | undefined = process.env.QRVAI_MCP_BEARER_TOKEN
+  secret: string | undefined = process.env.QRVAI_MCP_BEARER_TOKEN,
+  allowPublic: boolean = PUBLIC_UNAUTHENTICATED
 ): Promise<Response> {
-  if (!secret || secret.length<24) return deny(503,"MCP authentication not configured");
-  if (!authorized(request.headers.get("authorization"),secret)) {
-    return new Response("Unauthorized",{status:401,headers:{...noStore,"www-authenticate":"Bearer"}});
+  if (secret) {
+    // A token that is present but weak is a misconfiguration, never a reason to fall back to public.
+    if (secret.length<24) return deny(503,"MCP authentication not configured");
+    if (!authorized(request.headers.get("authorization"),secret)) {
+      return new Response("Unauthorized",{status:401,headers:{...noStore,"www-authenticate":"Bearer"}});
+    }
+  } else if (!allowPublic) {
+    return deny(503,"MCP authentication not configured");
   }
   const url=new URL(request.url);
   if (url.pathname!=="/api/mcp") return deny(404,"Not found");

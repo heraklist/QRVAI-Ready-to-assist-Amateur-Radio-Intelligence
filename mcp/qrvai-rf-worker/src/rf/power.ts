@@ -54,8 +54,13 @@ export function convertPower(input: unknown): PowerConversion {
   if (!Number.isFinite(dBm) || dBm < -270 || dBm > 270) {
     throw new PowerInputError("power outside supported finite domain", "OUT_OF_RANGE");
   }
-  const W = 10 ** ((dBm - 30) / 10);
-  const mW = 10 ** (dBm / 10);
+  // Return the supplied quantity exactly and scale its sibling linearly; a log/antilog
+  // round trip would turn 5 W into 4.999999999999999 W.
+  let W: number;
+  let mW: number;
+  if (unit === "W") { W = value; mW = value * 1000; }
+  else if (unit === "mW") { mW = value; W = value / 1000; }
+  else { W = 10 ** ((dBm - 30) / 10); mW = 10 ** (dBm / 10); }
   if (!Number.isFinite(W) || !Number.isFinite(mW) || W <= 0 || mW <= 0) {
     throw new PowerInputError("converted power outside finite domain", "OUT_OF_RANGE");
   }

@@ -64,7 +64,7 @@ const feedlineInputSchema = z.strictObject({
   frequency_hz: z.number().finite().positive(),
   length_m: z.number().finite().nonnegative(),
   connector_loss_db: z.number().finite().nonnegative(),
-  interpolation_method: z.literal("log_frequency")
+  interpolation_method: z.enum(["log_frequency","log_log"])
 });
 const feedlineOutputSchema = z.strictObject({
   attenuation_db:z.number().finite(), cable_loss_db:z.number().finite(),
@@ -73,7 +73,7 @@ const feedlineOutputSchema = z.strictObject({
   series:z.array(feedlinePointSchema).min(1).max(2),
   profile_id:z.string(), profile_revision:z.string(),
   profile_trust:z.literal("USER_SUPPLIED_UNVERIFIED"),
-  interpolation_method:z.literal("log_frequency"), formula_revision:z.literal("M09-v1"),
+  interpolation_method:z.enum(["log_frequency","log_log"]), formula_revision:z.enum(["M09-v1","M09-v2"]),
   assumptions:z.string()
 });
 
@@ -139,7 +139,7 @@ export function createServer(allowTool: (name:string)=>boolean = ()=>true): McpS
   });
   if(allowTool("rf_feedline_loss"))server.registerTool("rf_feedline_loss", {
     title: "Feedline Attenuation — Supplied Coax Curve",
-    description: "Calculate feedline loss from explicitly supplied versioned cable attenuation points; interpolate in log frequency within coverage. Does not lookup, verify or certify a manufacturer cable profile.",
+    description: "Calculate feedline loss from explicitly supplied versioned cable attenuation points; interpolate within coverage by log_log (power-law, recommended for coax) or log_frequency. Does not lookup, verify or certify a manufacturer cable profile.",
     inputSchema:feedlineInputSchema,
     outputSchema:feedlineOutputSchema,
     annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false}
@@ -164,7 +164,7 @@ export function createServer(allowTool: (name:string)=>boolean = ()=>true): McpS
   function response(output:Record<string,unknown>){return {content:[{type:"text" as const,text:JSON.stringify(output)}],structuredContent:output};}
   function failed(error:unknown){return {content:[{type:"text" as const,text:error instanceof Error?error.message:"INVALID_INPUT"}],isError:true};}
   if(allowTool("core_capabilities"))server.registerTool("core_capabilities",{
-    title:"Implemented QRVAI MCP tools",description:"Discover ten implemented read-only RF/core MCP tools; never claims unimplemented candidates.",
+    title:"Implemented QRVAI MCP tools",description:"Discover the implemented read-only QRVAI MCP tools; never claims unimplemented candidates.",
     inputSchema:z.strictObject({}),
     outputSchema:z.strictObject({tools:z.array(z.strictObject({candidate_id:z.string(),name:z.string(),scope:z.string()})),implemented_count:z.number().int().positive()}),
     annotations:ro

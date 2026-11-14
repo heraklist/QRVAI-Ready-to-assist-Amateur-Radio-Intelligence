@@ -31,3 +31,11 @@ test("inclusive -270 and +270 dBm are finite", () => {
     close(r.dBm,value);
   }
 });
+
+test("linear inputs are returned exactly, without log round-trip drift", () => {
+  for (const value of [5, 25, 50, 1500, 0.1]) {
+    assert.equal(convertPower({value, unit: "W"}).W, value);
+    assert.equal(convertPower({value, unit: "mW"}).mW, value);
+  }
+  assert.equal(convertPower({value: 5, unit: "W"}).mW, 5000);
+});

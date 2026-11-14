@@ -51,3 +51,15 @@ The script rejects non-HTTPS, unexpected paths, query-string credentials and non
 **Connector permission diagnosis:** A team-member lookup confirms one member with role `OWNER`, while the app's project-env metadata read still fails 403. This is evidence of a **connection/API authorization discrepancy**, not evidence the human owner lacks team permissions. Do not assume a successful owner lookup grants environment-variable access. Check or reconnect Vercel plugin permissions and use a securely authenticated owner-side dashboard/CLI if the connector cannot access them. Firewall active configuration still responds 404; do not assume a rule is present.
 
 **Operational safeguard:** Never include a bearer token in a URL, a PR, test fixtures, an issue comment, or a Vercel shareable link. Preview-only secret creation and full protected-transport verification remain release blockers.
+
+
+## 2026-11-14 — Public first release (supersedes the Bearer-only requirement above)
+
+Owner decision: deploy on Vercel **without authentication first**; authentication follows in a later phase. `api/mcp.ts` exports `PUBLIC_UNAUTHENTICATED = true`. With no `QRVAI_MCP_BEARER_TOKEN` the endpoint serves MCP to any caller; a configured token is still enforced, and a weak token answers 503 rather than falling back to public. All 38 registered tools are stateless and read-only, so there is no stored data to expose. The earlier sections of this runbook describing a mandatory Bearer token are historical.
+
+Remaining steps before ChatGPT can reach it, none executed yet (**NOT VERIFIED**):
+
+1. Vercel Deployment Protection currently covers generated URLs. The MCP URL must be publicly reachable: use the production domain with protection adjusted, or a custom domain.
+2. Add the one Hobby-plan Firewall rate-limit rule on `/api/mcp`.
+3. Run `QRVAI_MCP_URL=https://<host>/api/mcp npm run verify:https` (no token = public-mode checks).
+4. Only then reference the URL from a plugin `mcp.json`.

@@ -2,10 +2,43 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 
-test("Vercel MCP API fails closed without configured authentication", async () => {
-  const { default: handler } = await import("../api/mcp.ts");
-  const response = await handler.fetch(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+test("Vercel MCP API fails closed without a token once public mode is switched off", async () => {
+  const { handleMcpRequest } = await import("../api/mcp.ts");
+  const response = await handleMcpRequest(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}), undefined, false);
   assert.equal(response.status,503);
+});
+
+test("a configured but weak token never falls back to public access", async () => {
+  const { handleMcpRequest } = await import("../api/mcp.ts");
+  const response = await handleMcpRequest(new Request("https://qrvai.example/api/mcp", {method:"POST",headers:{"content-type":"application/json"},body:"{}"}), "short", true);
+  assert.equal(response.status,503);
+});
+
+test("public first release: MCP initialize, tools/list and tools/call work with no credentials", async () => {
+  const { handleMcpRequest, PUBLIC_UNAUTHENTICATED } = await import("../api/mcp.ts");
+  assert.equal(PUBLIC_UNAUTHENTICATED,true);
+  const transport = new StreamableHTTPClientTransport(new URL("https://qrvai.example/api/mcp"), {
+    fetch: (url,init) => handleMcpRequest(new Request(url,init), undefined)
+  });
+  const client = new Client({name:"qrvai-public-test",version:"0.1.0"});
+  try {
+    await client.connect(transport);
+    const list=await client.listTools();
+    assert.equal(list.tools.length,38);
+    assert.ok(list.tools.every(t=>t.annotations?.readOnlyHint===true));
+    const power=await client.callTool({name:"rf_power_convert",arguments:{value:5,unit:"W"}});
+    assert.equal((power.structuredContent as {W:number}).W,5);
+  } finally {await client.close();}
+});
+
+test("public mode still rejects hostile Origin, wrong path, non-POST and oversized bodies", async () => {
+  const { handleMcpRequest } = await import("../api/mcp.ts");
+  const send=(url:string,init:RequestInit)=>handleMcpRequest(new Request(url,init),undefined,true);
+  const json={"content-type":"application/json"};
+  assert.equal((await send("https://qrvai.example/api/mcp",{method:"POST",headers:{...json,origin:"https://evil.invalid"},body:"{}"})).status,403);
+  assert.equal((await send("https://qrvai.example/other",{method:"POST",headers:json,body:"{}"})).status,404);
+  assert.equal((await send("https://qrvai.example/api/mcp",{method:"GET"})).status,405);
+  assert.equal((await send("https://qrvai.example/api/mcp",{method:"POST",headers:json,body:"a".repeat(65537)})).status,413);
 });
 
 test("Vercel MCP API rejects unauthorized requests when token is configured", async () => {
