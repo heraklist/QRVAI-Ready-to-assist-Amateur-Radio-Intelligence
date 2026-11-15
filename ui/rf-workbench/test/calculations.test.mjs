@@ -1,0 +1,23 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { convertPower, feedlineLoss, linkBudget, SPEED_OF_LIGHT_M_S } from "../calculations.mjs";
+const approx = (actual, expected, epsilon = 1e-8) => assert.ok(Math.abs(actual - expected) <= epsilon, `${actual} vs ${expected}`);
+
+test("100 W equals 50 dBm and 20 dBW", () => { const v = convertPower({value:100,unit:"W"}); approx(v.dBm,50);approx(v.dBW,20);approx(v.milliwatts,100000);});
+test("1 mW equals 0 dBm",()=>approx(convertPower({value:1,unit:"mW"}).dBm,0));
+test("0 dBW equals 1 W",()=>approx(convertPower({value:0,unit:"dBW"}).watts,1));
+test("30 dBm equals 1 W",()=>approx(convertPower({value:30,unit:"dBm"}).watts,1));
+test("power rejects zero linear input",()=>assert.throws(()=>convertPower({value:0,unit:"W"}),RangeError));
+test("power rejects infinity, nonnumeric and unknown units",()=>{for(const x of [Infinity,NaN,"100"])assert.throws(()=>convertPower({value:x,unit:"W"}),RangeError);assert.throws(()=>convertPower({value:100,unit:"watts"}),RangeError);});
+const feed={frequencyMHz:100,lowMHz:100,highMHz:1000,lowLossDbPer100m:4,highLossDbPer100m:8,lengthM:20,connectorLossDb:.5};
+test("cable interpolation exact low endpoint",()=>{const v=feedlineLoss(feed);approx(v.dbPer100m,4);approx(v.cableLossDb,.8);approx(v.totalLossDb,1.3);});
+test("cable interpolation exact high endpoint",()=>approx(feedlineLoss({...feed,frequencyMHz:1000}).dbPer100m,8));
+test("cable interpolation at geometric mean",()=>approx(feedlineLoss({...feed,frequencyMHz:Math.sqrt(100*1000)}).dbPer100m,Math.sqrt(4*8)));
+test("cable refuses to extrapolate",()=>{for(const f of [99,1001])assert.throws(()=>feedlineLoss({...feed,frequencyMHz:f}),RangeError);});
+test("cable refuses reversed reference frequencies and negative losses",()=>{assert.throws(()=>feedlineLoss({...feed,highMHz:90}),RangeError);assert.throws(()=>feedlineLoss({...feed,connectorLossDb:-.1}),RangeError);});
+test("cable source always explicitly user supplied, never certified",()=>assert.equal(feedlineLoss(feed).source,"USER_SUPPLIED_UNVERIFIED"));
+const budget={txWatts:10,frequencyMHz:100,distanceKm:1,txGainDbi:3,rxGainDbi:0,txLossDb:1,rxLossDb:0,receiverSensitivityDbm:-110};
+test("FSPL exact physical formula and EIRP",()=>{const v=linkBudget(budget);approx(v.fsplDb,20*Math.log10(4*Math.PI*1000*100e6/SPEED_OF_LIGHT_M_S));approx(v.eirpDbm,42);approx(v.receivedDbm,42-v.fsplDb);approx(v.marginDb,152-v.fsplDb);});
+test("link budget rejects zero distance, frequency, negative losses",()=>{for(const patch of [{distanceKm:0},{frequencyMHz:0},{txLossDb:-1}])assert.throws(()=>linkBudget({...budget,...patch}),RangeError);});
+test("link budget denies legal certification",()=>{const v=linkBudget(budget);assert.equal(v.legalPermissionVerified,false);assert.equal(v.model,"IDEAL_FREE_SPACE_ONLY");});
+test("receiver sensitivity margin is arithmetically consistent",()=>{const v=linkBudget({...budget,receiverSensitivityDbm:-50});approx(v.marginDb,v.receivedDbm+50);});

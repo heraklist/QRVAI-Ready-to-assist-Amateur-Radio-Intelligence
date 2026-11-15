@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="QRVAI offline radio amateur RF workbench: power, feedline and ideal free-space link budget.">
+  <title>QRVAI | RF Workbench</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui,-apple-system,"Segoe UI",sans-serif; color:#11233d; background:#f3f6fa; }
+    * {box-sizing:border-box}
+    body {margin:0}
+    header {background:linear-gradient(120deg,#102d49,#205a77);color:#fff;padding:2.6rem max(1rem,calc((100vw - 1180px)/2));}
+    .eyebrow {font-size:.79rem;letter-spacing:.11em;text-transform:uppercase;color:#b7e1e8;font-weight:700}
+    h1 {font-size:clamp(1.8rem,3.5vw,2.8rem);margin:.4rem 0 .6rem}
+    header p {max-width:720px;color:#dbeef5;line-height:1.55;margin:0}
+    main {max-width:1200px;margin:auto;padding:1.6rem 1rem 3rem}
+    .notice {border-left:4px solid #1c7d8c;background:#e7f2f6;padding:1rem 1.2rem;border-radius:0 12px 12px 0;margin-bottom:1.4rem;line-height:1.55}
+    .grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,350px),1fr));gap:1.25rem;align-items:stretch}
+    section {background:white;border:1px solid #d7e0eb;border-radius:16px;padding:1.25rem;box-shadow:0 6px 20px #1739540c}
+    section h2 {font-size:1.22rem;margin:0 0 .4rem}
+    section p {color:#4c6278;font-size:.9rem;margin:.1rem 0 1.1rem;line-height:1.55}
+    .fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
+    label {font-size:.78rem;line-height:1.35;color:#3c5368;display:flex;flex-direction:column;gap:.28rem;font-weight:650}
+    label.full {grid-column:1/-1}
+    input, select {font:inherit;font-size:1rem;border:1px solid #aebdce;border-radius:8px;padding:.6rem;min-width:0;width:100%;background:#fff;color:#10263f}
+    input:focus-visible,select:focus-visible,button:focus-visible {outline:3px solid #5eafc8;outline-offset:2px}
+    button {margin-top:1rem;border:none;border-radius:9px;padding:.73rem 1rem;background:#135f80;color:white;font-size:.96rem;font-weight:700;cursor:pointer}
+    button:hover {background:#104d69}
+    button.secondary {background:#e6eff5;color:#124360}
+    button.secondary:disabled {opacity:.55;cursor:not-allowed}
+    output {display:block;white-space:pre-line;min-height:5.8rem;background:#f0f5f8;border:1px solid #d9e4eb;border-radius:10px;padding:.9rem;line-height:1.7;font-weight:600;margin-top:1rem;font-variant-numeric:tabular-nums}
+    output[data-status=error] {color:#9c2540;border-color:#e6b4bf;background:#fff2f3}
+    footer {max-width:1200px;margin:auto;padding:0 1rem 2.5rem;color:#586b7d;font-size:.87rem;line-height:1.6}
+    @media (max-width:420px){.fields{grid-template-columns:1fr}label.full{grid-column:auto}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">QRVAI / Amateur Radio Intelligence</div>
+  <h1>RF Workbench</h1>
+  <p>Τρεις διαφανείς, τοπικοί υπολογισμοί: μετατροπή ισχύος, απώλεια γραμμής μεταφοράς και προϋπολογισμός ζεύξης ελεύθερου χώρου.</p>
+</header>
+<main>
+  <div class="notice"><strong>Offline prototype · χωρίς σύνδεση MCP.</strong> Οι τιμές είναι εκπαιδευτικές εκτιμήσεις και όχι πιστοποίηση εξοπλισμού, πρόβλεψη κάλυψης ή άδεια εκπομπής. Κανένα δεδομένο δεν αποστέλλεται σε εξωτερικό πάροχο.</div>
+  <div class="grid">
+    <section aria-labelledby="power-heading">
+      <h2 id="power-heading">01 · Μετατροπέας ισχύος</h2>
+      <p>Μετατροπή μεταξύ W, mW, dBm και dBW με θετική πραγματική ισχύ.</p>
+      <form id="power-form">
+        <div class="fields">
+          <label>Τιμή<input name="value" type="number" step="any" value="100" required></label>
+          <label>Μονάδα<select name="unit"><option>W</option><option>mW</option><option>dBm</option><option>dBW</option></select></label>
+        </div>
+        <button type="submit">Υπολογισμός ισχύος</button>
+      </form>
+      <output id="power-result" role="status" aria-live="polite">Συμπλήρωσε τιμή και πάτησε Υπολογισμός.</output>
+    </section>
+    <section aria-labelledby="cable-heading">
+      <h2 id="cable-heading">02 · Απώλεια καλωδίου</h2>
+      <p>Log-log παρεμβολή ανάμεσα σε δύο <strong>δικά σου</strong> σημεία αναφοράς. Καμία εξωπαρεμβολή.</p>
+      <form id="cable-form">
+        <div class="fields">
+          <label>Συχνότητα (MHz)<input name="frequencyMHz" type="number" step="any" value="145" required></label>
+          <label>Μήκος (m)<input name="lengthM" type="number" step="any" value="20" min="0" required></label>
+          <label>Κάτω σημείο (MHz)<input name="lowMHz" type="number" step="any" value="100" required></label>
+          <label>Απώλεια κάτω (dB/100 m)<input name="lowLossDbPer100m" type="number" step="any" value="4" required></label>
+          <label>Άνω σημείο (MHz)<input name="highMHz" type="number" step="any" value="1000" required></label>
+          <label>Απώλεια άνω (dB/100 m)<input name="highLossDbPer100m" type="number" step="any" value="8" required></label>
+          <label class="full">Συνολική απώλεια συνδέσμων (dB)<input name="connectorLossDb" type="number" step="any" min="0" value="0.5" required></label>
+        </div>
+        <button type="submit">Υπολογισμός απώλειας</button>
+        <button id="apply-cable" type="button" class="secondary" disabled>Μεταφορά στο Link Budget</button>
+      </form>
+      <output id="cable-result" role="status" aria-live="polite">Τα σημεία αναφοράς δεν επαληθεύονται από κατασκευαστή.</output>
+    </section>
+    <section aria-labelledby="link-heading">
+      <h2 id="link-heading">03 · Link Budget (FSPL)</h2>
+      <p>Απλοποιημένο μοντέλο ιδανικού ελεύθερου χώρου, χωρίς διάθλαση, εμπόδια, θόρυβο ή fading.</p>
+      <form id="link-form">
+        <div class="fields">
+          <label>Ισχύς TX (W)<input name="txWatts" type="number" step="any" value="10" required></label>
+          <label>Συχνότητα (MHz)<input name="frequencyMHz" type="number" step="any" value="145" required></label>
+          <label>Απόσταση (km)<input name="distanceKm" type="number" step="any" value="10" required></label>
+          <label>Gain TX (dBi)<input name="txGainDbi" type="number" step="any" value="3" required></label>
+          <label>Απώλεια TX (dB)<input name="txLossDb" type="number" step="any" min="0" value="1" required></label>
+          <label>Gain RX (dBi)<input name="rxGainDbi" type="number" step="any" value="0" required></label>
+          <label>Απώλεια RX (dB)<input name="rxLossDb" type="number" step="any" min="0" value="1" required></label>
+          <label>Ευαισθησία RX (dBm)<input name="receiverSensitivityDbm" type="number" step="any" value="-110" required></label>
+        </div>
+        <button type="submit">Υπολογισμός ζεύξης</button>
+      </form>
+      <output id="link-result" role="status" aria-live="polite">Το FSPL ισχύει μόνο υπό τις δηλωμένες ιδανικές παραδοχές.</output>
+    </section>
+  </div>
+</main>
+<footer><strong>QRVAI RF Workbench · Developer Preview</strong> — Δεν υπάρχουν λογαριασμοί, callsigns, προσωπικά logbooks, PTT, CAT, SDR ή πρόσβαση σε πραγματικό πομπό. Οι υπολογισμοί γίνονται στον browser. Υλοποίηση προς ανασκόπηση στο PR #53.</footer>
+<script type="module" src="./app.mjs"></script>
+</body>
+</html>

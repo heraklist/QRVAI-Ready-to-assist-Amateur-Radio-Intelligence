@@ -1,0 +1,21 @@
+name: QRVAI Offline RF Workbench Test
+on:
+  pull_request:
+    paths:
+      - 'ui/rf-workbench/**'
+      - '.github/workflows/qrvai-rf-workbench-ci.yml'
+  push:
+    branches:
+      - main
+jobs:
+  calculator-regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify deterministic offline RF workbench calculations
+        run: node --test ui/rf-workbench/test/calculations.test.mjs
