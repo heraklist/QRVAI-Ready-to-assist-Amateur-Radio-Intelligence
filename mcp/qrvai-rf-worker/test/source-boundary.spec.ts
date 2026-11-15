@@ -32,7 +32,7 @@ test("Vercel-only MCP backend has no Cloudflare runtime or dependencies",()=>{
 test("CI validates V0, type safety and Vercel MCP with read-only permissions",()=>{
   const yaml=readFileSync(file(".github/workflows/qrvai-rf-mcp-ci.yml"),"utf8");
   assert.ok(yaml.includes("permissions:") && yaml.includes("contents: read"));
-  assert.match(yaml,/node-version:\s*['"]22['"]/);
+  assert.match(yaml,/node-version:\s*['"]24['"]/);
   assert.match(yaml,/npm ci/);
   assert.doesNotMatch(yaml,/npm run test:worker/);
   assert.match(yaml,/python -m unittest discover/);
