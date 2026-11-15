@@ -91,11 +91,19 @@ test("space weather tool fetches only NOAA and labels its source", async () => {
     if (url.includes("f107")) return json(fx("swpc-f107.json"));
     return json(fx("swpc-xray.json"));
   });
-  const r = await spaceWeatherNow(new Date("2026-11-15T09:00:00Z"));
-  assert.equal(seen.length, 4);
-  assert.ok(seen.every(u => u.startsWith("https://services.swpc.noaa.gov/")));
-  assert.equal(r.source.id, "noaa_swpc");
-  assert.equal(r.kp_stale, false);
+  // The fixture's Kp is recent at the declared scenario timestamp, not at CI wall-clock time.
+  // cached() stamps fetched_at using Date.now(); isolate this deterministic fixture.
+  const originalNow = Date.now;
+  Date.now = () => Date.parse("2026-11-15T09:00:00Z");
+  try {
+    const r = await spaceWeatherNow(new Date("2026-11-15T09:00:00Z"));
+    assert.equal(seen.length, 4);
+    assert.ok(seen.every(u => u.startsWith("https://services.swpc.noaa.gov/")));
+    assert.equal(r.source.id, "noaa_swpc");
+    assert.equal(r.kp_stale, false);
+  } finally {
+    Date.now = originalNow;
+  }
 });
 
 test("satellite passes: SGP4 passes are ordered, horizon crossings accurate to a fraction of a degree", () => {
