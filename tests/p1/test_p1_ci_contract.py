@@ -42,7 +42,7 @@ REQUIRED=(
     "build_review_zip(",
     "validate_review_zip(",
     "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
-    "node-version: '22'",
+    "node-version: '24'",
     "npm ci --ignore-scripts",
     "npm run typecheck",
     "npm test",
