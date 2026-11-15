@@ -10,7 +10,7 @@
     "smoke:live": "node --experimental-strip-types scripts/live-smoke.ts"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": "24.x"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.3.1",

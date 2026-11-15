@@ -2,6 +2,8 @@
 
 The single supported runtime is a Node.js Vercel Function at `/api/mcp`. There is **no Cloudflare deployment, fallback, or dependency**. It serves 52 read-only tools: the 38-tool catalogue (`src/rf/`, listed in `src/rf/wave1.ts`) and 14 live-data, legal-source and station tools (`src/live/`, listed in `src/live/tools.ts`). Providers, terms and limits: [live data and legal sources](../../docs/architecture/live-data-sources.md).
 
+**Runtime compatibility:** Pin **Node.js 24.x** in `package.json`, lockfile and MCP CI because `unpdf@2.1.0` requires Node >=24. Vercel honors `engines.node` for function runtime selection, overriding an older project UI setting; exact deployed runtime and real Greek PDF extraction still need live verification.
+
 ## Local verification
 
 ```sh
