@@ -21,8 +21,12 @@ from scripts.v0.validate import _official_schema_validator, validate_skill
 ROOT = Path(__file__).resolve().parents[2]
 V1_ROOT = ROOT / "qrvai-v1"
 STAGE_ROOT = ROOT / "staging" / "p1-domain-skills"
-TOOL_REGISTRY = ROOT / "mcp" / "qrvai-rf-worker" / "src" / "rf" / "wave1.ts"
-VERSION = "0.2.0"
+TOOL_REGISTRIES = (
+    ROOT / "mcp" / "qrvai-rf-worker" / "src" / "rf" / "wave1.ts",
+    ROOT / "mcp" / "qrvai-rf-worker" / "src" / "live" / "tools.ts",
+)
+MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
+VERSION = "1.0.0"
 PREFIX = "qrvai/"
 CORE_FILES = (
     "skills/qrvai-core/SKILL.md",
@@ -33,7 +37,7 @@ FIXED_TIME = (1980, 1, 1, 0, 0, 0)
 MAX_FILE = 1_048_576
 SERVER_NAME = "qrvai"
 _TOOL = re.compile(r'\{candidate_id:"M\d{2}",name:"([a-z0-9_]+)"')
-_BACKTICK = re.compile(r"`([a-z][a-z0-9]*(?:_[a-z0-9]+)+)`")
+_TABLE_TOOL = re.compile(r"^\|\s*`([a-z][a-z0-9]*(?:_[a-z0-9]+)+)`\s*\|", re.M)
 _RESERVED_HOSTS = ("example.com", "example.org", "example.net", "localhost", ".invalid", ".test", ".local")
 
 
@@ -46,7 +50,7 @@ def load_specs() -> tuple[DomainSpec, ...]:
 
 def registered_tool_names() -> tuple[str, ...]:
     """Tool names come from the MCP source registry, never from a second hand-kept list."""
-    names = tuple(_TOOL.findall(TOOL_REGISTRY.read_text(encoding="utf-8")))
+    names = tuple(n for path in TOOL_REGISTRIES for n in _TOOL.findall(path.read_text(encoding="utf-8")))
     if not names or len(names) != len(set(names)):
         raise ValueError("MCP tool registry unreadable or has duplicate names")
     return names
@@ -72,7 +76,8 @@ def validate_mcp_url(url: str) -> list[str]:
 
 
 def mcp_config(url: str) -> dict:
-    return {"mcpServers": {SERVER_NAME: {"type": "http", "url": url}}}
+    """Portable Agent Plugins MCP config, as documented by OpenAI's plugin build guide (checked 2026-11-15)."""
+    return {"$schema": MCP_SCHEMA, "mcpServers": {SERVER_NAME: {"type": "streamable-http", "url": url}}}
 
 
 def validate_manifest(data: object) -> list[str]:
@@ -125,7 +130,7 @@ def audit_sources(specs: tuple[DomainSpec, ...]) -> list[str]:
         return errors
     tools = set(registered_tool_names())
     texts = {rel: (V1_ROOT / rel).read_text(encoding="utf-8") for rel in CORE_FILES}
-    listed = set(_BACKTICK.findall(texts[CORE_FILES[2]])) - {"log_log", "formula_revision"}
+    listed = set(_TABLE_TOOL.findall(texts[CORE_FILES[2]]))
     if listed != tools:
         errors.append("tools.md differs from MCP registry: " + ", ".join(sorted(listed ^ tools)))
     routing = texts[CORE_FILES[1]]

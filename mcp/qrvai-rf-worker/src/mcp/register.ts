@@ -1,4 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
+import {registerLiveTools} from "./register-live.ts";
+import {LIVE_TOOLS} from "../live/tools.ts";
 import { z } from "zod/v4";
 import {rfExposureScreen,propagationPath,satellitePass} from "../rf/wave7.ts";
 import {stationGetProfile,stationReadStatus,spaceweatherIndices,dxReceptionReports,logAwardProgress} from "../rf/wave6.ts";
@@ -78,7 +80,7 @@ const feedlineOutputSchema = z.strictObject({
 });
 
 export function createServer(allowTool: (name:string)=>boolean = ()=>true): McpServer {
-  const server = new McpServer({ name: "qrvai-rf", version: "0.1.0" });
+  const server = new McpServer({ name: "qrvai", version: "1.0.0" });
   if(allowTool("rf_power_convert"))server.registerTool("rf_power_convert", {
     title: "RF Power Unit Conversion",
     description: "Convert an impersonal, finite RF power value among W, mW, dBm and dBW; not a radio measurement or transmission permission.",
@@ -168,7 +170,7 @@ export function createServer(allowTool: (name:string)=>boolean = ()=>true): McpS
     inputSchema:z.strictObject({}),
     outputSchema:z.strictObject({tools:z.array(z.strictObject({candidate_id:z.string(),name:z.string(),scope:z.string()})),implemented_count:z.number().int().positive()}),
     annotations:ro
-  },async()=>response({tools:describeWave1(),implemented_count:describeWave1().length}));
+  },async()=>{const tools=[...describeWave1(),...LIVE_TOOLS.map(x=>({...x}))];return response({tools,implemented_count:tools.length});});
   if(allowTool("antenna_geometry"))server.registerTool("antenna_geometry",{
     title:"Ideal antenna geometry",description:"Ideal halfwave dipole or quarterwave monopole length; no end effects or measured resonance.",
     inputSchema:z.strictObject({kind:z.enum(["halfwave_dipole","quarterwave_monopole"]),frequency_hz:positive,velocity_factor:velocity}),
@@ -398,5 +400,6 @@ export function createServer(allowTool: (name:string)=>boolean = ()=>true): McpS
     outputSchema:z.strictObject({above_horizon_sample_count:z.number().int().nonnegative(),peak_sample_elevation_deg:z.number().finite().positive().nullable(),window_start:z.string().nullable(),window_end:z.string().nullable(),orbit_computed:z.literal(false),source:z.literal("USER_SUPPLIED_ELEVATION_SAMPLES"),disclaimer:z.string(),formula_revision:z.literal("M26-v1")}),annotations:w7ro
   },async(args)=>{try{return w7response(satellitePass(args))}catch(e){return w7error(e)}});
 
+  registerLiveTools(server, allowTool);
   return server;
 }

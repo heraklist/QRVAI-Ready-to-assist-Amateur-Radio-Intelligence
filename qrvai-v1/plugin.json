@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "qrvai",
-  "version": "0.2.0",
-  "description": "Greek and English amateur radio assistant: 24 domain Skills and read-only RF calculation tools, with honest safety and legal boundaries.",
+  "version": "1.0.0",
+  "description": "Greek and English amateur radio assistant: 24 domain Skills, RF calculators and live data (space weather, satellites, spots, repeaters, contests, official legal texts), with honest safety and legal boundaries.",
   "author": {
     "name": "heraklist"
   },
@@ -12,11 +12,15 @@
       "interface": {
         "displayName": "QRVAI",
         "shortDescription": "Amateur radio assistant",
-        "longDescription": "Chat-first amateur radio help in Greek and English: RF calculations through read-only tools, antennas, operating, digital modes, regulations research, emergency-communications training and education. No live radio data, transmit permission or device control.",
+        "longDescription": "Chat-first amateur radio help in Greek and English: RF and antenna calculations, live space weather, satellite passes, POTA and WSPR spots, repeaters, contest calendar, and official legal texts from the Greek Government Gazette, EETT, CEPT and the US eCFR with change checks. No transmit permission, legal advice or device control.",
         "developerName": "QRVAI",
         "category": "Education",
         "capabilities": [],
-        "defaultPrompt": "@QRVAI Βοήθησέ με με έναν ερασιτεχνικό ασύρματο."
+        "defaultPrompt": [
+          "@QRVAI Πώς είναι η διάδοση σήμερα;",
+          "@QRVAI Πότε περνάει το ISS πάνω από την Αθήνα;",
+          "@QRVAI Τι λέει ο ελληνικός κανονισμός για τις άδειες κατηγορίας 1;"
+        ]
       }
     }
   }

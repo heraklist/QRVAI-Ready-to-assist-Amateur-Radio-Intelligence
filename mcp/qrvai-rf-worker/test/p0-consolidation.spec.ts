@@ -6,6 +6,7 @@ import {resolve} from "node:path";
 import {Client,InMemoryTransport} from "@modelcontextprotocol/client";
 import {createServer} from "../src/mcp/register.ts";
 import {IMPLEMENTED_TOOLS} from "../src/rf/wave1.ts";
+import {LIVE_TOOLS} from "../src/live/tools.ts";
 import {classifyTool} from "../src/http/authz-policy.ts";
 
 const root=fileURLToPath(new URL("../../../",import.meta.url));
@@ -40,8 +41,11 @@ test("P0 exactly maps 38 distinct M IDs to names, table rows and public SDK tool
  assert.deepEqual(sorted(entries.map(x=>x[0])),ids);
  assert.deepEqual(new Map(entries),new Map(IMPLEMENTED_TOOLS.map(x=>[x.candidate_id,x.name])));
  const tools=await listedTools();
- assert.equal(tools.length,38);
- assert.deepEqual(sorted(tools.map(x=>x.name)),sorted(descriptorNames));
+ // The 38 catalogue tools stay intact; V1 live tools are registered after them (see src/live/tools.ts).
+ const catalogue=tools.filter(x=>descriptorNames.includes(x.name));
+ assert.equal(catalogue.length,38);
+ assert.deepEqual(sorted(catalogue.map(x=>x.name)),sorted(descriptorNames));
+ assert.equal(tools.length,38+LIVE_TOOLS.length);
 });
 
 test("P0 preserves ten competing-PR canonical input contracts and safety output markers",async()=>{

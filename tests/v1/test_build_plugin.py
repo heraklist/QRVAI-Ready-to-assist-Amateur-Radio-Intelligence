@@ -16,7 +16,7 @@ class TestV1Plugin(unittest.TestCase):
 
     def test_sources_are_consistent_with_registries(self):
         self.assertEqual(bp.audit_sources(self.specs), [])
-        self.assertEqual(len(bp.registered_tool_names()), 38)
+        self.assertEqual(len(bp.registered_tool_names()), 52)
         self.assertEqual(len(self.specs), 24)
 
     def test_release_archive_has_core_24_domain_skills_and_real_mcp_endpoint(self):
@@ -28,8 +28,8 @@ class TestV1Plugin(unittest.TestCase):
                 manifest = json.loads(z.read("qrvai/plugin.json"))
             self.assertEqual(len(names), 1 + 1 + 3 + 24 * 4)
             self.assertEqual(sum(n.endswith("/SKILL.md") for n in names), 25)
-            self.assertEqual(config, {"mcpServers": {"qrvai": {"type": "http", "url": URL}}})
-            self.assertEqual(manifest["version"], "0.2.0")
+            self.assertEqual(config, {"$schema": bp.MCP_SCHEMA, "mcpServers": {"qrvai": {"type": "streamable-http", "url": URL}}})
+            self.assertEqual(manifest["version"], "1.0.0")
             self.assertEqual(bp.validate_plugin_zip(path, self.specs), [])
 
     def test_build_is_reproducible(self):

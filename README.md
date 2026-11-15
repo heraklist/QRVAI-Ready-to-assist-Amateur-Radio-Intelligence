@@ -1,6 +1,12 @@
 # QRVAI — Ready-to-assist Amateur Radio Intelligence
 
 
+## Current status (2026-11-15)
+
+- **Plugin 1.0.0 source** (`qrvai-v1/`, built by `scripts/v1/build_plugin.py`): core Skill, 24 Domain Skills and an MCP server with **52 read-only tools**: RF and antenna calculators, live data (NOAA space weather, CelesTrak/SGP4 satellite passes, SatNOGS frequencies, POTA and WSPR spots, callsign zones and LoTW activity, HearHam repeaters, WA7BNM contest calendar), official legal texts with live change checks (Greek ΦΕΚ via api.et.gr, EETT incl. the ΕΚΚΖΣ allocation table, CEPT T/R 61-01/61-02, US 47 CFR 97 and Federal Register) and station calculators (ERP/EIRP, datasheet coax catalogue). See [live data and legal sources](docs/architecture/live-data-sources.md).
+- **Runtime:** Vercel function `/api/mcp`, public without authentication for this release. Authentication, and with it personal logbook services (LoTW logs, eQSL, Club Log, QRZ), comes in the next phase.
+- **Not done yet:** public production endpoint (Vercel Deployment Protection still blocks it), plugin creation in ChatGPT and a real `@QRVAI` conversation test.
+
 ## Current development status (2026-10-17)
 
 **Source truth:** five V0 Skills remain in `main` as the portable Skills-only foundation; **38 source-registered** MCP tool names appear in cumulative **Draft** branches [PR #36](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/36) and [PR #38](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/38), not as 38 production-integrated services. QRVAI is **Vercel-only**. Plugin Creator identity, real OAuth issuer/credentials, production rollout and ChatGPT `@QRVAI` host invocation are **NOT CONNECTED** or accepted; protected Preview build results are not credentialed HTTPS acceptance. Most draft tools are bounded offline calculations, templates, or user-supplied-data previews. The 24 independent Domain Skills, 72 procedural Sub-skills, 18 Engines, 4 orchestrators and 36 UI Apps are not shipped as fully operational services.

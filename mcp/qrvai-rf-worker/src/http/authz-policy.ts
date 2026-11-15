@@ -1,4 +1,5 @@
 import {IMPLEMENTED_TOOLS} from "../rf/wave1.ts";
+import {LIVE_TOOLS} from "../live/tools.ts";
 
 /** Declarative policy classification; not yet wired into the MCP HTTP adapter. */
 export type ToolClass="public"|"user_data"|"station"|"logs";
@@ -6,7 +7,7 @@ export type Principal={subject:string;tenantId:string;scopes:readonly string[]};
 const data=new Set(["station_signal_path","packet_route_preview","emcomm_drill","emcomm_readiness","digital_setup_guide","repeater_channel_preview","contest_plan","maker_project_review","club_workshop_plan","source_lookup","regulatory_check_operation","spectrum_band_segments","spectrum_find_repeaters","manual_find","measurements_inspect_trace","sdr_inspect_iq","manual_answer_cited","equipment_diagnose","adif_validate","spaceweather_indices","dx_reception_reports","rf_exposure_screen","propagation_path","satellite_pass","rf_feedline_loss"]);
 const station=new Set(["station_get_profile","station_read_status"]);
 const logs=new Set(["log_award_progress"]);
-const names=new Set(IMPLEMENTED_TOOLS.map(x=>x.name));
+const names=new Set([...IMPLEMENTED_TOOLS,...LIVE_TOOLS].map(x=>x.name));
 export function classifyTool(name:string):ToolClass|null{
  if(!names.has(name))return null;
  if(station.has(name))return "station";
