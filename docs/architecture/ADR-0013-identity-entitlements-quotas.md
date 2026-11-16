@@ -53,7 +53,7 @@ No baseline of real usage, active customers, conversion, latency SLO or provider
 - [ ] Verified provider call caps, official source rights, WAF and DDoS/abuse policy; monitor 429/5xx and stop on unknown run rate.
 - [ ] Transparent privacy policy, no unnecessary operator or learner personal data, data deletion and retention controls.
 - [ ] Independent financial/legal acceptance of jurisdictional pricing, tax, refunds, cancellation, PSP, receipts and consumer protections **before accepting any payment**.
-- [ ] New distinct Plugin Creator identity, private ChatGPT install, actual host E2E and owner-controlled release decision.
+- [x] Reuse the **existing PRIVATE personal QRVAI** identity for the first **skills-only** pilot (`0.1.0-preview.4`, account read-back verified); [ ] actual ChatGPT host smoke, [ ] later secure 54-tool MCP E2E using the same plugin identity. No public listing or second plugin.
 - [ ] An actual subscription must NEVER be represented as a radio transmitting licence.
 
 ## Measurable but non-billing acceptance
