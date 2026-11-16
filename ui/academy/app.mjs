@@ -4,7 +4,7 @@ const I={
   en:{
     eyebrow:"QRVAI / Amateur Radio Intelligence",title:"International Academy",
     subtitle:"Learn the amateur-radio hobby from original short lessons. No licensing exam, login or transmitter required.",
-    home:"RF Workbench",learn:"Learn",search:"Search the hobby",searchHint:"Search module titles or learning outcomes",
+    home:"RF Workbench",rules:"Rules & Sources",learn:"Learn",search:"Search the hobby",searchHint:"Search module titles or learning outcomes",
     level:"Level",all:"All levels",beginner:"Beginner",intermediate:"Intermediate",advanced:"Advanced",
     modules:"Modules",topicCount:"topics",resultCount:"matching modules",
     lessons:"Lessons",selected:"Lesson",outcome:"Learning outcome",concept:"Concept",
@@ -17,7 +17,7 @@ const I={
   el:{
     eyebrow:"QRVAI / Ραδιοερασιτεχνική Ευφυΐα",title:"Διεθνής Academy",
     subtitle:"Μάθε το ραδιοερασιτεχνικό hobby μέσα από πρωτότυπα μικρομαθήματα. Χωρίς εξετάσεις αδειοδότησης, σύνδεση ή πομπό.",
-    home:"Εργαλεία RF",learn:"Μάθηση",search:"Αναζήτηση στο hobby",searchHint:"Αναζήτησε τίτλους ενοτήτων ή μαθησιακούς στόχους",
+    home:"Εργαλεία RF",rules:"Κανονισμοί & Πηγές",learn:"Μάθηση",search:"Αναζήτηση στο hobby",searchHint:"Αναζήτησε τίτλους ενοτήτων ή μαθησιακούς στόχους",
     level:"Επίπεδο",all:"Όλα τα επίπεδα",beginner:"Αρχάριο",intermediate:"Μεσαίο",advanced:"Προχωρημένο",
     modules:"Ενότητες",topicCount:"θέματα",resultCount:"ενότητες βρέθηκαν",
     lessons:"Μαθήματα",selected:"Μάθημα",outcome:"Μαθησιακός στόχος",concept:"Θεωρία",
@@ -38,6 +38,7 @@ const els={
   tagline:document.querySelector("#tagline"),
   title:document.querySelector("#page-title"),
   home:document.querySelector("#nav-workbench"),
+  rules:document.querySelector("#nav-regulations"),
   searchLabel:document.querySelector("#search-label"),
   levelLabel:document.querySelector("#level-label"),
   modulesHeading:document.querySelector("#modules-heading"),
@@ -62,7 +63,7 @@ function draw(){
   const t=I[lang];
   document.documentElement.lang=lang;
   els.title.textContent=t.title; els.tagline.textContent=t.subtitle;
-  els.home.textContent=t.home;els.searchLabel.textContent=t.search;
+  els.home.textContent=t.home;els.rules.textContent=t.rules;els.searchLabel.textContent=t.search;
   els.levelLabel.textContent=t.level;els.search.placeholder=t.searchHint;
   els.modulesHeading.textContent=t.modules; els.safety.textContent=t.safety;els.footer.textContent=t.footer;
   const options=[["",t.all],["beginner",t.beginner],["intermediate",t.intermediate],["advanced",t.advanced]];
