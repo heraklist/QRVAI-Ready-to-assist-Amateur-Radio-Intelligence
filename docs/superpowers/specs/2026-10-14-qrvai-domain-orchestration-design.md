@@ -7,7 +7,7 @@
 
 ## 1. Agreed direction and definitions
 
-Build **one QRVAI Plugin**, organized into four capability families and 24 domain capabilities. Use selective orchestration only for tasks that need coordination across sources, tools, policies or persistent workflow state. Interactive tools are first-class experiences attached to domain workflows but implemented using reusable numerical/data services.
+Build **one international QRVAI Plugin**, organized into four capability families and 24 domain capabilities. [ADR-0012](../../architecture/ADR-0012-international-first-regulation-and-academy.md) establishes optional reviewed jurisdiction packs and a globally reusable hobby-first Academy; historical Greece-first and licence-exam-centered descriptions are superseded. Use selective orchestration only for tasks that need coordination across sources, tools, policies or persistent workflow state. Interactive tools are first-class experiences attached to domain workflows but implemented using reusable numerical/data services.
 
 | Term | Meaning in QRVAI | Is it its own agent/server? |
 |---|---|---|
@@ -101,7 +101,7 @@ A domain can offer direct responses and complex orchestrated flows. The routing 
 | C19 | Satellites, EME & Weak Signal | D/W | Ephemerides/geometry/weak-signal engines | UI-24 |
 | C20 | Logbook, QSL & Awards | D/W | ADIF/award engines; consent and identity boundary | UI-32 |
 | C21 | Contests, Portable & Outdoor Radio | W | Rules/profile/logbook; power/locator tools | UI-33 |
-| D22 | Amateur Radio Academy & CW | D/W | Curriculum, CW/training engine | UI-34 |
+| D22 | Amateur Radio Academy & CW | D/W | Global hobby curriculum, CW/training engine; national licence/exam prep excluded from core | UI-34 |
 | D23 | Maker, Research & Software Development | D/W/F | Circuit/firmware Skills and validated design aids | UI-35 |
 | D24 | Clubs, Community & Mentoring | D/W | Club-authorized inventory/calendar data; privacy | UI-36 |
 
@@ -131,7 +131,7 @@ A domain can offer direct responses and complex orchestrated flows. The routing 
 
 **Trigger:** "May I transmit?" / "Which frequencies and modes are authorized?" / comparison across national/CEPT/IARU frameworks.  
 **Allowed actions:** Validate jurisdiction, station/operator context, frequency, emission/mode, power, date; retrieve official effective rules; resolve rule precedence; return traceable conclusion.  
-**Sub-capabilities:** country license rules, frequency allocation, IARU band-plan recommendations, permit restrictions, RF exposure requirements.  
+**Sub-capabilities:** ITU international framework (not an individual permission), IARU regional nonbinding band plans, independently versioned official national/country packs, operating-country licence and visitor recognition rules, frequency allocation, permit restrictions, RF exposure requirements.  
 **Mandatory guards:** Binding law > advice; version and temporal checks; if essential inputs, current authoritative rules or interpretation are missing, return **INDETERMINATE**, not an invented "ALLOWED". Legal ambiguities flagged for human/legal verification.  
 **Output:** ALLOWED / NOT_ALLOWED / INDETERMINATE, applied sources and dates, explanation of limits, unresolved facts.  
 **Disallowed:** Making permits or authorizing transmission; legal certification.
@@ -274,7 +274,7 @@ Each major workflow should expose inspectable events: routing decision, selected
 - [ ] Specialist contradictory findings are resolved as unresolved or BLOCKED, not silently merged.
 
 ### High-risk regressions
-- [ ] OR-REG yields INDETERMINATE on unknown Greek license, stale/contradictory law, unspecified region or no authoritative primary source.
+- [ ] OR-REG yields INDETERMINATE on unknown/unsupported operating jurisdiction or licence, missing visitor recognition, stale/contradictory national law, unspecified region or no authoritative primary source; no regional band plan alone confers TX permission.
 - [ ] OR-EMCOMM activities display simulation status, do not contact authorities and cannot transmit.
 - [ ] OR-DIAG never runs PTT, firmware flashing or unsafe equipment repair.
 - [ ] External prompt injection cannot alter permissions, policy, router selection or source trust.
