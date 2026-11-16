@@ -3,7 +3,7 @@
 **Date:** 2026-11-16  
 **Status:** ACTIVE IMPLEMENTATION; PRIVATE / NOT RELEASED; exact-SHA CI and protected-host acceptance separately gated  
 **Source of truth:** [Draft PR #53](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/53), branch `ccr-36da72c5-bv43gt` -> `main`, never promote automatically.  
-**Normative architecture:** [ADR-0012: international-first, national jurisdictions, hobby Academy](../architecture/ADR-0012-international-first-regulation-and-academy.md); [ADR-0011: one Vercel MCP backend](../architecture/ADR-0011-single-vercel-mcp-project.md).
+**Normative architecture:** [ADR-0012: international-first, national jurisdictions, hobby Academy](../architecture/ADR-0012-international-first-regulation-and-academy.md); [ADR-0011: one Vercel MCP backend](../architecture/ADR-0011-single-vercel-mcp-project.md); [ADR-0013: identity/quotas/credits boundary](../architecture/ADR-0013-identity-entitlements-quotas.md).
 
 ## Executive architecture
 
@@ -17,9 +17,9 @@ Core Academy teaches the *hobby*, not national licence applications, exam syllab
 
 | Area | Implemented source | User-visible behavior / boundary |
 |---|---|---|
-| International regulatory context | `mcp/qrvai-rf-worker/src/live/jurisdiction.ts` and M53 `regulatory_context` registration | Explicit operating-country and optional home-country inputs; source coverage GR/US limited official adapters, DE/GB official pointers, no other country pack; ITU, IARU and CEPT tiers; visitor verification prompts; **INDETERMINATE on all actual transmit-permission requests**, even with apparently complete fields |
+| International regulatory context | `mcp/qrvai-rf-worker/src/live/jurisdiction.ts` and M53 `regulatory_context` registration | Explicit operating-country and optional home-country inputs; source coverage GR/US limited official adapters, DE/GB/AU/CA/NZ/JP official source pointers, other countries no pack; ITU, IARU and CEPT tiers; visitor verification prompts; **INDETERMINATE on all actual transmit-permission requests**, even with apparently complete fields |
 | Geographic caveats | M53 normalized UK shorthand to ISO `GB`; region metadata is a **mainland hint only** | No callsign/IP/language-based jurisdiction inference; overseas/portable operation requires independent region and national-authority verification |
-| International Academy catalogue | `src/academy/catalog.ts` and M54 `academy_catalog` | **9 hobby modules × 3 bilingual EN/EL lesson titles = 27 outline topics**, level filters and outcomes, TRAINING_ONLY. These outlines are **not 27 completed lessons** or personalized learning service; no national exam courses |
+| International Academy catalogue | `src/academy/catalog.ts` and M54 `academy_catalog` | **9 hobby modules × 3 bilingual EN/EL lesson titles = 27 modules topics**, now each with a concise original bilingual micro-lesson, offline/receive-only activity and self-check answer, selected by `lesson_id`. This is **not 27 complete editor-reviewed textbook chapters**, national exam schooling or a personalized learner account |
 | Existing academy practice | Existing `academy_exercise` tool | 2 bounded original static exercises; CW audio, learner accounts, graded exams NOT IMPLEMENTED |
 | Tool inventory | `src/live/tools.ts`, `src/mcp/register-live.ts`, tool reference tables and real-SDK inventory contracts | **54 source-registered read-only tools = 38 existing + 14 V1 live/catalog + 2 new offline**; live providers are still subject to upstream availability/licensing |
 | Transport security gate | `mcp/qrvai-rf-worker/api/mcp.ts` | **`PUBLIC_UNAUTHENTICATED=false` by default**; without Bearer config, HTTP **503** (fail closed); with configured secret bad/missing bearer **401**; legacy explicit `allowPublic=true` parameter retained solely as an injectable unit-test seam. Source hardening is not effective-deployment verification or full production auth |
@@ -41,7 +41,7 @@ Core Academy teaches the *hobby*, not national licence applications, exam syllab
 8. SDR and amateur satellites — waterfall; orbital Doppler; receive-only experiments
 9. Field, maker and clubs — portable safety; receive-only antenna build; mentoring
 
-All 27 are lesson **titles/outlines**, not authored course chapters. No real RF transmissions, CAT/PTT, accounts, licensed question banks or stored learner PII.
+All 27 now have authored **bilingual micro-lesson bodies** with practice and self-check; they are **not** complete long-form editorially validated courses. No real RF transmissions, CAT/PTT, accounts, licensed question banks or stored learner PII.
 
 ### M53 regulatory source-coverage classes
 
@@ -52,10 +52,27 @@ All 27 are lesson **titles/outlines**, not authored course chapters. No real RF 
 | CEPT | Reciprocal context | T/R 61-01 participation, host implementation and traveller licence equivalence not assumed |
 | GR | PARTIAL_OFFICIAL_SOURCE_ADAPTER | Gazette/EETT selected source access only, no validated effective consolidated current privilege engine |
 | US | PARTIAL_OFFICIAL_SOURCE_ADAPTER | Selected eCFR/Part 97 official texts only, no verified individual credential/visitor status or complete privileges |
-| DE, GB | MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY | Official site pointers, not automatically updated country-specific interpretation |
+| DE, GB, AU, CA, NZ, JP | MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY | Official HTML portal/source pointers observed 2026-11-16, **not** an effective-date law/privilege adjudication |
 | All other countries | NO_COUNTRY_PACK | Research abstention: INDETERMINATE and direct operator to primary national authority |
 
 **Never** assert ALLOWED/NOT_ALLOWED in a live operating-permission answer from these source pointers. Human-reviewed national source version, date, licence status, visitor rights and other conditions remain necessary.
+
+## Development continuation — 2026-11-16, second execution tranche
+
+**Implementation moved beyond the Phase I catalogue outlines.** The following are actual code changes in this Draft branch, not a deployed commercial platform:
+
+| Workstream | New source, tests and evidence | Result and remaining boundary |
+|---|---|---|
+| Official national source discovery | `src/live/country-packs.ts`, updated `jurisdiction.ts` and `test/country-packs.spec.ts` | **8 source-pointer packs** (GR, US, DE, GB, AU, CA, NZ, JP). Official sources for DE, GB, CEPT, AU, CA, NZ, JP were directly retrieved or checked on 2026-11-16; US eCFR appeared in indexed official search, but direct access was challenged. Neither observed page accessibility nor document title proves current law, legal force, individual privileges, visitor reciprocity, or complete country support. Coverage for outside packs remains `NO_COUNTRY_PACK`, and all operating-permission statuses remain `INDETERMINATE` |
+| Academy micro-lesson content | `src/academy/lesson-schema.ts`, `lesson-units-a.ts`, `lesson-units-b.ts`, `lesson-units-c.ts`, `lessons.ts`, updated `catalog.ts`, `register-live.ts`, `test/academy-lessons.spec.ts` | **27 original EN/EL micro-lessons** with explanations, offline/receive-only safe practice and answer keys. Retrieval via optional `lesson_id` on M54, **still 54 total tools**. Not full long-form chapters, adaptive user accounts, CW audio, credentials, local exams or visual QA |
+| Private preview transport guard | `src/http/preview-throttle.ts`, updated `api/mcp.ts`, `test/preview-throttle.spec.ts` | 60/minute shared-Bearer SHA-256 fingerprint, HTTP 429 + Retry-After **per warm Node process**. Does not prevent cross-instance quota evasion or provide per-user attribution; absent/bad bearer retains existing fail-closed 503/401 |
+| Future entitlements (not active billing) | `src/http/usage-policy.ts`, `test/usage-policy.spec.ts`, [ADR-0013](../architecture/ADR-0013-identity-entitlements-quotas.md) | Deterministic scope-aware usage weight and budget simulator for 54 tools, all `chargeable_now=false`. No account creation, actual payment, durable quota/metering or OAuth host binding |
+| Quality and design | [Quality & KPI contract](2026-11-16-quality-kpis.md), [UX product brief](../product-design/2026-11-16-qrvai-international-ux-brief.md) | 3 primary evidence-backed release-readiness metrics; three textual UX directions and EN/EL user journeys. No production traffic dataset, cost baseline, user-tested visuals, screenshots or published interactive Academy screen |
+| CI regression and remediation | `mcp/qrvai-rf-worker/package.json` includes four new test files | First source run after adding throttle failed RF/P1 on unsupported TypeScript constructor parameter property in Node 24 strip-only mode; fixed by explicit field declaration. Exactly **5/5 SUCCESS at commit `b01392d1315e0910daf25b8b5749411a72707d2e`**. Every source change after this SHA requires fresh CI revalidation |
+
+**External legal source collection:** German federal legal source `gesetze-im-internet.de/afuv_2005/` and UK Ofcom official page returned HTTP 200; CEPT T/R 61-01 official document page reported Active/latest update 2024-10-18; AU ACMA, CA ISED, NZ RSM and JP MIC official portal pages returned HTTP 200. These are documentary pointers, **not verified point-in-time, authoritative, provision-level statements of lawful transmit power, bands or reciprocal licences**. The eCFR direct browser attempt returned a human interaction/CAPTCHA request. No protected content access bypass attempted.
+
+**Current hard release blockers:** real authenticated HTTPS MCP round trip; effective Vercel secret/WAF check (metadata 403/firewall 404); distributed quotas, provider contract/limits, published legal-source amendments and qualified review; full visual design and usability testing; distinct private Plugin Creator ID and ChatGPT host pilot; identity/tenant ownership, price/legal/financial signoff and transactional billing. The old plugin placeholder and production stay untouched.
 
 ## Evidence and test boundary
 
