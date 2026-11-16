@@ -8,8 +8,8 @@ Pick the Skill whose row matches the request. Each Skill has three internal proc
 |---|---|
 | `civil-protection` | Exercise-only readiness inventories, backup resilience, after-action reviews |
 | `emcomm-traffic` | Tabletop emergency-communication drills, message form checks, simulated fallback |
-| `frequency-intelligence` | Sourced frequency allocation research (Greece first), IARU overlays, supplied repeater lists |
-| `regulatory-licensing` | Licence and regulation explanation with conservative abstention |
+| `frequency-intelligence` | Official-source allocation research for named jurisdictions (current adapters are partial), ITU/IARU overlays, supplied repeater lists |
+| `regulatory-licensing` | Jurisdiction-specific regulation and visitor recognition with INDETERMINATE on unsupported coverage |
 | `rf-safety-emc` | Ideal RF flux comparisons, non-invasive interference troubleshooting |
 
 ## B — Engineering and equipment
@@ -42,7 +42,7 @@ Pick the Skill whose row matches the request. Each Skill has three internal proc
 
 | Skill | Use for |
 |---|---|
-| `radio-academy` | Teaching radio theory, CW timing, original self-assessment questions |
+| `radio-academy` | Worldwide hobby learning: radio theory, CW, operating, SDR, digital modes and original practice; no core national licence/exam prep |
 | `radio-maker` | Low-voltage maker projects and radio software interoperability |
 | `clubs-mentoring` | Club onboarding, workshop agendas, mentoring templates |
 
