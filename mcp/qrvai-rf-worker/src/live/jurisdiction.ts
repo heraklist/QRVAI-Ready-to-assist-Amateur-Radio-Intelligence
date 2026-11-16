@@ -41,7 +41,6 @@ function validDate(value: string): boolean {
   const d = new Date(value + "T00:00:00Z");
   return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === value;
 }
-const REGION: Record<string, "1" | "2" | "3"> = {GR: "1", DE: "1", GB: "1", US: "2"};
 
 /** Conservative, deterministic output. We do not infer location from callsign, IP or language. */
 export function regulatoryContext(input: RegulatoryContextInput) {
@@ -59,7 +58,7 @@ export function regulatoryContext(input: RegulatoryContextInput) {
     id: x.id, title: x.title, url: x.url, kind: x.kind, last_source_review: REVIEW.date,
   }));
   const source_coverage = country_pack.coverage;
-  const region = REGION[country] ?? null;
+  const region = country_pack.region_hint_for_mainland;
   const visiting = input.visiting_operator === true || (home !== null && home !== country);
   const missing: string[] = [];
   if (!input.operation_date) missing.push("operation_date");
@@ -96,7 +95,7 @@ export function regulatoryContext(input: RegulatoryContextInput) {
         note: "A home-country licence alone does not establish privileges in a visited jurisdiction.",
       },
       national: {
-        regulator_or_jurisdiction: jurisdiction?.name ?? country,
+        regulator_or_jurisdiction: country_pack.regulator ?? jurisdiction?.name ?? country,
         force: "binding_national_rules_must_be_checked",
         source_coverage,
         curated_primary_sources: primary,
