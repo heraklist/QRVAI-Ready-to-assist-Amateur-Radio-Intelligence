@@ -16,7 +16,7 @@ class TestV1Plugin(unittest.TestCase):
 
     def test_sources_are_consistent_with_registries(self):
         self.assertEqual(bp.audit_sources(self.specs), [])
-        self.assertEqual(len(bp.registered_tool_names()), 52)
+        self.assertEqual(len(bp.registered_tool_names()), 54)
         self.assertEqual(len(self.specs), 24)
 
     def test_release_archive_has_core_24_domain_skills_and_real_mcp_endpoint(self):
@@ -30,6 +30,32 @@ class TestV1Plugin(unittest.TestCase):
             self.assertEqual(sum(n.endswith("/SKILL.md") for n in names), 25)
             self.assertEqual(config, {"$schema": bp.MCP_SCHEMA, "mcpServers": {"qrvai": {"type": "streamable-http", "url": URL}}})
             self.assertEqual(manifest["version"], "1.0.0")
+            self.assertEqual(bp.validate_plugin_zip(path, self.specs), [])
+
+    def test_v1_international_overlays_replace_only_two_staged_skills(self):
+        # The P1 stage retains cryptographically frozen archive bytes, while
+        # the packaged V1 explicitly adopts ADR-0012.
+        self.assertEqual(len(bp.INTERNATIONAL_OVERLAY_FILES), 8)
+        self.assertEqual(len(set(bp.INTERNATIONAL_OVERLAY_FILES)), 8)
+        for rel in bp.INTERNATIONAL_OVERLAY_FILES:
+            self.assertTrue((bp.OVERLAY_ROOT / rel).is_file(), rel)
+            self.assertTrue((bp.STAGE_ROOT / rel).is_file(), rel)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = bp.build_plugin(Path(tmp) / "international.zip", None)
+            with zipfile.ZipFile(path) as z:
+                for rel in bp.INTERNATIONAL_OVERLAY_FILES:
+                    self.assertEqual(
+                        z.read("qrvai/" + rel),
+                        (bp.OVERLAY_ROOT / rel).read_bytes(),
+                        rel,
+                    )
+                academy = z.read("qrvai/skills/radio-academy/SKILL.md").decode("utf-8")
+                regulation = z.read("qrvai/skills/regulatory-licensing/SKILL.md").decode("utf-8")
+                core = z.read("qrvai/skills/qrvai-core/SKILL.md").decode("utf-8")
+                self.assertIn("international", academy.lower())
+                self.assertIn("no national licence/exam", academy.lower())
+                self.assertIn("regulatory_context", regulation)
+                self.assertIn("academy_catalog", core)
             self.assertEqual(bp.validate_plugin_zip(path, self.specs), [])
 
     def test_build_is_reproducible(self):
