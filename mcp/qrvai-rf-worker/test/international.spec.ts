@@ -92,7 +92,7 @@ test("real MCP SDK exposes both new offline read-only tools and enforces their s
       operating_country:"gr",home_country:"US",operation_date:"2026-11-16",
       licence_class:"unknown",frequency_mhz:7.1,mode:"CW",power_w:50
     }});
-    assert.equal(legal.isError,undefined);
+    assert.notEqual(legal.isError,true);
     assert.equal((legal.structuredContent as {permission_status:string}).permission_status,"INDETERMINATE");
     const academy=await client.callTool({name:"academy_catalog",arguments:{language:"el",module_id:"morse-and-cw"}});
     assert.notEqual(academy.isError,true);
