@@ -7,8 +7,15 @@ import {createHash} from "node:crypto";
 export type BurstDecision={allowed:boolean;remaining:number;retry_after_seconds:number;limit:number};
 export class PreviewBurstLimiter {
   private readonly windows=new Map<string,{start:number;count:number}>();
-  constructor(readonly limit=60,readonly windowMs=60_000,readonly maxKeys=256){
-    if(!Number.isSafeInteger(limit)||limit<1||!Number.isSafeInteger(windowMs)||windowMs<1000)throw new RangeError("invalid preview budget");
+  readonly limit:number;
+  readonly windowMs:number;
+  readonly maxKeys:number;
+  constructor(limit=60,windowMs=60_000,maxKeys=256){
+    if(!Number.isSafeInteger(limit)||limit<1||!Number.isSafeInteger(windowMs)||windowMs<1000||!Number.isSafeInteger(maxKeys)||maxKeys<1)
+      throw new RangeError("invalid preview budget");
+    this.limit=limit;
+    this.windowMs=windowMs;
+    this.maxKeys=maxKeys;
   }
   check(secret:string,now=Date.now()):BurstDecision{
     if(!secret||!Number.isFinite(now))return {allowed:false,remaining:0,retry_after_seconds:60,limit:this.limit};
