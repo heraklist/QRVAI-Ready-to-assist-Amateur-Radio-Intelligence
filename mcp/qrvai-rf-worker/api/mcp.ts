@@ -15,17 +15,16 @@ function authorized(authorization: string | null, secret: string): boolean {
   return received.length===expected.length && timingSafeEqual(received,expected);
 }
 /**
- * Owner decision (2026-11-14): the first release is PUBLIC and unauthenticated.
- * Every registered tool is a stateless, read-only function of its own request body:
- * nothing is stored, no account or device is reached, so there is nothing private to protect yet.
- * Set this to false when the authentication phase starts; the endpoint then fails closed (503)
- * until QRVAI_MCP_BEARER_TOKEN is configured.
+ * Release gate (ADR-0012): fail closed when no server-side credential exists.
+ * Authenticated preview is not public release approval. The allowPublic switch
+ * exists ONLY for explicit isolated tests and cannot be enabled by env fallback.
+ * Read-only operations still require identity and quota controls before public use.
  */
-export const PUBLIC_UNAUTHENTICATED = true;
+export const PUBLIC_UNAUTHENTICATED = false;
 
 /**
  * Stateless Streamable HTTP. A configured QRVAI_MCP_BEARER_TOKEN is always enforced;
- * with no token the endpoint is public only while `allowPublic` is true.
+ * with no token the endpoint returns 503 by default (fail closed).
  */
 export async function handleMcpRequest(
   request: Request,
