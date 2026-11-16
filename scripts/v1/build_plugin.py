@@ -33,6 +33,20 @@ CORE_FILES = (
     "skills/qrvai-core/references/routing.md",
     "skills/qrvai-core/references/tools.md",
 )
+# Versioned V1 international source overlays. P1 historical/staging archives stay
+# byte-identical to their committed fixture hashes; packaging selects the V1 copy.
+# No overlay may add/delete a Skill or procedure or change the 24/72 topology.
+INTERNATIONAL_OVERLAY_FILES = (
+    "skills/radio-academy/SKILL.md",
+    "skills/radio-academy/references/1-theory-curriculum.md",
+    "skills/radio-academy/references/2-cw-practice.md",
+    "skills/radio-academy/references/3-knowledge-assessment.md",
+    "skills/regulatory-licensing/SKILL.md",
+    "skills/regulatory-licensing/references/1-licence-context.md",
+    "skills/regulatory-licensing/references/2-transmission-rule-evaluation.md",
+    "skills/regulatory-licensing/references/3-crossborder-explanation.md",
+)
+OVERLAY_ROOT = V1_ROOT / "overrides"
 FIXED_TIME = (1980, 1, 1, 0, 0, 0)
 MAX_FILE = 1_048_576
 SERVER_NAME = "qrvai"
@@ -122,10 +136,18 @@ def audit_sources(specs: tuple[DomainSpec, ...]) -> list[str]:
         errors.append("V1 manifest unreadable")
     errors += validate_skill(V1_ROOT / CORE_FILES[0])
     observed = {p.relative_to(V1_ROOT).as_posix() for p in V1_ROOT.rglob("*") if p.is_file()}
-    if observed != {"plugin.json", *CORE_FILES}:
-        errors.append("V1 core source does not match its allowlist")
+    if observed != {"plugin.json", *CORE_FILES, *(f"overrides/{p}" for p in INTERNATIONAL_OVERLAY_FILES)}:
+        errors.append("V1 source / international overlays differ from their exact allowlist")
     if any(p.is_symlink() for p in V1_ROOT.rglob("*")):
         errors.append("symlink in V1 core source")
+    for rel in INTERNATIONAL_OVERLAY_FILES:
+        source = OVERLAY_ROOT / rel
+        if not source.is_file() or source.is_symlink():
+            errors.append("missing or unsafe international overlay: " + rel)
+        elif rel.endswith("/SKILL.md"):
+            errors += [f"V1 overlay {rel}: {e}" for e in validate_skill(source)]
+    if any(p.is_symlink() for p in OVERLAY_ROOT.rglob("*")):
+        errors.append("symlink in V1 international overlays")
     if errors:
         return errors
     tools = set(registered_tool_names())
@@ -184,8 +206,10 @@ def build_plugin(output_zip: Path, mcp_url: str | None) -> Path:
     payload: dict[str, bytes] = {"plugin.json": (V1_ROOT / "plugin.json").read_bytes()}
     for rel in CORE_FILES:
         payload[rel] = (V1_ROOT / rel).read_bytes()
+    overlays = set(INTERNATIONAL_OVERLAY_FILES)
     for rel in domain_files(specs):
-        payload[rel] = (STAGE_ROOT / rel).read_bytes()
+        source = OVERLAY_ROOT / rel if rel in overlays else STAGE_ROOT / rel
+        payload[rel] = source.read_bytes()
     if mcp_url is not None:
         payload["mcp.json"] = (json.dumps(mcp_config(mcp_url), indent=2) + "\n").encode("utf-8")
     output_zip.parent.mkdir(parents=True, exist_ok=True)
