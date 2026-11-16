@@ -21,7 +21,7 @@ if (!url.hostname.endsWith(".vercel.app")) {
   throw new Error("HTTPS acceptance blocked: expected a Vercel deployment hostname");
 }
 const expected=["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss"];
-const EXPECTED_TOOL_COUNT=38;
+const EXPECTED_TOOL_COUNT=52; // 38 canonical + 14 V1 live read-only tools; offline SDK parity test guards drift
 const auth=token?{authorization:`Bearer ${token}`}:{};
 const headers={"content-type":"application/json","accept":"application/json, text/event-stream"};
 const sample=JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/list",params:{}});
