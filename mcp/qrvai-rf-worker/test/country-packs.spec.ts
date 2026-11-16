@@ -4,7 +4,7 @@ import {COUNTRY_PACKS,countryPackStatus,countryCode} from "../src/live/country-p
 import {regulatoryContext} from "../src/live/jurisdiction.ts";
 
 test("national source packs are unique, country-specific and attributable to official publishers",()=>{
-  assert.deepEqual(COUNTRY_PACKS.map(p=>p.country_code),["GR","US","DE","GB"]);
+  assert.deepEqual(COUNTRY_PACKS.map(p=>p.country_code),["GR","US","DE","GB","AU","CA","NZ","JP"]);
   assert.equal(new Set(COUNTRY_PACKS.map(p=>p.country_code)).size,COUNTRY_PACKS.length);
   for(const p of COUNTRY_PACKS){
     assert.match(p.country_code,/^[A-Z]{2}$/);
@@ -26,7 +26,7 @@ test("national source packs are unique, country-specific and attributable to off
   }
 });
 test("official-source observations never certify operative legal currentness or permission",()=>{
-  for(const country of ["GR","US","DE","GB","JP","AU","FR","ZZ"]){
+  for(const country of ["GR","US","DE","GB","AU","CA","NZ","JP","FR","IN","ZA","ZZ"]){
     const p=countryPackStatus(country);
     assert.equal(p.operating_country,country);
     assert.equal(p.permission_status,"INDETERMINATE");
@@ -34,7 +34,7 @@ test("official-source observations never certify operative legal currentness or 
     assert.equal(p.site_and_territory_verified,false);
     assert.equal(p.governing_instrument_currentness_verified,false);
     assert.equal(p.national_licence_and_visitor_privileges_verified,false);
-    if(["JP","AU","FR","ZZ"].includes(country)){
+    if(["FR","IN","ZA","ZZ"].includes(country)){
       assert.equal(p.coverage,"NO_COUNTRY_PACK");
       assert.deepEqual(p.declared_sources,[]);
     }
