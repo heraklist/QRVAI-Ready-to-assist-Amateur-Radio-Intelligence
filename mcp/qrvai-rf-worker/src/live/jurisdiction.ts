@@ -88,7 +88,7 @@ export function regulatoryContext(input: RegulatoryContextInput) {
     missing_or_unverified_evidence: missing,
     authorities: {
       international: GLOBAL,
-      regional: {...REGIONAL, iaru_region: region, region_confirmed_from_curated_country_map: region !== null},
+      regional: {...REGIONAL, iaru_region_hint_for_mainland: region, region_verified_for_operating_site: false, region_caveat: "Country-wide mapping cannot establish the ITU/IARU region of an overseas territory or portable operating site."},
       cross_border: {
         authority: "CEPT T/R 61-01 (where implemented)",
         force: "participation_and_licence_equivalence_require_host_country_verification",
