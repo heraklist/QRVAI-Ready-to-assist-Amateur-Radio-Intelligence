@@ -322,7 +322,7 @@ test("band labels", () => {
   assert.equal(bandOf(14.2), "20m"); assert.equal(bandOf(145.5), "2m"); assert.equal(bandOf(433.5), "70cm"); assert.equal(bandOf(100), null);
 });
 
-test("live tools are reachable over MCP without credentials and report provider failures as errors", async () => {
+test("live tools are reachable over explicitly test-enabled in-memory MCP and handle provider errors", async () => {
   setFetcherForTests(async url => {
     if (url.startsWith("https://services.swpc.noaa.gov/")) {
       if (url.includes("k-index-forecast")) return json(fx("swpc-kp-forecast.json"));
@@ -348,6 +348,6 @@ test("live tools are reachable over MCP without credentials and report provider 
     const loss = await client.callTool({name: "cable_loss", arguments: {cable_id: "h155", frequency_mhz: 432, length_m: 10}});
     assert.ok(Math.abs((loss.structuredContent as {cable_loss_db: number}).cable_loss_db - 1.87) < 1e-9);
     const caps = await client.callTool({name: "core_capabilities", arguments: {}});
-    assert.equal((caps.structuredContent as {implemented_count: number}).implemented_count, 52);
+    assert.equal((caps.structuredContent as {implemented_count: number}).implemented_count, 54);
   } finally { await client.close(); }
 });
