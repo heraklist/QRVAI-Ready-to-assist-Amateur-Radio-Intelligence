@@ -1,6 +1,7 @@
 /** International, hobby-first Academy catalogue (ADR-0012).
  * Offline learning content, independent of national licences and examination syllabi.
  */
+import {ACADEMY_LESSONS,academyLesson} from "./lessons.ts";
 export type AcademyLanguage = "en" | "el";
 type Localized = {en: string; el: string};
 type Module = {id: string; level: "beginner" | "intermediate" | "advanced"; name: Localized; outcome: Localized; lessons: readonly Localized[]};
@@ -16,11 +17,12 @@ export const ACADEMY_MODULES: readonly Module[] = Object.freeze([
   {id:"sdr-and-satellites",level:"intermediate",name:t("SDR & amateur satellites","SDR και ραδιοερασιτεχνικοί δορυφόροι"),outcome:t("Explore spectrum displays, satellite passes and receiver-side experiments.","Εξερεύνησε φάσμα, διελεύσεις δορυφόρων και πειράματα λήψης."),lessons:[t("Waterfall and signal analysis","Waterfall και ανάλυση σημάτων"),t("Orbital passes and Doppler effect","Διελεύσεις και φαινόμενο Doppler"),t("Receive-only SDR experiment","Πείραμα SDR μόνο λήψης")]},
   {id:"field-maker-community",level:"intermediate",name:t("Portable, maker & community","Φορητή λειτουργία, κατασκευές και κοινότητα"),outcome:t("Plan safe hobby projects, portable practice and club mentoring.","Οργάνωσε ασφαλείς κατασκευές, φορητές δραστηριότητες και συνεργασία συλλόγων."),lessons:[t("Field-station safety checklist","Λίστα ασφάλειας υπαίθριου σταθμού"),t("Build and document a receive-only antenna","Κατασκευή και τεκμηρίωση κεραίας λήψης"),t("Club workshops and mentoring","Εργαστήρια συλλόγων και καθοδήγηση")]},
 ]);
-export function academyCatalog(input: {language: AcademyLanguage; module_id?: string; level?: "beginner" | "intermediate" | "advanced"}) {
-  const {language, module_id, level} = input;
+export function academyCatalog(input: {language: AcademyLanguage; module_id?: string; lesson_id?: string; level?: "beginner" | "intermediate" | "advanced"}) {
+  const {language, module_id, lesson_id, level} = input;
   const modules = ACADEMY_MODULES.filter(m => (!module_id || m.id === module_id) && (!level || m.level === level));
   return {
-    catalog_version: "2026-11-16-v1",
+    catalog_version: "2026-11-16-v2",
+    authored_micro_lessons_count: ACADEMY_LESSONS.length,
     scope: "INTERNATIONAL_HOBBY_LEARNING",
     language,
     country_specific_licensing_or_exam_prep: false,
@@ -33,6 +35,8 @@ export function academyCatalog(input: {language: AcademyLanguage; module_id?: st
       lessons: m.lessons.map((l, i) => ({id: `${m.id}-${i + 1}`, title: l[language]})),
     })),
     requested_module_found: module_id === undefined ? null : modules.some(m => m.id === module_id),
+    requested_lesson_found: lesson_id === undefined ? null : modules.some(m => m.lessons.some((_,i) => `${m.id}-${i + 1}` === lesson_id)) && academyLesson(lesson_id,language)!==null,
+    selected_lesson: lesson_id === undefined || !modules.some(m => m.lessons.some((_,i)=>`${m.id}-${i+1}`===lesson_id)) ? null : academyLesson(lesson_id,language),
     disclaimer: language === "el"
       ? "Τα μαθήματα αφορούν το hobby, όχι εθνικές εξετάσεις ή αδειοδότηση. Η εκπομπή υπόκειται στην τοπική νομοθεσία."
       : "Hobby lessons, not national licence/exam preparation. Transmitting remains subject to applicable local rules.",
