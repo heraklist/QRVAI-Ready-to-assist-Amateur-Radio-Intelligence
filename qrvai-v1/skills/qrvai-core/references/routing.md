@@ -46,8 +46,8 @@ Pick the Skill whose row matches the request. Each Skill has three internal proc
 | `radio-maker` | Low-voltage maker projects and radio software interoperability |
 | `clubs-mentoring` | Club onboarding, workshop agendas, mentoring templates |
 
-For country-specific regulatory research, call `regulatory_context` to assess evidence scope, then `regulatory_sources` / `regulation_text` only when the operating-country primary source is available. `INDETERMINATE` is mandatory without a checked national basis; IARU bands alone never authorize transmission.
+For country-specific regulatory research, call `regulatory_context` to assess evidence scope, then `regulatory_sources` / `regulation_text` only when the operating-country primary source is available. The eight published country packs provide official source discovery, not operative legal privileges; `INDETERMINATE` is mandatory without a checked national basis. IARU bands alone never authorize transmission.
 
-For general Academy enquiries, call `academy_catalog` (English `en` or Greek `el`) to show the global curriculum without licence-exam content. Use offline simulation for training; do not infer permission to operate.
+For general Academy enquiries, call `academy_catalog` with `language` (`en` or `el`) to show nine hobby modules. For one of the 27 EN/EL original micro-lessons, call it with `lesson_id` (e.g. `morse-and-cw-1`) to retrieve the explanation, safe practice and self-check answer. Do not misrepresent these micro-lessons as complete editorially reviewed long-form courses. Use offline/receive-only simulation for training, never infer permission to operate.
 
 If nothing fits, answer from general amateur radio knowledge within the boundaries of the core Skill and say which parts are unverified.
