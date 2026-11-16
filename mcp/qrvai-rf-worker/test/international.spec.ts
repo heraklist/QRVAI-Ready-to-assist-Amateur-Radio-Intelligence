@@ -12,7 +12,7 @@ test("international regulatory research always abstains from claiming TX permiss
       licence_class: "test class", operation_date: "2026-11-16", power_w: 100});
     assert.equal(r.permission_status, "INDETERMINATE");
     assert.equal(r.permission_assessed, false);
-    assert.equal(r.operating_country, country);
+    assert.equal(r.operating_country, country === "UK" ? "GB" : country);
     assert.equal(r.operating_jurisdiction_used, "EXPLICIT_INPUT");
     assert.equal(r.authorities.international.force, "international_framework");
     assert.equal(r.authorities.regional.force, "nonbinding_operating_guidance");
@@ -25,6 +25,8 @@ test("national-source research distinguishes partial, manual and unsupported jur
   assert.equal(regulatoryContext({operating_country: "GR"}).source_coverage, "PARTIAL_OFFICIAL_SOURCE_ADAPTER");
   assert.equal(regulatoryContext({operating_country: "US"}).source_coverage, "PARTIAL_OFFICIAL_SOURCE_ADAPTER");
   assert.equal(regulatoryContext({operating_country: "DE"}).source_coverage, "MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY");
+  assert.equal(regulatoryContext({operating_country: "GB"}).source_coverage, "MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY");
+  assert.equal(regulatoryContext({operating_country: "UK"}).operating_country, "GB");
   assert.equal(regulatoryContext({operating_country: "JP"}).source_coverage, "NO_COUNTRY_PACK");
   assert.equal(regulatoryContext({operating_country: "US"}).authorities.regional.iaru_region, "2");
   assert.equal(regulatoryContext({operating_country: "GR"}).authorities.regional.iaru_region, "1");
