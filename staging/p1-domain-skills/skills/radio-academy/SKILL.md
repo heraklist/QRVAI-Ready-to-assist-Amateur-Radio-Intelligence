@@ -1,6 +1,6 @@
 ---
 name: radio-academy
-description: International hobby-first amateur radio education in English/Greek: RF, antennas, QSO, CW, digital modes, SDR, satellites and safe original exercises; no national licence/exam school.
+description: "International hobby-first amateur radio education in English/Greek: RF, antennas, QSO, CW, digital modes, SDR, satellites and safe original exercises; no national licence/exam school."
 ---
 # SK-D22 — Radio Academy & CW
 
