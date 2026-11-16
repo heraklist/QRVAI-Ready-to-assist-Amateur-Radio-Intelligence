@@ -13,6 +13,8 @@
     .eyebrow {font-size:.79rem;letter-spacing:.11em;text-transform:uppercase;color:#b7e1e8;font-weight:700}
     h1 {font-size:clamp(1.8rem,3.5vw,2.8rem);margin:.4rem 0 .6rem}
     header p {max-width:720px;color:#dbeef5;line-height:1.55;margin:0}
+    header nav {display:flex;flex-wrap:wrap;gap:1.2rem;margin:1rem 0 .6rem}
+    header nav a {color:#e8f6fa;font-weight:700;text-underline-offset:3px}
     main {max-width:1200px;margin:auto;padding:1.6rem 1rem 3rem}
     .notice {border-left:4px solid #1c7d8c;background:#e7f2f6;padding:1rem 1.2rem;border-radius:0 12px 12px 0;margin-bottom:1.4rem;line-height:1.55}
     .grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,350px),1fr));gap:1.25rem;align-items:stretch}
@@ -37,6 +39,7 @@
 <body>
 <header>
   <div class="eyebrow">QRVAI / Amateur Radio Intelligence</div>
+  <nav aria-label="QRVAI demos"><a href="../academy/">International Academy</a><a href="../regulations/">Rules &amp; Sources</a></nav>
   <h1>RF Workbench</h1>
   <p>Τρεις διαφανείς, τοπικοί υπολογισμοί: μετατροπή ισχύος, απώλεια γραμμής μεταφοράς και προϋπολογισμός ζεύξης ελεύθερου χώρου.</p>
 </header>
