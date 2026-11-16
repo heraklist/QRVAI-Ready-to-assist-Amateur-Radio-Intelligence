@@ -13,7 +13,7 @@ test("official-source browser requires explicit operating country, visitor flag 
   assert.match(html,/href="#main"/);
   assert.match(app,/INDETERMINATE/);
   assert.match(app,/ΑΠΡΟΣΔΙΟΡΙΣΤΟ/);
-  assert.match(app,/NO_COUNTRY_PACK/);
+  assert.match(app,/if\(!pack\)/, "Unsupported country must take an explicit non-permission fallback");
   assert.doesNotMatch(app,/navigator\.geolocation|localStorage|sessionStorage|navigator\.userAgent/);
 });
 test("external source navigation is explicit HTTPS allowlist, not background requests",()=>{
