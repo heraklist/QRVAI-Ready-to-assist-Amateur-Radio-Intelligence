@@ -3,6 +3,7 @@
  * No input or output is persisted, and no provider is contacted.
  */
 import {INSTRUMENTS, JURISDICTIONS, REVIEW} from "./regulatory-registry.ts";
+import {ProviderError} from "./http.ts";
 
 export type RegulatoryContextInput = {
   operating_country: string;
@@ -31,7 +32,7 @@ const REGIONAL = Object.freeze({
 
 function iso2(value: string, name: string): string {
   const code = value.trim().toUpperCase();
-  if (!/^[A-Z]{2}$/.test(code)) throw new RangeError(`${name} must be a two-letter ISO-style country code`);
+  if (!/^[A-Z]{2}$/.test(code)) throw new ProviderError(`${name} must be a two-letter ISO-style country code`);
   return code;
 }
 function validDate(value: string): boolean {
@@ -39,18 +40,21 @@ function validDate(value: string): boolean {
   const d = new Date(value + "T00:00:00Z");
   return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === value;
 }
-const REGION: Record<string, "1" | "2" | "3"> = {GR: "1", DE: "1", UK: "1", US: "2"};
+const REGION: Record<string, "1" | "2" | "3"> = {GR: "1", DE: "1", GB: "1", US: "2"};
 
 /** Conservative, deterministic output. We do not infer location from callsign, IP or language. */
 export function regulatoryContext(input: RegulatoryContextInput) {
-  const country = iso2(input.operating_country, "operating_country");
+  const requestedCountry = iso2(input.operating_country, "operating_country");
+  // UK is common shorthand; GB is the ISO 3166-1 alpha-2 country code.
+  const country = requestedCountry === "UK" ? "GB" : requestedCountry;
+  const registryCode = country === "GB" ? "UK" : country;
   const home = input.home_country === undefined ? null : iso2(input.home_country, "home_country");
-  if (input.operation_date !== undefined && !validDate(input.operation_date)) throw new RangeError("operation_date must be a real YYYY-MM-DD date");
-  if (input.frequency_mhz !== undefined && (!Number.isFinite(input.frequency_mhz) || input.frequency_mhz <= 0)) throw new RangeError("frequency_mhz must be positive");
-  if (input.power_w !== undefined && (!Number.isFinite(input.power_w) || input.power_w < 0)) throw new RangeError("power_w must be nonnegative");
+  if (input.operation_date !== undefined && !validDate(input.operation_date)) throw new ProviderError("operation_date must be a real YYYY-MM-DD date");
+  if (input.frequency_mhz !== undefined && (!Number.isFinite(input.frequency_mhz) || input.frequency_mhz <= 0)) throw new ProviderError("frequency_mhz must be positive");
+  if (input.power_w !== undefined && (!Number.isFinite(input.power_w) || input.power_w < 0)) throw new ProviderError("power_w must be nonnegative");
 
-  const jurisdiction = JURISDICTIONS.find(x => x.code === country);
-  const primary = INSTRUMENTS.filter(x => x.jurisdiction === country).map(x => ({
+  const jurisdiction = JURISDICTIONS.find(x => x.code === registryCode);
+  const primary = INSTRUMENTS.filter(x => x.jurisdiction === registryCode).map(x => ({
     id: x.id, title: x.title, url: x.url, kind: x.kind, last_source_review: REVIEW.date,
   }));
   const source_coverage = (country === "GR" || country === "US")
