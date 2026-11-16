@@ -3,7 +3,7 @@
 **Owner:** SK-A04
 **Responsibility:** determine credential, class, privileges and portability requirements
 **Required input:** Country, operator's claimed class/licence validity without protected document upload, operating site/date/time, desired band/mode/power, possible visitor licence and verifiable primary issuance/privilege evidence.
-**Procedure:** Construct a licence-context checklist (not an identity check): eligibility class, expiry/conditions, country, location, portability, special restrictions, power, emission. Use regulatory_context first to identify the operating-country legal-source coverage and visitor status. Highlight every unverified credential or authority claim; separate any national administrative application page from a verified individual permission.
+**Procedure:** Construct a licence-context checklist (not an identity check): eligibility class, expiry/conditions, country, location, portability, special restrictions, power, emission. Highlight every unverified credential or authority claim; separate a Gov.gr administrative application URL from an individual licence grant.
 **Output:** INDETERMINATE until all documented licence and rule conditions are verified; concise fact/unknown checklist, direct official sources and privacy note.
 **Error/stop:** Never issue or assert verification of a personal amateur licence, read a private ID without authorization or grant TX permission from a callsign.
 
