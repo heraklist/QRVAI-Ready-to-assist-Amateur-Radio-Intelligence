@@ -4,6 +4,8 @@ on:
     paths:
       - 'ui/rf-workbench/**'
       - 'ui/academy/**'
+      - 'ui/regulations/**'
+      - 'mcp/qrvai-rf-worker/src/live/country-packs.ts'
       - 'mcp/qrvai-rf-worker/src/academy/**'
       - '.github/workflows/qrvai-rf-workbench-ci.yml'
   push:
@@ -25,3 +27,7 @@ jobs:
         run: node ui/academy/build-data.mjs --check
       - name: Verify bilingual Academy UI data parity, safety and accessibility markup
         run: node --experimental-strip-types --test ui/academy/test/*.test.mjs
+      - name: Verify generated official-source browser bundle is source-synchronized
+        run: node ui/regulations/build-data.mjs --check
+      - name: Verify national source browser parity, safe official links and abstention
+        run: node --experimental-strip-types --test ui/regulations/test/*.test.mjs
