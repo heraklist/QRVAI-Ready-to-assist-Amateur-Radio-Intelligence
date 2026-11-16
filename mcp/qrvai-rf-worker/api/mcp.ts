@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/server";
 import { createServer } from "../src/mcp/register.ts";
 import { limitMcpRequest } from "../src/http/limits.ts";
+import {previewBurstLimiter} from "../src/http/preview-throttle.ts";
 
 const noStore = { "cache-control": "no-store" };
 function deny(status: number, detail: string): Response {
@@ -45,6 +46,14 @@ export async function handleMcpRequest(
   const origin=request.headers.get("origin");
   if (origin!==null && origin!==url.origin) return deny(403,"Invalid Origin");
   if (request.method!=="POST") return deny(405,"Method not allowed");
+  // Per-isolate preview abuse guard; a durable distributed quota still blocks public launch.
+  // Never count unconfigured/open test-mode requests as authenticated usage.
+  if(secret){
+    const burst=previewBurstLimiter.check(secret);
+    if(!burst.allowed)return new Response("Preview request budget exhausted",{
+      status:429,headers:{"cache-control":"no-store","retry-after":String(burst.retry_after_seconds)}
+    });
+  }
   const checked=await limitMcpRequest(request);
   if (checked instanceof Response) return checked;
   const transport=new WebStandardStreamableHTTPServerTransport({
