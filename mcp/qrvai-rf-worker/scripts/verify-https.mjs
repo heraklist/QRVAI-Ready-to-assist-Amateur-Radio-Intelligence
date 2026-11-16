@@ -63,9 +63,30 @@ try {
     assert.ok(Math.abs(r.structuredContent?.[key]-want)<1e-9,`${name} numeric output mismatch`);
     console.log(`PASS tools/call ${name}`);
   }
+  // Offline international tools: no national-law or individual TX authorization verdict.
+  const national=await client.callTool({name:"regulatory_context",arguments:{
+    operating_country:"DE",home_country:"GR",visiting_operator:true,operation_date:"2026-11-16",
+    frequency_mhz:145.5,mode:"FM",power_w:5,licence_class:"synthetic-class"
+  }});
+  assert.notEqual(national.isError,true,"international research call must not error");
+  assert.equal(national.structuredContent?.permission_status,"INDETERMINATE","never infer legal TX permission");
+  assert.equal(national.structuredContent?.country_pack?.coverage,"MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY");
+  assert.equal(national.structuredContent?.station_context?.visiting_operator,true);
+  console.log("PASS tools/call regulatory_context (conservative DE visitor research)");
+
+  const academy=await client.callTool({name:"academy_catalog",arguments:{
+    language:"el",module_id:"morse-and-cw",lesson_id:"morse-and-cw-1"
+  }});
+  assert.notEqual(academy.isError,true,"Academy lesson call must not error");
+  assert.equal(academy.structuredContent?.authored_micro_lessons_count,27);
+  assert.equal(academy.structuredContent?.selected_lesson?.lesson_id,"morse-and-cw-1");
+  assert.equal(academy.structuredContent?.selected_lesson?.training_only,true);
+  assert.equal(academy.structuredContent?.selected_lesson?.transmission_required,false);
+  console.log("PASS tools/call academy_catalog (EL original safe micro-lesson)");
+
   const missing=await client.callTool({name:"rf_nonexistent",arguments:{}});
   assert.equal(missing.isError,true,"unknown tool should reject");
-  console.log(`PASS (protected bearer mode) initialize, tools/list, Origin/size matrix, four calls, unknown-tool rejection`);
+  console.log(`PASS (protected bearer mode) initialize, tools/list, Origin/size matrix, six calls, unknown-tool rejection`);
 } finally {
   await client.close();
 }
