@@ -1,4 +1,27 @@
-# QRVAI MCP — Vercel-only release procedure
+# QRVAI MCP — Vercel-only host acceptance / release runbook
+
+> **CURRENT SOURCE TRUTH — 2026-11-15.** Historical notes dated 2026-10-15 and 2026-11-14 below are preserved for audit only; they are not current instructions to publish or relax Deployment Protection. The [consolidated source Draft PR #53](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/53) remains unmerged. The bounded HTTPS verifier regression is reviewed separately in [Draft PR #54](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/54).
+
+## Active V1 source contract — NOT host accepted
+
+- Vercel-only backend: `mcp/qrvai-rf-worker/api/mcp.ts`, path `/api/mcp`; **52 source-registered read-only MCP descriptors = 38 canonical P0 + 14 V1 live**. The latter may depend on third-party providers; registration is not provider availability, freshness, quota approval or licensing.
+- Build/runtime: `mcp/qrvai-rf-worker/package.json` requires **Node.js 24.x**, because `unpdf@2.1.0` requires Node >=24. GitHub RF/P1 CI uses Node 24. The *effective* deployed Vercel Function runtime and successful extraction of real Greek Gazette PDFs are **NOT VERIFIED** by this.
+- Source auth mode: `PUBLIC_UNAUTHENTICATED=true` when no Bearer token is configured; a configured token must be valid and not weak. This source behavior **does not authorize** a publicly exposed endpoint: do not disable Vercel SSO, set public domains, change Firewall or use production without separate security/owner approval. Source contains privileged-tool authentication foundations but no verified per-user identity binding on the public endpoint.
+- Latest inspected deployment at source SHA `e2739d75c78b2cec0e6941924b6345f33b248881` was a **READY protected Vercel preview**, target `null` in provider listing. It proves neither public HTTPS `initialize` nor `tools/list`, live tool calls, regulatory accuracy or ChatGPT host acceptance. GitHub CI is isolated from live providers.
+- Vercel Firewall/rate-limiting state **not established**: previous provider inspection returned access denied/not_found; do not infer present or absent protections. Confirm effective WAF, request-size/concurrency/time bounds, provider quotas and metering in an authorized owner-scoped session. Keep private test access protected until measured.
+- Deferral decision: user login, OAuth/IdP, tenant administration and personal club records follow *after* a separately approved private V1 host pilot. This does not waive transport or read-only, scope, privacy and quota controls.
+
+## Operator verification sequence — future gated actions
+
+1. **Exact SHA:** Confirm reviewed GitHub commit and relevant RF/P1/V0/V1/UI workflow outcomes. A `READY` preview or green unit tests cannot be substituted for protocol acceptance.
+2. **Protected preview first:** With separate owner security approval, establish access to a protected nonproduction Vercel deployment; verify actual Node 24 runtime logs and bounded successful `unpdf` extraction of an official Greek Gazette PDF with page/provenance, and safe refusal on PDF/source failures. Do not bypass SSO to make a smoke check pass.
+3. **Real HTTPS MCP:** From an authorized client only, set `QRVAI_MCP_URL` to the clean HTTPS `.vercel.app/api/mcp` endpoint and optionally a preview-scoped Bearer token **in private secret storage**. From `mcp/qrvai-rf-worker`, run `npm ci` and `npm run verify:https`. The opt-in script now expects **52 read-only tools**, checks SDK initialization/list, first four deterministic RF calls and invalid Origin/oversized/unknown tool. It is **NOT** a full 52-tool live call smoke and does not itself authenticate through Vercel SSO. If the caller cannot pass deployment protection, report `BLOCKED`; do not remove protection.
+4. **Provider/legal negative matrix:** Validate 14 new provider-connected tools, 15 live smoke scenarios with controlled quotas and date/SHA evidence, HTTPS method/batch/path failures, safe `PROVIDER_UNAVAILABLE`, synthetic-only private-data behavior, effective-date/pinpoint legal citations and `INDETERMINATE` for unverified rights. No provider writes or on-air/device operations.
+5. **Release gate:** independent security/legal review, explicit owner sign-off on quotas, protected endpoint mode, host pilot and rollback. Private Plugin Creator identity/installation and real ChatGPT `@QRVAI` E2E are **separately authorized future work**. No `main` merge or production promotion is implied by this runbook.
+
+## Historical instructions and 2026-10-15 stage evidence — NOT CURRENT RELEASE PROCEDURE
+
+The sections below record previous four-tool, Bearer-only, Node-22 experiments; their assertions and proposed actions have been superseded. Use the active V1 contract above for all new verification and do not carry over historical exposure advice.
 
 ## Scope
 Node.js Vercel Function `/api/mcp` serves the four implemented read-only RF tools from a single registry: `rf_power_convert`, `rf_link_budget`, `rf_impedance`, `rf_feedline_loss`. The remaining candidate MCP tools are not implemented and must not be advertised as available. No Cloudflare runtime, Worker, account, or fallback forms part of the selected deployment architecture.
@@ -53,13 +76,13 @@ The script rejects non-HTTPS, unexpected paths, query-string credentials and non
 **Operational safeguard:** Never include a bearer token in a URL, a PR, test fixtures, an issue comment, or a Vercel shareable link. Preview-only secret creation and full protected-transport verification remain release blockers.
 
 
-## 2026-11-14 — Public first release (supersedes the Bearer-only requirement above)
+## 2026-11-14 — HISTORICAL public-first design note (not public-exposure approval)
 
-Owner decision: deploy on Vercel **without authentication first**; authentication follows in a later phase. `api/mcp.ts` exports `PUBLIC_UNAUTHENTICATED = true`. With no `QRVAI_MCP_BEARER_TOKEN` the endpoint serves MCP to any caller; a configured token is still enforced, and a weak token answers 503 rather than falling back to public. All 38 registered tools are stateless and read-only, so there is no stored data to expose. The earlier sections of this runbook describing a mandatory Bearer token are historical.
+Owner decision: deploy on Vercel **without authentication first**; authentication follows in a later phase. `api/mcp.ts` exports `PUBLIC_UNAUTHENTICATED = true`. With no `QRVAI_MCP_BEARER_TOKEN` the endpoint serves MCP to any caller; a configured token is still enforced, and a weak token answers 503 rather than falling back to public. At that date 38 canonical source tools were registered; the current V1 registry has **52**. Source read-only annotations and stateless behavior alone do **not** establish production safety, provider quotas, legal correctness or data-access guarantees. The earlier sections of this runbook describing a mandatory Bearer token are historical.
 
 Remaining steps before ChatGPT can reach it, none executed yet (**NOT VERIFIED**):
 
-1. Vercel Deployment Protection currently covers generated URLs. The MCP URL must be publicly reachable: use the production domain with protection adjusted, or a custom domain.
-2. Add the one Hobby-plan Firewall rate-limit rule on `/api/mcp`.
+1. **Superseded historical suggestion:** making MCP publicly reachable is NOT approved. Keep SSO/preview protections until an owner-approved security and quota acceptance.
+2. Verify actual Firewall/rate-limit state and owner-approved provider-quota policy before proposing any rule change; no mutation is authorized by this historical note.
 3. Run `QRVAI_MCP_URL=https://<host>/api/mcp npm run verify:https` (no token = public-mode checks).
-4. Only then reference the URL from a plugin `mcp.json`.
+4. Only after separate owner approval, secure host proof and Plugin Creator acceptance may a private plugin reference the endpoint.
