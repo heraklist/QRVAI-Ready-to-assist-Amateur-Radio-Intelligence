@@ -4,6 +4,7 @@
  */
 import {INSTRUMENTS, JURISDICTIONS, REVIEW} from "./regulatory-registry.ts";
 import {ProviderError} from "./http.ts";
+import {countryCode, countryPackStatus} from "./country-packs.ts";
 
 export type RegulatoryContextInput = {
   operating_country: string;
@@ -44,11 +45,11 @@ const REGION: Record<string, "1" | "2" | "3"> = {GR: "1", DE: "1", GB: "1", US: 
 
 /** Conservative, deterministic output. We do not infer location from callsign, IP or language. */
 export function regulatoryContext(input: RegulatoryContextInput) {
-  const requestedCountry = iso2(input.operating_country, "operating_country");
-  // UK is common shorthand; GB is the ISO 3166-1 alpha-2 country code.
-  const country = requestedCountry === "UK" ? "GB" : requestedCountry;
+  const country = countryCode(iso2(input.operating_country, "operating_country"));
+  // Preserve the older UK registry alias until all legacy source adapters migrate to GB.
   const registryCode = country === "GB" ? "UK" : country;
-  const home = input.home_country === undefined ? null : iso2(input.home_country, "home_country");
+  const home = input.home_country === undefined ? null : countryCode(iso2(input.home_country, "home_country"));
+  const country_pack = countryPackStatus(country);
   if (input.operation_date !== undefined && !validDate(input.operation_date)) throw new ProviderError("operation_date must be a real YYYY-MM-DD date");
   if (input.frequency_mhz !== undefined && (!Number.isFinite(input.frequency_mhz) || input.frequency_mhz <= 0)) throw new ProviderError("frequency_mhz must be positive");
   if (input.power_w !== undefined && (!Number.isFinite(input.power_w) || input.power_w < 0)) throw new ProviderError("power_w must be nonnegative");
@@ -57,9 +58,7 @@ export function regulatoryContext(input: RegulatoryContextInput) {
   const primary = INSTRUMENTS.filter(x => x.jurisdiction === registryCode).map(x => ({
     id: x.id, title: x.title, url: x.url, kind: x.kind, last_source_review: REVIEW.date,
   }));
-  const source_coverage = (country === "GR" || country === "US")
-    ? "PARTIAL_OFFICIAL_SOURCE_ADAPTER"
-    : jurisdiction ? "MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY" : "NO_COUNTRY_PACK";
+  const source_coverage = country_pack.coverage;
   const region = REGION[country] ?? null;
   const visiting = input.visiting_operator === true || (home !== null && home !== country);
   const missing: string[] = [];
@@ -85,6 +84,7 @@ export function regulatoryContext(input: RegulatoryContextInput) {
     permission_status: "INDETERMINATE" as const,
     permission_assessed: false,
     source_coverage,
+    country_pack,
     missing_or_unverified_evidence: missing,
     authorities: {
       international: GLOBAL,
@@ -103,6 +103,7 @@ export function regulatoryContext(input: RegulatoryContextInput) {
         manual_sources: jurisdiction?.manual_links ?? [],
         last_source_review: REVIEW.date,
         currentness_and_effective_date_verified: false,
+        source_provenance: country_pack.declared_sources,
       },
     },
     next_step: source_coverage === "NO_COUNTRY_PACK"
