@@ -1,6 +1,6 @@
 ---
 name: regulatory-licensing
-description: Use for worldwide amateur-radio regulatory research: ITU framework, IARU/CEPT guidance and source-scoped operating-country rules with INDETERMINATE when permission is not verified.
+description: "Use for worldwide amateur-radio regulatory research: ITU framework, IARU/CEPT guidance and source-scoped operating-country rules with INDETERMINATE when permission is not verified."
 ---
 # SK-A04 — Regulatory & Licensing Intelligence
 
