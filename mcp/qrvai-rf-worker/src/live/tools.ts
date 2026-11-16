@@ -16,4 +16,6 @@ export const LIVE_TOOLS: readonly ToolDescriptor[] = Object.freeze([
   {candidate_id:"M50",name:"erp_eirp",scope:"ERP and EIRP from power, losses and antenna gain"},
   {candidate_id:"M51",name:"cable_catalog",scope:"Coax attenuation tables from manufacturer datasheets"},
   {candidate_id:"M52",name:"cable_loss",scope:"Feedline loss for a catalogued coax cable"},
+  {candidate_id:"M53",name:"regulatory_context",scope:"Explicit operating-country context; authority tiers and INDETERMINATE without local national permission checks"},
+  {candidate_id:"M54",name:"academy_catalog",scope:"Global offline hobby curriculum in English and Greek, independent of national licensing exams"},
 ]);
