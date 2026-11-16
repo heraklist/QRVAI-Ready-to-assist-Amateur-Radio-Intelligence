@@ -85,7 +85,7 @@ All 27 now have authored **bilingual micro-lesson bodies** with practice and sel
 
 ## Verified control-plane observations (not release evidence)
 
-- **GitHub:** `#53` Draft, open/unmerged; `#54` is a separate older Draft repair PR targeting the branch and should be reconciled against current source before any closure/merge; no merge to `main` made in this implementation.
+- **GitHub:** `#53` Draft, open/unmerged; `#54` was reconciled one-to-one and **closed as superseded without merge**, preserving its original five-file repair source and audit record; no merge to `main` made in this implementation.
 - **Vercel:** team `team_ct4GFO7f5D2BxLfZ7qBsU9BR`, canonical project `prj_4c6IeOARTJOqEIaLlMx1rCDTGLKa` / `qrvai-rf-mcp`; Node 24 previously configured. Git-linked Preview deployments were returned as READY/BUILDING and `target:null` (do not assert production); Deployment Protection remains protected. No production promotion or protection bypass performed.
 - **Vercel access blockers:** project-env metadata read with `decrypt=false` returned **403 forbidden**; active firewall configuration read returned **404 not_found/access denied**. Cannot conclude a Preview secret, WAF or quota rule exists. Need account-authorized proof, not secret extraction or a guess.
 - **Plugin Creator:** historical private inactive personal `qrvai`, plugin ID `plugins_6acf47f502dc8191bf542fe040d484d8` version `0.1.0-preview.3`, observed unchanged. First new **distinct-ID** plugin not created in this phase because verified protected MCP endpoint, user/client auth compatibility and account/slug release gates are absent. Do not upload a dummy package or reuse placeholder.
