@@ -149,10 +149,11 @@ export function registerLiveTools(server: McpServer, allowTool: (name: string) =
   // Country-neutral hobby syllabus, with no exam/licence-preparation dependency.
   if (allowTool("academy_catalog")) server.registerTool("academy_catalog", {
     title: "QRVAI Academy international hobby catalogue",
-    description: "Browse nine structured amateur-radio hobby modules with lesson titles and learning outcomes in English or Greek. Excludes country-specific licence courses or examination question banks; simulations do not grant transmit privileges.",
+    description: "Browse nine structured amateur-radio hobby modules and 27 authored bilingual original micro-lessons. Supply lesson_id (e.g. radio-fundamentals-1) for a concept, safe practical activity and self-check answer. Does not prepare national licence exams, transmit signals or grant operating privileges.",
     inputSchema: z.strictObject({
       language: z.enum(["en", "el"]).default("en"),
       module_id: z.string().min(3).max(60).optional(),
+      lesson_id: z.string().regex(/^[a-z][a-z0-9-]+-[1-3]$/).max(70).optional(),
       level: z.enum(["beginner", "intermediate", "advanced"]).optional(),
     }), annotations: offline,
   }, run(academyCatalog));
