@@ -7,4 +7,4 @@
 **Output:** Text-only timing chart and illustrative objective error count explicitly TRAINING_ONLY, not a measurement of human reception or live CW decode.
 **Error/stop:** No generated/replayed real radio audio, recording, keyer, CW speed certification, actual microphone access, automatic TX, or saved student performance.
 
-**Status:** TRAINING_ONLY. Source-registered academy_exercise limited to two topics; CW audio, certification and learner-account integration NOT_IMPLEMENTED.
+**Status:** TRAINING_ONLY. academy_catalog includes morse-and-cw; academy_exercise still covers only two static topics. CW audio, certification and learner-account integration NOT_IMPLEMENTED.
