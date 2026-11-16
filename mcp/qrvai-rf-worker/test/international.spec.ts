@@ -28,9 +28,9 @@ test("national-source research distinguishes partial, manual and unsupported jur
   assert.equal(regulatoryContext({operating_country: "GB"}).source_coverage, "MANUAL_OFFICIAL_SOURCE_POINTERS_ONLY");
   assert.equal(regulatoryContext({operating_country: "UK"}).operating_country, "GB");
   assert.equal(regulatoryContext({operating_country: "JP"}).source_coverage, "NO_COUNTRY_PACK");
-  assert.equal(regulatoryContext({operating_country: "US"}).authorities.regional.iaru_region, "2");
-  assert.equal(regulatoryContext({operating_country: "GR"}).authorities.regional.iaru_region, "1");
-  assert.equal(regulatoryContext({operating_country: "JP"}).authorities.regional.iaru_region, null);
+  assert.equal(regulatoryContext({operating_country: "US"}).authorities.regional.iaru_region_hint_for_mainland, "2");
+  assert.equal(regulatoryContext({operating_country: "GR"}).authorities.regional.iaru_region_hint_for_mainland, "1");
+  assert.equal(regulatoryContext({operating_country: "JP"}).authorities.regional.iaru_region_hint_for_mainland, null);
 });
 
 test("cross-border travel requires separate host-country verification", () => {
