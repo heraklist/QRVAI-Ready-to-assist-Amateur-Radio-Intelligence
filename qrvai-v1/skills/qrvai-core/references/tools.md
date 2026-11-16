@@ -1,4 +1,4 @@
-# QRVAI tools — 52 read-only MCP tools
+# QRVAI tools — 54 read-only MCP tools (including international context & hobby Academy)
 
 All tools are stateless and read-only. Tools marked **(your data)** only check, filter or summarize records the user pastes into the request; they fetch nothing and verify nothing. Pass arguments exactly as each tool's schema requires and report its assumptions with the result.
 
@@ -87,5 +87,7 @@ Use these before stating any rule. Quote the passage and page, give the citation
 | `erp_eirp` | ERP (dipole reference) and EIRP from power, losses and antenna gain in dBi or dBd |
 | `cable_catalog` | Datasheet attenuation tables of common coax cables (Aircell, Ecoflex, H155, RG-58, RG-213) |
 | `cable_loss` | Loss and delivered power for a catalogued cable; no extrapolation outside the datasheet range |
+| `regulatory_context` | Explicit operating-country authority layers, legal-source coverage, INDETERMINATE (never authorization to transmit) |
+| `academy_catalog` | International hobby syllabus, EN/EL, nine modules; no national licence/exam courses |
 
 Personal logbook services (LoTW logs, eQSL, Club Log, QRZ) need user authentication and are not available yet.
