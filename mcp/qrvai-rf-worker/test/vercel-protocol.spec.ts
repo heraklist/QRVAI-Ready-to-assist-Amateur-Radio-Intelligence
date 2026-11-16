@@ -14,17 +14,17 @@ test("a configured but weak token never falls back to public access", async () =
   assert.equal(response.status,503);
 });
 
-test("public first release: MCP initialize, tools/list and tools/call work with no credentials", async () => {
+test("public-mode override exists only for explicit isolated regression tests", async () => {
   const { handleMcpRequest, PUBLIC_UNAUTHENTICATED } = await import("../api/mcp.ts");
-  assert.equal(PUBLIC_UNAUTHENTICATED,true);
+  assert.equal(PUBLIC_UNAUTHENTICATED,false);
   const transport = new StreamableHTTPClientTransport(new URL("https://qrvai.example/api/mcp"), {
-    fetch: (url,init) => handleMcpRequest(new Request(url,init), undefined)
+    fetch: (url,init) => handleMcpRequest(new Request(url,init), undefined, true)
   });
   const client = new Client({name:"qrvai-public-test",version:"0.1.0"});
   try {
     await client.connect(transport);
     const list=await client.listTools();
-    assert.equal(list.tools.length,52);
+    assert.equal(list.tools.length,54);
     assert.ok(list.tools.every(t=>t.annotations?.readOnlyHint===true));
     const power=await client.callTool({name:"rf_power_convert",arguments:{value:5,unit:"W"}});
     assert.equal((power.structuredContent as {W:number}).W,5);
@@ -56,7 +56,7 @@ test("Vercel MCP API exposes all four registered read-only RF tools through Stre
   try {
     await client.connect(transport);
     const list=await client.listTools();
-    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss","core_capabilities","antenna_geometry","antenna_matching","rf_filter_response","power_autonomy","geo_bearing","station_signal_path","packet_route_preview","emcomm_drill","emcomm_readiness","academy_exercise","digital_setup_guide","repeater_channel_preview","contest_plan","maker_project_review","club_workshop_plan","source_lookup","regulatory_check_operation","spectrum_band_segments","spectrum_find_repeaters","manual_find","measurements_inspect_trace","sdr_inspect_iq","manual_answer_cited","equipment_diagnose","adif_validate","station_get_profile","station_read_status","spaceweather_indices","dx_reception_reports","log_award_progress","rf_exposure_screen","propagation_path","satellite_pass","space_weather_now","satellite_passes","satellite_transmitters","pota_spots","wspr_spots","callsign_info","repeaters_near","contest_calendar","regulatory_sources","regulation_text","regulation_changes","erp_eirp","cable_catalog","cable_loss"]);
+    assert.deepEqual(list.tools.map(t=>t.name),["rf_power_convert","rf_link_budget","rf_impedance","rf_feedline_loss","core_capabilities","antenna_geometry","antenna_matching","rf_filter_response","power_autonomy","geo_bearing","station_signal_path","packet_route_preview","emcomm_drill","emcomm_readiness","academy_exercise","digital_setup_guide","repeater_channel_preview","contest_plan","maker_project_review","club_workshop_plan","source_lookup","regulatory_check_operation","spectrum_band_segments","spectrum_find_repeaters","manual_find","measurements_inspect_trace","sdr_inspect_iq","manual_answer_cited","equipment_diagnose","adif_validate","station_get_profile","station_read_status","spaceweather_indices","dx_reception_reports","log_award_progress","rf_exposure_screen","propagation_path","satellite_pass","space_weather_now","satellite_passes","satellite_transmitters","pota_spots","wspr_spots","callsign_info","repeaters_near","contest_calendar","regulatory_sources","regulation_text","regulation_changes","erp_eirp","cable_catalog","cable_loss","regulatory_context","academy_catalog"]);
     const power=await client.callTool({name:"rf_power_convert",arguments:{value:100,unit:"W"}});
     assert.equal((power.structuredContent as {dBm:number}).dBm,50);
     const line=await client.callTool({name:"rf_feedline_loss",arguments:{profile:{id:"synthetic-coax",revision:"fixture-1",points:[{frequency_hz:10_000_000,loss_db_per_100m:4},{frequency_hz:1_000_000_000,loss_db_per_100m:8}]},frequency_hz:100_000_000,length_m:20,connector_loss_db:0.5,interpolation_method:"log_frequency"}});
