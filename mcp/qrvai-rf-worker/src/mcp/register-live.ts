@@ -11,6 +11,8 @@ import {regulatorySources, regulationText, regulationChanges} from "../live/regu
 import {cableCatalog, cableLoss, CableError} from "../live/cables.ts";
 import {erpEirp, ErpInputError} from "../rf/erp.ts";
 import {BAND_NAMES} from "../live/bands.ts";
+import {regulatoryContext} from "../live/jurisdiction.ts";
+import {academyCatalog} from "../academy/catalog.ts";
 
 const live = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true};
 const offline = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
@@ -121,6 +123,33 @@ export function registerLiveTools(server: McpServer, allowTool: (name: string) =
     description: "Attenuation tables (dB/100 m) of common coax cables copied from manufacturer datasheets, with links. Optional name filter, e.g. \"aircell\" or \"rg213\".",
     inputSchema: z.strictObject({query: z.string().min(2).max(40).optional()}), annotations: offline,
   }, run(async (a: {query?: string}) => cableCatalog(a.query)));
+
+  // Offline source-scoped cross-border research. Never claims permission to transmit.
+  if (allowTool("regulatory_context")) server.registerTool("regulatory_context", {
+    title: "International regulatory context (not TX permission)",
+    description: "Country-of-operation research router: identifies ITU framework, advisory IARU region, CEPT visitor caveats and available official national sources. Returns INDETERMINATE, never transmit permission. Requires explicit operating country; national coverage is partial.",
+    inputSchema: z.strictObject({
+      operating_country: z.string().regex(/^[A-Za-z]{2}$/),
+      operation_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+      home_country: z.string().regex(/^[A-Za-z]{2}$/).optional(),
+      licence_class: z.string().min(1).max(80).optional(),
+      visiting_operator: z.boolean().optional(),
+      frequency_mhz: z.number().finite().positive().max(1_000_000).optional(),
+      mode: z.string().min(2).max(40).optional(),
+      power_w: z.number().finite().nonnegative().max(1_000_000).optional(),
+    }), annotations: offline,
+  }, run(regulatoryContext));
+
+  // Country-neutral hobby syllabus, with no exam/licence-preparation dependency.
+  if (allowTool("academy_catalog")) server.registerTool("academy_catalog", {
+    title: "QRVAI Academy international hobby catalogue",
+    description: "Browse nine structured amateur-radio hobby modules with lesson titles and learning outcomes in English or Greek. Excludes country-specific licence courses or examination question banks; simulations do not grant transmit privileges.",
+    inputSchema: z.strictObject({
+      language: z.enum(["en", "el"]).default("en"),
+      module_id: z.string().min(3).max(60).optional(),
+      level: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+    }), annotations: offline,
+  }, run(academyCatalog));
 
   if (allowTool("cable_loss")) server.registerTool("cable_loss", {
     title: "Feedline loss for a catalogued cable",
