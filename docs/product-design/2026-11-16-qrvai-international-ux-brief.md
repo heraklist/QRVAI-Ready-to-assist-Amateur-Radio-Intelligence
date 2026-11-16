@@ -1,8 +1,8 @@
 # QRVAI International — product experience brief and three visual directions
 
 Date: 2026-11-16  
-Status: **product UX brief and concepts only — not a deployed, visually verified prototype**  
-Implementation source: `ui/rf-workbench/index.html` (existing offline workbench), `mcp/qrvai-rf-worker/src/academy/catalog.ts` and `src/live/jurisdiction.ts`.  
+Status: **product UX brief plus working unhosted static Academy and Rules/Sources code; no visually verified or deployed MCP Apps prototype**  
+Implementation source: `ui/rf-workbench/index.html`, `ui/academy/index.html`, `ui/regulations/index.html`, generated browser bundles tied to canonical Academy/country packs, and MCP `catalog.ts`/`jurisdiction.ts`.  
 Product: [ADR-0012](../architecture/ADR-0012-international-first-regulation-and-academy.md).
 
 ## Audience and primary jobs
@@ -39,7 +39,7 @@ Preserve existing `ui/rf-workbench` three calculators: power, coax attenuation a
 
 **C. International research explorer:** evidence-forward regulatory table and source chronology, distinct international/regional/national tiers, country and travel-context controls; Academy and RF tools via top tabs.
 
-These are **directional textual concepts** only, not three ImageGen mockups or visual QA. Product Design's full visual exploration, browser capture, design QA and published prototype require the supported Work environment and an actual selected visual target. Do not claim hosted screens or verified screenshots.
+These were **directional textual concepts**, not three visual mockups or visual QA. A source-based offline browser implementation of the neutral Operator cockpit was subsequently added for RF Workbench + Academy + Rules/Sources, including EN/EL and source-parity tests. Running CI does not verify rendered screenshots or real accessibility. Product Design's full visual exploration, browser capture, design QA and published prototype require the supported Work environment and an actual selected visual target. Do not claim hosted screens or verified screenshots.
 
 ## Shared information architecture and UI contracts
 
