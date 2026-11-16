@@ -124,6 +124,12 @@ export function registerLiveTools(server: McpServer, allowTool: (name: string) =
     inputSchema: z.strictObject({query: z.string().min(2).max(40).optional()}), annotations: offline,
   }, run(async (a: {query?: string}) => cableCatalog(a.query)));
 
+  if (allowTool("cable_loss")) server.registerTool("cable_loss", {
+    title: "Feedline loss for a catalogued cable",
+    description: "Cable and connector loss, delivered power ratio and optionally delivered watts for a cable from cable_catalog at a frequency inside its datasheet range.",
+    inputSchema: z.strictObject({cable_id: z.string().min(2).max(40), frequency_mhz: z.number().finite().positive(), length_m: z.number().finite().min(0).max(10000),
+      connector_loss_db: z.number().finite().min(0).max(20).default(0), tx_power_w: z.number().finite().positive().max(1e6).optional()}), annotations: offline,
+  }, run(cableLoss));
   // Offline source-scoped cross-border research. Never claims permission to transmit.
   if (allowTool("regulatory_context")) server.registerTool("regulatory_context", {
     title: "International regulatory context (not TX permission)",
@@ -151,10 +157,5 @@ export function registerLiveTools(server: McpServer, allowTool: (name: string) =
     }), annotations: offline,
   }, run(academyCatalog));
 
-  if (allowTool("cable_loss")) server.registerTool("cable_loss", {
-    title: "Feedline loss for a catalogued cable",
-    description: "Cable and connector loss, delivered power ratio and optionally delivered watts for a cable from cable_catalog at a frequency inside its datasheet range.",
-    inputSchema: z.strictObject({cable_id: z.string().min(2).max(40), frequency_mhz: z.number().finite().positive(), length_m: z.number().finite().min(0).max(10000),
-      connector_loss_db: z.number().finite().min(0).max(20).default(0), tx_power_w: z.number().finite().positive().max(1e6).optional()}), annotations: offline,
-  }, run(cableLoss));
+
 }
