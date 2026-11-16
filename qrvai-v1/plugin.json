@@ -11,7 +11,7 @@
     "com.openai": {
       "interface": {
         "displayName": "QRVAI",
-        "shortDescription": "Global amateur radio assistant & Academy",
+        "shortDescription": "Global Amateur Radio",
         "longDescription": "QRVAI helps amateur radio enthusiasts worldwide with RF/antenna calculations, space weather, satellite passes, operating techniques, digital modes and hobby-first learning. A source-scoped regulatory research layer distinguishes ITU, regional recommendations and verified national rules; current official-source adapters cover selected Greece and US material only, not worldwide legal permissions. English and Greek are supported in V1. No transmitter control, guaranteed legal authorization or automatic licence-exam preparation.",
         "developerName": "QRVAI",
         "category": "Education",
