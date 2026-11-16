@@ -1,6 +1,6 @@
 # QRVAI V1 plugin package
 
-**Status (2026-11-16):** version 1.0.0 source and builder; international QRVAI adds two offline tools and an explicitly fail-closed server. A separate V1 Plugin Creator identity has not been created or installed; no host-accepted production MCP connection exists. The older inactive legacy placeholder remains unchanged.
+**Status (2026-11-16):** version 1.0.0 source and builder; international QRVAI adds two offline tools and an explicitly fail-closed server. The actual account test plan now **reuses the original private QRVAI plugin**, upgraded to `0.1.0-preview.4` with four smoke-test skills and no MCP connection. The full 24-domain/54-tool source ZIP is still separate repo build output, **not installed or host-accepted**. No second plugin or public release exists.
 
 V1 is assembled, not hand-copied, so the frozen V0 package in `qrvai/` stays untouched:
 
@@ -25,4 +25,4 @@ The builder refuses to run unless the staged Skills pass their audit, `tools.md`
 
 **MCP config format:** `mcp.json` at the plugin root is `{"$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json", "mcpServers": {"qrvai": {"type": "streamable-http", "url": ...}}}`, matching OpenAI's plugin build guide (checked 2026-11-15). It is produced in one function, `mcp_config`.
 
-Before building any server-connected package: a **protected preview** must pass authorized HTTPS MCP verification and identity/auth compatibility in `mcp/qrvai-rf-worker` with private credentials. Do not remove Vercel Deployment Protection merely to satisfy connectivity. A skills-only ZIP is a development draft, not a connected plugin release; live ChatGPT host acceptance, quota gates and owner approval remain separate.
+For the initial **skills-only pilot on the old QRVAI identity**, see [private existing-plugin runbook](2026-11-16-existing-private-qrvai-pilot.md). The existing private account update is not the same as shipping this 100-file build.\n\nBefore building any server-connected package: a **protected preview** must pass authorized HTTPS MCP verification and identity/auth compatibility in `mcp/qrvai-rf-worker` with private credentials. Do not remove Vercel Deployment Protection merely to satisfy connectivity. A skills-only ZIP is a development draft, not a connected plugin release; live ChatGPT host acceptance, quota gates and owner approval remain separate.
