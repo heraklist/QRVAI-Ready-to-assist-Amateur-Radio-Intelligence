@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'ui/rf-workbench/**'
+      - 'ui/academy/**'
+      - 'mcp/qrvai-rf-worker/src/academy/**'
       - '.github/workflows/qrvai-rf-workbench-ci.yml'
   push:
     branches:
@@ -19,3 +21,7 @@ jobs:
           node-version: '24'
       - name: Verify deterministic offline RF workbench calculations
         run: node --test ui/rf-workbench/test/calculations.test.mjs
+      - name: Verify generated offline Academy bundle is source-synchronized
+        run: node ui/academy/build-data.mjs --check
+      - name: Verify bilingual Academy UI data parity, safety and accessibility markup
+        run: node --experimental-strip-types --test ui/academy/test/*.test.mjs
