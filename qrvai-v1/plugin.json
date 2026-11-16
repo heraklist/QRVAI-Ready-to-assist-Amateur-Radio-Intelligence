@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "qrvai",
   "version": "1.0.0",
-  "description": "Greek and English amateur radio assistant: 24 domain Skills, RF calculators and live data (space weather, satellites, spots, repeaters, contests, official legal texts), with honest safety and legal boundaries.",
+  "description": "International amateur radio assistant with RF calculations, propagation, operating guidance, worldwide hobby education and source-scoped regulatory intelligence. English and Greek in V1; national coverage varies.",
   "author": {
     "name": "heraklist"
   },
@@ -11,15 +11,15 @@
     "com.openai": {
       "interface": {
         "displayName": "QRVAI",
-        "shortDescription": "Amateur radio assistant",
-        "longDescription": "Chat-first amateur radio help in Greek and English: RF and antenna calculations, live space weather, satellite passes, POTA and WSPR spots, repeaters, contest calendar, and official legal texts from the Greek Government Gazette, EETT, CEPT and the US eCFR with change checks. No transmit permission, legal advice or device control.",
+        "shortDescription": "Global amateur radio assistant & Academy",
+        "longDescription": "QRVAI helps amateur radio enthusiasts worldwide with RF/antenna calculations, space weather, satellite passes, operating techniques, digital modes and hobby-first learning. A source-scoped regulatory research layer distinguishes ITU, regional recommendations and verified national rules; current official-source adapters cover selected Greece and US material only, not worldwide legal permissions. English and Greek are supported in V1. No transmitter control, guaranteed legal authorization or automatic licence-exam preparation.",
         "developerName": "QRVAI",
         "category": "Education",
         "capabilities": [],
         "defaultPrompt": [
-          "@QRVAI Πώς είναι η διάδοση σήμερα;",
-          "@QRVAI Πότε περνάει το ISS πάνω από την Αθήνα;",
-          "@QRVAI Τι λέει ο ελληνικός κανονισμός για τις άδειες κατηγορίας 1;"
+          "@QRVAI How do I calculate feedline loss on 20 metres?",
+          "@QRVAI Explain solar Kp and how it affects HF propagation.",
+          "@QRVAI Teach me CW from scratch, without licence-exam material."
         ]
       }
     }
