@@ -77,3 +77,12 @@ PR #53 now includes `src/http/oauth-principal.ts` and `test/oauth-grants.spec.ts
 - **NOT wired to Vercel `/api/mcp`**, which remains shared-Bearer-only. There is **no grant database/table, no user invitation or issued token, no live provider resource indicator proof, no durable quota, no approved OAuth host**. A future production grant reader must query a trusted service store per request, account for revocations, and never take subject/tenant/grant data from request-controlled arguments. Existing G1–G8 holds remain.
 
 This prepares source-level authorization, not a G7 production PASS or permission to route traffic.
+
+## 2026-11-17 — Proposed Supabase grant store, NOT APPLIED
+
+- Added a narrowly scoped, review-only SQL candidate in `docs/sql/qrvai-mcp-grants.proposed.sql`, **not** in an auto-run migration directory. It creates no rows or users, grants no public/anon/authenticated table access, enables + forces RLS without client policies, and permits only `SELECT` to Supabase `service_role`. Project Auth subjects are UUIDs and the issuer is constrained to the existing dedicated QRVAI Auth project. No station/log permission can be stored.
+- Added `src/http/supabase-grants.ts`, a source-only PostgREST reader locked to the known Supabase project URL. It requires a `sb_secret_*` backend key sent **only in the `apikey` header**, selects grants by exact issuer + subject + OAuth client, enforces a single matching row and never caches successful lookups. HTTP errors, duplicate rows, malicious cross-client/tenant replies and invalid config fail closed. No key was retrieved, deployed, committed, or stored in this repo.
+- Added offline tests `test/supabase-grants.spec.ts` with synthetic, non-sensitive API keys and mocked HTTP responses, including source checks of the proposed RLS/ACL. These tests are **not** proof of real database RLS, SQL migration execution, or OAuth resource binding.
+- **Real Supabase project unchanged.** Read-only SQL confirmed no `qrvai*` tables in `public` or `qrvai_private` at inspection. The complete G7 live gate still requires reviewed manual grant migration, invited user/client, server secret provisioning, verified RFC 8707 token issuance, and an approved HTTP wiring change, none of which occurred.
+
+Supabase official API-key documentation now recommends `sb_secret_*` in the `apikey` header; do not send such a key as `Authorization: Bearer`. A backend secret bypasses RLS: grant decisions stay server-side and the table ACL must be reviewed before use.
