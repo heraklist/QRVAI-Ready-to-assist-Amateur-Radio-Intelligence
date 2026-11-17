@@ -14,7 +14,7 @@ const key={...pair.publicKey.export({format:"jwk"}),kid:"key-pilot",use:"sig",al
 const claims={iss:QRVAI_PILOT_ISSUER,aud:QRVAI_PILOT_RESOURCE,sub:subject,client_id:clientId,scope:"openid",exp:now+600,nbf:now-60};
 const row=(patch:Record<string,unknown>={})=>({
  issuer:QRVAI_PILOT_ISSUER,subject,client_id:clientId,tenant_id:tenant,enabled:true,
- expires_at:"2027-01-15T08:00:00.000Z",permissions:["qrvai:tools:read"],...patch
+ expires_at:"2027-01-15T09:00:00.000Z",permissions:["qrvai:tools:read"],...patch
 });
 function accessToken(patch:Record<string,unknown>={}){
  const enc=(value:unknown)=>Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -62,7 +62,6 @@ test("composed ES256 + client grant + MCP SDK returns only the QRVAI read-author
  const {handler,jwksCount,grantsCount}=fixture();
  const response=await handler(request(accessToken()));
  assert.equal(response.status,200);
- assert.equal(response.headers.get("cache-control"),null===null?response.headers.get("cache-control"):null); // SDK-owned response headers
  const payload=await response.json();
  const names=payload.result.tools.map((tool:{name:string})=>tool.name);
  assert.ok(names.includes("rf_power_convert"));
