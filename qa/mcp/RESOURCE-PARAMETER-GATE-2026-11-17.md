@@ -67,3 +67,13 @@ No synthetic test result or source-code inspection should be rewritten as a live
 5. Maintain `PUBLIC_UNAUTHENTICATED=false` and `OAUTH_MCP_HTTP_WIRED=false` until gates pass; then secure end-to-end ChatGPT host tests before a guarded update of the **existing private plugin ID**. Production, public exposure, payments, and main merge remain separately gated.
 
 **Current status: provider discovery VERIFIED; MCP OAuth integration BLOCKED; no live user/token/host certification.**
+
+## 2026-11-17 — Automatable read-only issuer-discovery probe (latest PR #53)
+
+- Added `src/http/oauth-issuer-discovery.ts`, `scripts/probe-oauth-issuer.mjs`, offline contract tests `test/oauth-issuer-discovery.spec.ts` and `npm run probe:oauth` (manual only). The probe makes **one unauthenticated GET** to the pinned project's RFC 8414 discovery URL; it checks exact issuer, pinned auth/token/JWKS endpoints, authorization-code grant/response and S256 PKCE advertisement, and prints a JSON audit **without access tokens, requests containing secrets, client registration, or consent**. Malformed discovery fails closed.
+- Even if discovery `PASS`, the audit **always records** `resourceParameterToAudience=NOT_EXECUTED`, `issuedTokenSignature=NOT_EXECUTED`, `signedClientBinding=NOT_EXECUTED`, `chatgptOAuthHost=NOT_EXECUTED` and `productionOAuthReady=false`. No metadata-only shortcut may mark G2/G3/G4/G5/G7/G8 complete.
+- External read-only issue check: Supabase [auth#2610](https://github.com/supabase/auth/issues/2610) remains **OPEN** (last updated 2026-10-06). A source-level `resource` request parser does not establish that the live authorization/token exchange will issue `aud=https://<canonical-mcp>/api/mcp`. The canonical QRVAI Vercel project still reports SSO protection enabled; its preview at commit `8d066a1` is READY, `target:null`, not an unprotected production endpoint.
+- Read-only `qrvai-auth` inspection still has **zero Auth users** and **no `public.qrvai_mcp_grants` table**. Vercel project environment-variable inventory refused access with HTTP **403**; do not infer environment state from that error.
+- **Gates remain unchanged:** no live test of `resource` propagation, no signed audience-specific token, no authorized host flow, no DB changes, no user/client creation, no Vercel DNS/share-link/protection bypass and no ChatGPT private plugin upgrade. Requires separate approved authenticated test to advance.
+
+This probe augments the earlier issuer metadata receipt but is **not** an RFC 8707 conformance claim.
