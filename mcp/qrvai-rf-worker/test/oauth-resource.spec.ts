@@ -34,11 +34,15 @@ test('does not publish metadata over methods other than GET',()=>{
 test('rejects invalid OAuth scope values rather than rendering untrusted permission metadata',()=>{
   assert.equal(handleProtectedResourceMetadata(request(),{...settings,scopesSupported:['openid','bad"\r\nscope']}).status,503);
 });
-test('Vercel route publishes metadata only when explicitly configured',async()=>{
-  const {handleOAuthMetadataRoute}=await import('../api/oauth-protected-resource.ts');
-  const enabled=handleOAuthMetadataRoute(request(),{QRVAI_OAUTH_RESOURCE:settings.resource,QRVAI_OAUTH_ISSUER:settings.authorizationServer});
-  assert.equal(enabled.status,200);
-  const doc=await enabled.json();
-  assert.equal(doc.resource,settings.resource);
+test('Vercel route must not advertise OAuth until the real MCP HTTP endpoint verifies per-user OAuth',async()=>{
+  const {handleOAuthMetadataRoute,OAUTH_MCP_HTTP_WIRED}=await import('../api/oauth-protected-resource.ts');
+  assert.equal(OAUTH_MCP_HTTP_WIRED,false);
+  const response=handleOAuthMetadataRoute(request(),{
+    QRVAI_OAUTH_RESOURCE:settings.resource,
+    QRVAI_OAUTH_ISSUER:settings.authorizationServer,
+    QRVAI_MCP_OAUTH_ENABLED:'true'
+  });
+  assert.equal(response.status,503);
+  assert.equal(response.headers.get('cache-control'),'no-store');
   assert.equal(handleOAuthMetadataRoute(request(),{}).status,503);
 });
