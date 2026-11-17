@@ -12,7 +12,7 @@ export type OAuthVerifierSettings={
 };
 
 type JwtHeader={alg?:unknown;kid?:unknown;crit?:unknown};
-type JwtClaims={iss?:unknown;aud?:unknown;exp?:unknown;nbf?:unknown;scope?:unknown;scp?:unknown;sub?:unknown};
+type JwtClaims={iss?:unknown;aud?:unknown;exp?:unknown;nbf?:unknown;scope?:unknown;scp?:unknown;sub?:unknown;client_id?:unknown};
 type Jwk={kty?:string;crv?:string;use?:string;key_ops?:string[];alg?:string;kid?:string;[key:string]:unknown};
 const reject=(reason:string):never=>{throw new Error("OAuth access token rejected: "+reason);};
 const decode=(segment:string):Record<string,unknown>=>{
@@ -37,7 +37,7 @@ function httpsUrl(value:string,reason:string):URL{
  * server-owned identity/client grant and resource-binding check are required.
  * The deployed /api/mcp endpoint remains on its separate shared-Bearer gate.
  */
-export async function validateOAuthAccessToken(token:string,settings:OAuthVerifierSettings):Promise<{subject:string;scopes:string[]}>{
+async function validateToken(token:string,settings:OAuthVerifierSettings,requireClientId:boolean):Promise<{subject:string;scopes:string[];clientId:string|null}>{
   const issuer=httpsUrl(settings.issuer,"issuer HTTPS configuration required");
   httpsUrl(settings.audience,"audience HTTPS configuration required");
   if(!settings.requiredScope)return reject("required scope configuration missing");
@@ -57,6 +57,8 @@ export async function validateOAuthAccessToken(token:string,settings:OAuthVerifi
   if(typeof claims.exp!=="number"||!Number.isInteger(claims.exp)||claims.exp<=now)return reject("expired token");
   if(claims.nbf!==undefined&&(typeof claims.nbf!=="number"||claims.nbf>now))return reject("token not active");
   if(typeof claims.sub!=="string"||!claims.sub)return reject("subject missing");
+  // The client identifier is an issuer-signed JWT claim, never a request parameter.
+  if(requireClientId&&(typeof claims.client_id!=="string"||!/^[-A-Za-z0-9._:]{1,256}$/.test(claims.client_id)))return reject("OAuth client identity missing");
   const scopes=typeof claims.scope==="string"?claims.scope.split(/\s+/).filter(Boolean):Array.isArray(claims.scp)&&claims.scp.every(s=>typeof s==="string")?claims.scp as string[]:[];
   if(!scopes.includes(settings.requiredScope))return reject("insufficient scope");
   const response=await (settings.fetchJwks??fetch)(jwksUrl,{method:"GET",headers:{accept:"application/json"},redirect:"error",signal:AbortSignal.timeout(3000)});
@@ -81,5 +83,18 @@ export async function validateOAuthAccessToken(token:string,settings:OAuthVerifi
     ?verifySignature("sha256",Buffer.from(pieces[0]+"."+pieces[1]),{key,dsaEncoding:"ieee-p1363"},signature)
     :verifySignature("RSA-SHA256",Buffer.from(pieces[0]+"."+pieces[1]),key,signature);
   if(!valid)return reject("invalid JWT signature");
-  return {subject:claims.sub,scopes};
+  return {subject:claims.sub,scopes,clientId:typeof claims.client_id==="string"?claims.client_id:null};
+}
+/** Backwards-compatible cryptographic primitive. No internal QRVAI grants are inferred here. */
+export async function validateOAuthAccessToken(token:string,settings:OAuthVerifierSettings):Promise<{subject:string;scopes:string[]}>{
+ const {subject,scopes}=await validateToken(token,settings,false);
+ return {subject,scopes};
+}
+/** OAuth client binding must use the signed client_id of the exact resource-audience token.
+ * An OAuth login without an explicit signed client identifier is insufficient for grants.
+ */
+export async function validateOAuthAccessTokenWithClient(token:string,settings:OAuthVerifierSettings):Promise<{subject:string;scopes:string[];clientId:string}>{
+ const verified=await validateToken(token,settings,true);
+ if(!verified.clientId)return reject("OAuth client identity missing");
+ return {subject:verified.subject,scopes:verified.scopes,clientId:verified.clientId};
 }
