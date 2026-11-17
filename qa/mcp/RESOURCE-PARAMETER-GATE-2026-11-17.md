@@ -92,3 +92,17 @@ Source observation: uncached public HTTP retrieval 2026-11-17; response/status a
 
 **Gate interpretation:** G6 stays **PARTIAL** (issuer metadata/JWKS discovered, but DCR/registered client/callback and login are unverified); G1 **BLOCKED** (canonical 404); G2–G5 and G7–G8 **NOT_EXECUTED**. `supabase/auth#2610` remains open, and neither custom `aud` hooks nor the advertised `offline_access` prove that a real `resource` request returns an appropriately bound JWT. **Do not** make `OAUTH_MCP_HTTP_WIRED=true` or lower strict `aud`, issuer, PKCE or per-client-grant requirements.
 
+
+## 2026-11-17 — Vercel production assignment & composed *offline* OAuth pilot
+
+Live Vercel project inventory, **read-only**:
+- Project `qrvai-rf-mcp`, team `heraklists-projects`: exactly one attached domain `qrvai-rf-mcp.vercel.app` (`verified=true`, `gitBranch=null`); deployment protection `enabled=true`, `deploymentType=all_except_custom_domains`.
+- `list_deployments(target=production)` returned **one production deployment**, `dpl_BCYbo8hwzVrZvibrAvNrJaub97U7`, SHA `e53a64d53cf86321e3e5c4670433d3e4f169a17e`, state **CANCELED**; no READY production target was returned. Recent PR #53 deploy `bba4693` is **READY Preview** (`target:null`).
+- Direct canonical HTTP GET already returned **404 DEPLOYMENT_NOT_FOUND**. **Diagnosis: verified domain but no eligible READY production deployment**, not a missing DNS association. This is **not approval to promote** a preview, disable access protection or deploy shared Bearer OAuth-incomplete code to production.
+
+Added `src/http/supabase-oauth-pilot.ts` and `test/supabase-oauth-pilot.spec.ts`, with tests in `npm test`:
+- **Offline composed server-only handler, NOT mounted** on `api/mcp.ts`: exact pinned QRVAI issuer, canonical HTTPS MCP audience, asymmetric ES256 JWKS validation, signed `client_id`, `openid` *identity scope only*, fresh private Supabase `sb_secret_*` grant lookup, per-grant permissions and SDK-filtered tools.
+- No fallback to an unauthenticated client, shared Bearer token, user metadata, OAuth-provided QRVAI permissions or alias origin. Tests exercise signed synthetic ES256 JWTs, authorizations, disabled/expired/missing grants and unavailable DB, wrong issuer/audience, wrong client, hostile preview alias, and missing credentials. Injected fetches are **test-only fixtures**, not evidence of user login.
+- `PUBLIC_UNAUTHENTICATED=false` and `OAUTH_MCP_HTTP_WIRED=false` remain unchanged. This composed library is **not** referenced by either Vercel route. No new token, user, OAuth client, database table, environment key, DNS, production deployment or plugin package was created.
+
+**Gates stay G1 BLOCKED, G6 PARTIAL, G2–G5 / G7–G8 NOT_EXECUTED.** Next genuinely required step is a real resource-indicator-compliant issuer + host access/production security design; a synthetic JWT test must not be reported as an end-to-end host pass.
