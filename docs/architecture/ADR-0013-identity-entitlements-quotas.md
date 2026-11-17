@@ -53,9 +53,25 @@ No baseline of real usage, active customers, conversion, latency SLO or provider
 - [ ] Verified provider call caps, official source rights, WAF and DDoS/abuse policy; monitor 429/5xx and stop on unknown run rate.
 - [ ] Transparent privacy policy, no unnecessary operator or learner personal data, data deletion and retention controls.
 - [ ] Independent financial/legal acceptance of jurisdictional pricing, tax, refunds, cancellation, PSP, receipts and consumer protections **before accepting any payment**.
-- [x] Reuse the **existing PRIVATE personal QRVAI** identity for the first **skills-only** pilot (`0.1.0-preview.4`, account read-back verified); [ ] actual ChatGPT host smoke, [ ] later secure 54-tool MCP E2E using the same plugin identity. No public listing or second plugin.
+- [x] Reuse the **existing PRIVATE personal QRVAI** identity for the first **skills-only** pilot (`0.1.0-preview.4`, account read-back verified); [x] eight instructional/safety responses reviewed from user-supplied ChatGPT outputs on 2026-11-17 (**content-level V0 acceptance only**); [ ] independently retained host execution provenance; [ ] later secure 54-tool MCP E2E using the same plugin identity. No public listing or second plugin.
 - [ ] An actual subscription must NEVER be represented as a radio transmitting licence.
 
 ## Measurable but non-billing acceptance
 
 Before pilot: no anonymous access without a configured auth path, 54/54 registry tools must classify, every quota unit test must deny unknown/unauthorized/over-budget input and 429 must include Retry-After; zero raw tokens in log code. After pilot only: collect actual success/429/5xx counts and owner-review the effective **distributed** limits. Count tests at their exact CI SHA, not as deployed host evidence.
+
+## Separate offline acceptance contracts (2026-11-17)
+
+The pilot is deliberately split into two evidence kinds, neither of which can substitute for the other:
+
+- **V0 reviewed skills-only responses**: `checkV0PilotGates` checks exactly eight reviewed, individually referenced user-supplied outputs, the installed private plugin ID and `0.1.0-preview.4`. The editorial assessment is 8/8 as recorded in the project conversation. It does **not** establish that an independent host trace, MCP call or live tool registry was observed.
+- **V1 protected MCP host acceptance**: `checkReleaseGates` checks the exact deployed Git SHA, Vercel preview evidence, **the same private plugin identity** (no replacement ID), actual OAuth/PKCE and verified principal, a ChatGPT-host-observed 54-tool registry and successful live `academy_catalog` invocation, plus same-conversation follow-up. V1 is **NOT_EXECUTED / BLOCKED** until these observations exist.
+
+Run these offline documentary shape checks from the repository root:
+
+```sh
+node scripts/check-release-gates.mjs --v0 qa/v0/pilot-report.example.json
+node scripts/check-release-gates.mjs --v1 qa/mcp/host-report.example.json
+```
+
+Both example JSON files intentionally fail closed and must not be changed to PASS without traceable original evidence. Even a successful documentary shape check never confirms URLs, actual authentication, device actions, OAuth trust or a deployment. Independent host review remains mandatory. Keep Vercel SSO, token protections and private plugin visibility unchanged during this stage.
