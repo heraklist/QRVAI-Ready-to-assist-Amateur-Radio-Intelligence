@@ -53,8 +53,13 @@ test("Vercel-only runbook documents secure MCP endpoint",()=>{
 });
 test("host report cannot pretend successful account installation",()=>{
   const report=JSON.parse(readFileSync(file("qa/mcp/host-report.example.json"),"utf8"));
+  assert.equal(report.phase,"V1_MCP_HOST");
   assert.equal(report.status,"NOT_EXECUTED");
-  assert.equal(report.freshPluginCreateAuthorized.passed,false);
+  assert.equal(report.existingPrivatePluginVerified.passed,false);
+  assert.equal(report.existingPrivatePluginVerified.pluginId,"plugins_6acf47f502dc8191bf542fe040d484d8");
+  assert.equal(report.mcpToolRegistryObserved.passed,false);
+  assert.equal(report.oauthHostHandshakeObserved.passed,false);
+  assert.equal(Object.hasOwn(report,"freshPluginCreateAuthorized"),false);
   assert.equal(report.hostInvocationObserved.passed,false);
   assert.equal(existsSync(file("qrvai/mcp.json")),false);
 });
