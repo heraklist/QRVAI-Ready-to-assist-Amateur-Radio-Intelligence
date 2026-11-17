@@ -36,3 +36,11 @@ When the target becomes operational, the **same exact string** must appear in (a
 **Evidence status:** G1 candidate URL/source invariants prepared; external endpoint reachability, OAuth issuing, principal verification on Vercel, plugin connection, and production access **NOT_EXECUTED / BLOCKED**.
 
 Official references: https://ts.sdk.modelcontextprotocol.io/v2/serving/authorization · https://vercel.com/docs/deployment-protection · https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection · https://supabase.com/docs/guides/auth/oauth-server/mcp-authentication
+
+## External host probes (uncached, unauthenticated) — 2026-11-17
+
+- `GET https://qrvai-rf-mcp.vercel.app/.well-known/oauth-protected-resource`: **404 DEPLOYMENT_NOT_FOUND**, Vercel HTML error page; the verified domain is presently **not mapped to a serving deployment**. This is a live read-only network observation, not a production configuration change.
+- `GET https://qrvai-rf-ij2cn7cpy-heraklists-projects.vercel.app/.well-known/oauth-protected-resource/api/mcp`: the external fetch reached a **Vercel protected-deployment login redirect** and ended on `vercel.com/login` HTML, *not* QRVAI OAuth metadata. The tool's final page reported 200 for the Vercel login **after redirect**, which is emphatically **not** a 200 response from the QRVAI OAuth endpoint.
+- Hence **G1 network gate remains BLOCKED**, separate from the Supabase RFC 8707 issuer blocker. It would be incorrect to report an operational endpoint simply because the Vercel build is `READY`.
+- The source-only verified-principal seam now emits `WWW-Authenticate: Bearer resource_metadata="<canonical host>/.well-known/oauth-protected-resource/api/mcp"` for absent/invalid tokens **only after** configured origin, method, issuer and resource checks. The deployed shared-Bearer handler and disabled metadata route remain unchanged; this header is not yet seen on the real host.
+- Release requirement: an explicitly authorized, domain-mapped, externally reachable deployment with OAuth-only authentication and controlled budgets, without granting unauthorized tools, public sign-up, deployment-bypass secrets or browser cookies to a ChatGPT client.

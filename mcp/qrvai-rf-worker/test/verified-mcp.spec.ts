@@ -42,3 +42,18 @@ test("verified MCP binds request URL to exact canonical token audience, never a 
  }
  assert.equal(calls,0,"wrong resource URL must never call the token verifier");
 });
+
+test("verified MCP produces RFC 9728 discovery challenge only on the verified canonical origin",async()=>{
+ const res=await handleVerifiedMcpRequest(req(),async()=>{throw new Error("verifier must not run");},cfg);
+ assert.equal(res.status,401);
+ assert.equal(res.headers.get("www-authenticate"),'Bearer resource_metadata="https://qrvai.example/.well-known/oauth-protected-resource/api/mcp"');
+ assert.equal(res.headers.get("cache-control"),"no-store");
+ const invalid=await handleVerifiedMcpRequest(req("Bearer unknown"),async()=>null,cfg);
+ assert.equal(invalid.status,401);
+ assert.equal(invalid.headers.get("www-authenticate"),res.headers.get("www-authenticate"));
+});
+test("verified MCP does not advertise OAuth for invalid or missing issuer configuration",async()=>{
+ const res=await handleVerifiedMcpRequest(req(),async()=>null,{...cfg,issuer:""});
+ assert.equal(res.status,503);
+ assert.equal(res.headers.get("www-authenticate"),null);
+});

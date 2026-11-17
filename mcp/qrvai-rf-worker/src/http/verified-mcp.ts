@@ -13,8 +13,6 @@ const headers={"cache-control":"no-store"};
 const deny=(status:number,reason:string)=>new Response(reason,{status,headers:{"content-type":"text/plain; charset=utf-8",...headers}});
 /** Deliberate non-wired seam: never interpret unverified JWT payload as trusted claims. */
 export async function handleVerifiedMcpRequest(request:Request,verify:VerifyBearer,config:VerifiedMcpConfig):Promise<Response>{
- const raw=request.headers.get("authorization");
- if(!raw?.startsWith("Bearer ")||!raw.slice(7).trim())return new Response("Unauthorized",{status:401,headers:{"www-authenticate":"Bearer",...headers}});
  const url=new URL(request.url);
  if(url.pathname!=="/api/mcp")return deny(404,"Not found");
  const origin=request.headers.get("origin");
@@ -23,11 +21,16 @@ export async function handleVerifiedMcpRequest(request:Request,verify:VerifyBear
  if(!config.issuer||!config.audience||!config.issuer.startsWith("https://")||!config.audience.startsWith("https://"))return deny(503,"OAuth verifier not configured");
  // Exact RFC 8707 resource binding: a JWT for the stable MCP host may not be replayed on a preview alias.
  if(config.audience!==url.origin+"/api/mcp"||url.search||url.hash)return deny(403,"Unexpected MCP resource");
+ // RFC 9728: prompt the OAuth client to discover the configured resource from this exact origin.
+ const challenge={...headers,"www-authenticate":'Bearer resource_metadata="'+url.origin+'/.well-known/oauth-protected-resource/api/mcp"'};
+ const unauthorized=()=>new Response("Unauthorized",{status:401,headers:challenge});
+ const raw=request.headers.get("authorization");
+ if(!raw?.startsWith("Bearer ")||!raw.slice(7).trim())return unauthorized();
  const token=raw.slice(7);
  let principal:VerifiedPrincipal|null=null;
- try{principal=await verify(token);}catch{return new Response("Unauthorized",{status:401,headers:{"www-authenticate":"Bearer",...headers}});}
+ try{principal=await verify(token);}catch{return unauthorized();}
  if(!principal||principal.issuer!==config.issuer||principal.audience!==config.audience||!principal.subject||!principal.tenantId||!Array.isArray(principal.scopes)){
-  return new Response("Unauthorized",{status:401,headers:{"www-authenticate":"Bearer",...headers}});
+  return unauthorized();
  }
  if(!principal.scopes.some(s=>["qrvai:tools:read","qrvai:user-data:process"].includes(s)))return deny(403,"No authorized MCP tools");
  const checked=await limitMcpRequest(request);
