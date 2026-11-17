@@ -39,3 +39,31 @@ No synthetic test result or source-code inspection should be rewritten as a live
 - Supabase Custom Access Token Hook input claims: https://supabase.com/docs/guides/auth/auth-hooks/custom-access-token-hook
 - Supabase token security and client-based audience examples: https://supabase.com/docs/guides/auth/oauth-server/token-security
 - Architecture decision: ../../docs/architecture/ADR-0014-supabase-oauth-mcp-compatibility.md
+
+---
+
+<!-- QRVAI-LIVE-OAUTH-DISCOVERY-2026-11-17 -->
+## Live read-only provider recheck — 2026-11-17 (no credential/token operations)
+
+**Observed on the dedicated project** `ujhkqfvxpgpkearukvmh`:
+
+- Supabase project status: `ACTIVE_HEALTHY` in `eu-central-1` (project API).
+- `GET https://ujhkqfvxpgpkearukvmh.supabase.co/.well-known/oauth-authorization-server/auth/v1` returned **HTTP 200**, `application/json` via an uncached read-only fetch. Exact issuer: `https://ujhkqfvxpgpkearukvmh.supabase.co/auth/v1`; advertised authorization and token endpoints: `/auth/v1/oauth/authorize`, `/auth/v1/oauth/token`; advertised JWKS URI: `/auth/v1/.well-known/jwks.json`.
+- Metadata advertises authorization code flow and PKCE methods **`S256` and `plain`**. QRVAI must require `S256` regardless of the weaker method being advertised.
+- This **observed** discovery document **does not advertise** `registration_endpoint` or `authorization_response_iss_parameter_supported`. That is not evidence that client registration is operable; leave DCR disabled for the pilot.
+- Read-only SQL `SELECT (SELECT count(*) FROM auth.users), (SELECT count(*) FROM auth.oauth_clients)` returned **0 users and 0 OAuth clients**. Supabase security advisor reported no lints; neither result establishes an authorized user session.
+- Supabase upstream issue [supabase/auth#2610](https://github.com/supabase/auth/issues/2610) remains **OPEN** as checked 2026-11-17. The latest retrieved upstream discussion documents live hosted OAuth tokens returning `aud: authenticated` despite `resource` in both authorization and token exchange. Newer upstream source validation of the URI does **not** demonstrate audience binding to this MCP resource. Do not relax exact-`aud` verification.
+- Canonical QRVAI Vercel `qrvai-rf-mcp` had a `READY`, protected preview deployment for PR #53 HEAD `c518220a0d0d1b7b532f737fbc84a5840ba75343`. Reading Vercel env-variable **names** (`decrypt=false`) returned **HTTP 403**; do not infer absent settings or circumvent authorization.
+- Plugin Creator reports existing private plugin `plugins_6acf47f502dc8191bf542fe040d484d8` at `0.1.0-preview.4` contains **8 Skills-only package files** and no MCP gateway configuration.
+
+**Gate update (not an approval):** **G6 = PARTIAL (issuer discovery only)**. The actual `resource` propagation, token-exchange preservation, resource-bound `aud`, negative cross-resource tests, OAuth client registration, user grant mapping, mounted secured `/api/mcp`, externally reachable private host, and real ChatGPT `tools/list` remain **NOT_EXECUTED / BLOCKED**. The historical G6 row above states `NOT_EXECUTED` at its earlier baseline; this section is its dated follow-up, not retroactive proof.
+
+### Architecture decision and execution sequence
+
+1. **Do not bind unscoped Supabase `aud=authenticated` access tokens to QRVAI MCP.** Await verified RFC 8707 support in the actual deployed issuer, or review a separate standards-compliant resource-token issuer/broker using Supabase only for user identity; do not silently change auth provider.
+2. Agree on **one canonical HTTPS MCP URL** with a reachable pilot deployment and locked-down protections. RFC 9728 resource identifier, OAuth `resource`, issued `aud`, and `/api/mcp` verifier must match precisely. A protected Vercel preview is not host-reachable by default.
+3. Run a **controlled private login + consent** with a registered client and invitation-only user; capture redacted authorization and token request receipts, **never access tokens or credentials**. Run swapped/missing-resource negatives.
+4. Wire `src/http/oauth-verify.ts` and `src/http/verified-mcp.ts` to the actual Vercel handler **only after** evidence for required issuer/audience/client/user binding. Enforce server-owned grants, no user-metadata authorization, and resource-sensitive quotas.
+5. Maintain `PUBLIC_UNAUTHENTICATED=false` and `OAUTH_MCP_HTTP_WIRED=false` until gates pass; then secure end-to-end ChatGPT host tests before a guarded update of the **existing private plugin ID**. Production, public exposure, payments, and main merge remain separately gated.
+
+**Current status: provider discovery VERIFIED; MCP OAuth integration BLOCKED; no live user/token/host certification.**
