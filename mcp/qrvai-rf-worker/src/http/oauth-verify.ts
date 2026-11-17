@@ -1,47 +1,58 @@
-import { createPublicKey, verify as verifySignature, type KeyObject } from "node:crypto";
+import {createPublicKey,verify as verifySignature,type KeyObject} from "node:crypto";
 
 export type OAuthVerifierSettings={
   issuer:string;
   audience:string;
   requiredScope:string;
   jwksUrl:string;
+  /** Asymmetric JWT algorithm must be explicitly pinned. Legacy RS256 is the default; Supabase ES256 is opt-in. */
+  acceptedAlgorithm?:"RS256"|"ES256";
   fetchJwks?:typeof fetch;
   nowSeconds?:number;
 };
 
-type JwtHeader={alg?:unknown;kid?:unknown;typ?:unknown};
+type JwtHeader={alg?:unknown;kid?:unknown;crit?:unknown};
 type JwtClaims={iss?:unknown;aud?:unknown;exp?:unknown;nbf?:unknown;scope?:unknown;scp?:unknown;sub?:unknown};
-type Jwk={kty?:string;use?:string;key_ops?:string[];alg?:string;kid?:string;[key:string]:unknown};
-
-const reject=(message:string):never=>{throw new Error("OAuth access token rejected: "+message);};
+type Jwk={kty?:string;crv?:string;use?:string;key_ops?:string[];alg?:string;kid?:string;[key:string]:unknown};
+const reject=(reason:string):never=>{throw new Error("OAuth access token rejected: "+reason);};
 const decode=(segment:string):Record<string,unknown>=>{
-  if(!/^[A-Za-z0-9_-]+$/.test(segment)) return reject("invalid JWT encoding");
+  if(!/^[A-Za-z0-9_-]+$/.test(segment))return reject("invalid JWT encoding");
   const bytes=Buffer.from(segment,"base64url");
-  if(bytes.toString("base64url")!==segment) return reject("invalid JWT encoding");
-  try {
+  if(bytes.toString("base64url")!==segment)return reject("invalid JWT encoding");
+  try{
     const value:unknown=JSON.parse(bytes.toString("utf8"));
     if(!value||typeof value!=="object"||Array.isArray(value))return reject("invalid JWT object");
     return value as Record<string,unknown>;
-  }catch {return reject("invalid JWT object");}
+  }catch{return reject("invalid JWT object");}
 };
-
-/** Purely opt-in verifier: existing shared-secret MCP adapter is unchanged until issuer onboarding is approved. */
+function httpsUrl(value:string,reason:string):URL{
+  let url:URL;
+  try{url=new URL(value);}catch{return reject(reason);}
+  if(url.protocol!=="https:"||!url.hostname||url.username||url.password||url.search||url.hash||(url.href!==value&&!(url.pathname==="/"&&url.origin===value)))return reject(reason);
+  return url;
+}
+/**
+ * Opt-in cryptographic primitive, not an MCP authorization decision.
+ * Standard Supabase scopes cannot grant QRVAI internal permissions; a separate
+ * server-owned identity/client grant and resource-binding check are required.
+ * The deployed /api/mcp endpoint remains on its separate shared-Bearer gate.
+ */
 export async function validateOAuthAccessToken(token:string,settings:OAuthVerifierSettings):Promise<{subject:string;scopes:string[]}>{
-  if(!settings.issuer||!/^https:\/\/[^/?#]+/.test(settings.issuer))return reject("issuer HTTPS configuration required");
-  if(!settings.audience||!/^https:\/\/[^/?#]+/.test(settings.audience))return reject("audience HTTPS configuration required");
+  const issuer=httpsUrl(settings.issuer,"issuer HTTPS configuration required");
+  httpsUrl(settings.audience,"audience HTTPS configuration required");
   if(!settings.requiredScope)return reject("required scope configuration missing");
-  let jwksUrl:URL;
-  try{jwksUrl=new URL(settings.jwksUrl);}catch{return reject("JWKS HTTPS endpoint required");}
-  if(jwksUrl.protocol!=="https:"||jwksUrl.username||jwksUrl.password||jwksUrl.hash)return reject("JWKS HTTPS endpoint required");
-  if(jwksUrl.origin!==new URL(settings.issuer).origin)return reject("JWKS issuer origin mismatch");
+  const algorithm=settings.acceptedAlgorithm??"RS256";
+  if(algorithm!=="RS256"&&algorithm!=="ES256")return reject("unsupported verifier algorithm configuration");
+  const jwksUrl=httpsUrl(settings.jwksUrl,"JWKS HTTPS endpoint required");
+  if(jwksUrl.origin!==issuer.origin)return reject("JWKS issuer origin mismatch");
   const pieces=token.split(".");
   if(pieces.length!==3||pieces.some(p=>!p))return reject("malformed JWT");
   const header=decode(pieces[0]) as JwtHeader;
   const claims=decode(pieces[1]) as JwtClaims;
-  if(header.alg!=="RS256"||typeof header.kid!=="string"||!header.kid)return reject("unsupported JWT algorithm or kid");
+  if(header.alg!==algorithm||typeof header.kid!=="string"||!header.kid||header.crit!==undefined)return reject("unsupported JWT algorithm or kid");
   if(claims.iss!==settings.issuer)return reject("issuer mismatch");
-  const audience=Array.isArray(claims.aud)?claims.aud:[claims.aud];
-  if(!audience.includes(settings.audience))return reject("audience mismatch");
+  const audiences=Array.isArray(claims.aud)?claims.aud:[claims.aud];
+  if(audiences.length!==1||audiences[0]!==settings.audience)return reject("audience mismatch");
   const now=settings.nowSeconds??Math.floor(Date.now()/1000);
   if(typeof claims.exp!=="number"||!Number.isInteger(claims.exp)||claims.exp<=now)return reject("expired token");
   if(claims.nbf!==undefined&&(typeof claims.nbf!=="number"||claims.nbf>now))return reject("token not active");
@@ -53,11 +64,22 @@ export async function validateOAuthAccessToken(token:string,settings:OAuthVerifi
   const doc:unknown=await response.json();
   if(!doc||typeof doc!=="object"||!("keys" in doc)||!Array.isArray(doc.keys))return reject("invalid JWKS");
   const keys=doc.keys as Jwk[];
-  const matches=keys.filter(k=>k.kid===header.kid&&k.kty==="RSA"&&(k.use===undefined||k.use==="sig")&&(k.alg===undefined||k.alg==="RS256")&&(k.key_ops===undefined||k.key_ops.includes("verify")));
+  const matches=keys.filter(k=>
+    k.kid===header.kid&&
+    k.kty===(algorithm==="ES256"?"EC":"RSA")&&
+    (algorithm!=="ES256"||k.crv==="P-256")&&
+    (k.use===undefined||k.use==="sig")&&
+    (k.alg===undefined||k.alg===algorithm)&&
+    (k.key_ops===undefined||k.key_ops.includes("verify"))
+  );
   if(matches.length!==1)return reject("JWT signing key mismatch");
   let key:KeyObject;
   try{key=createPublicKey({key:matches[0] as import("node:crypto").JsonWebKey,format:"jwk"});}catch{return reject("invalid JWKS signing key");}
-  const valid=verifySignature("RSA-SHA256",Buffer.from(pieces[0]+"."+pieces[1]),key,Buffer.from(pieces[2],"base64url"));
+  const signature=Buffer.from(pieces[2],"base64url");
+  if(signature.toString("base64url")!==pieces[2]||(algorithm==="ES256"&&signature.length!==64))return reject("invalid JWT signature encoding");
+  const valid=algorithm==="ES256"
+    ?verifySignature("sha256",Buffer.from(pieces[0]+"."+pieces[1]),{key,dsaEncoding:"ieee-p1363"},signature)
+    :verifySignature("RSA-SHA256",Buffer.from(pieces[0]+"."+pieces[1]),key,signature);
   if(!valid)return reject("invalid JWT signature");
   return {subject:claims.sub,scopes};
 }
