@@ -30,3 +30,15 @@ test("verified read-scope identity receives filtered SDK tools/list",async()=>{
  assert.ok(!result.result.tools.some((tool:{name:string})=>tool.name==="adif_validate"));
  assert.ok(!result.result.tools.some((tool:{name:string})=>tool.name==="station_get_profile"));
 });
+
+test("verified MCP binds request URL to exact canonical token audience, never a preview alias",async()=>{
+ let calls=0;
+ const verify=async()=>{calls++;return {subject:"a",tenantId:"t",scopes:["qrvai:tools:read"],issuer:cfg.issuer,audience:cfg.audience};};
+ const requestAt=(url:string)=>new Request(url,{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer sample"},body:JSON.stringify(body)});
+ for(const url of ["https://preview-qrvai.example/api/mcp",
+                   "https://qrvai.example/api/mcp?alias=preview"]){
+  const res=await handleVerifiedMcpRequest(requestAt(url),verify,cfg);
+  assert.equal(res.status,403);
+ }
+ assert.equal(calls,0,"wrong resource URL must never call the token verifier");
+});

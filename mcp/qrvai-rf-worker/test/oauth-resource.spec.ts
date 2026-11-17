@@ -1,5 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {handleProtectedResourceMetadata} from '../src/http/oauth-resource.ts';
 
 const settings={resource:'https://qrvai.example/api/mcp',authorizationServer:'https://auth.example/auth/v1',scopesSupported:['openid','email']};
@@ -45,4 +46,23 @@ test('Vercel route must not advertise OAuth until the real MCP HTTP endpoint ver
   assert.equal(response.status,503);
   assert.equal(response.headers.get('cache-control'),'no-store');
   assert.equal(handleOAuthMetadataRoute(request(),{}).status,503);
+});
+
+test('supports path-aware RFC 9728 discovery at exactly the MCP /api/mcp resource path',async()=>{
+  const route='https://qrvai.example/.well-known/oauth-protected-resource/api/mcp';
+  const res=handleProtectedResourceMetadata(request('GET',route),settings);
+  assert.equal(res.status,200);
+  assert.equal((await res.json()).resource,settings.resource);
+  const vercel=JSON.parse(readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
+  assert.ok(vercel.rewrites.some((r:{source:string;destination:string})=>r.source==='/.well-known/oauth-protected-resource/api/mcp'&&r.destination==='/api/oauth-protected-resource'));
+});
+test('metadata refuses wrong resource paths, origin aliases and URL parameters',()=>{
+  for(const resource of ['https://qrvai.example','https://qrvai.example/api/mcp/','https://qrvai.example/other']){
+    assert.equal(handleProtectedResourceMetadata(request(),{...settings,resource}).status,503);
+  }
+  for(const invalid of ['https://qrvai.example/.well-known/oauth-protected-resource/other',
+                        'https://qrvai.example/.well-known/oauth-protected-resource/api/mcp?foo=1',
+                        'https://qrvai-preview.example/.well-known/oauth-protected-resource/api/mcp']){
+    assert.equal(handleProtectedResourceMetadata(request('GET',invalid),settings).status,404);
+  }
 });

@@ -17,11 +17,19 @@ export function handleProtectedResourceMetadata(request:Request,settings:OAuthRe
   const resource=httpsUrl(settings.resource);
   const issuer=httpsUrl(settings.authorizationServer);
   const scopes=settings.scopesSupported;
-  if(!resource||!issuer||
+  // QRVAI selects a path-specific resource identifier; never silently advertise a different audience.
+  if(!resource||!issuer||resource.pathname!=="/api/mcp"||
     (scopes!==undefined&&(!Array.isArray(scopes)||scopes.some(s=>typeof s!=="string"||!/^[a-zA-Z0-9:._-]+$/.test(s))))) {
     return new Response("OAuth resource metadata not configured",{status:503,headers:noStore});
   }
-  if(new URL(request.url).origin!==resource.origin)return new Response("Not found",{status:404,headers:noStore});
+  const requestUrl=new URL(request.url);
+  const validMetadataPaths=new Set([
+    "/.well-known/oauth-protected-resource",
+    "/.well-known/oauth-protected-resource/api/mcp"
+  ]);
+  if(requestUrl.origin!==resource.origin||!validMetadataPaths.has(requestUrl.pathname)||requestUrl.search||requestUrl.hash){
+    return new Response("Not found",{status:404,headers:noStore});
+  }
   if(request.method!=="GET")return new Response("Method not allowed",{status:405,headers:{...noStore,"allow":"GET"}});
   return new Response(JSON.stringify({
     resource:settings.resource,

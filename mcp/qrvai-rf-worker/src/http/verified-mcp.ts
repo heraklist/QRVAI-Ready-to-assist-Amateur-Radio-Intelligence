@@ -21,6 +21,8 @@ export async function handleVerifiedMcpRequest(request:Request,verify:VerifyBear
  if(origin!==null&&origin!==url.origin)return deny(403,"Invalid Origin");
  if(request.method!=="POST")return deny(405,"Method not allowed");
  if(!config.issuer||!config.audience||!config.issuer.startsWith("https://")||!config.audience.startsWith("https://"))return deny(503,"OAuth verifier not configured");
+ // Exact RFC 8707 resource binding: a JWT for the stable MCP host may not be replayed on a preview alias.
+ if(config.audience!==url.origin+"/api/mcp"||url.search||url.hash)return deny(403,"Unexpected MCP resource");
  const token=raw.slice(7);
  let principal:VerifiedPrincipal|null=null;
  try{principal=await verify(token);}catch{return new Response("Unauthorized",{status:401,headers:{"www-authenticate":"Bearer",...headers}});}
