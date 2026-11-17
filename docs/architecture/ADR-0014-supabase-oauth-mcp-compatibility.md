@@ -86,3 +86,9 @@ This prepares source-level authorization, not a G7 production PASS or permission
 - **Real Supabase project unchanged.** Read-only SQL confirmed no `qrvai*` tables in `public` or `qrvai_private` at inspection. The complete G7 live gate still requires reviewed manual grant migration, invited user/client, server secret provisioning, verified RFC 8707 token issuance, and an approved HTTP wiring change, none of which occurred.
 
 Supabase official API-key documentation now recommends `sb_secret_*` in the `apikey` header; do not send such a key as `Authorization: Bearer`. A backend secret bypasses RLS: grant decisions stay server-side and the table ACL must be reviewed before use.
+
+## 2026-11-17 — Public issuer/JWKS vs canonical-host deployment check
+
+The fresh read-only acceptance evidence is recorded in [the resource-indicator gate](../../qa/mcp/RESOURCE-PARAMETER-GATE-2026-11-17.md#2026-11-17--fresh-public-https-evidence-read-only-no-login). The known Supabase issuer returned **HTTP 200** OAuth discovery and **HTTP 200** ES256 P-256 public JWKS, with support for S256 (also advertises plain; do not use). Its reported scopes include `offline_access`, but no authorized token/refresh flow was executed. The canonical Vercel `qrvai-rf-mcp.vercel.app` protected-resource URL returned **HTTP 404 DEPLOYMENT_NOT_FOUND**; a protected READY preview does not establish ChatGPT reachability.
+
+This strengthens G6 discovery only. RFC 8707 resource-to-signed-`aud`, real OAuth client, owned grants and ChatGPT host are **not verified**. Neither production hosting nor the private plugin has been changed.

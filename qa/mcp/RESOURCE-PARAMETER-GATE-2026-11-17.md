@@ -77,3 +77,18 @@ No synthetic test result or source-code inspection should be rewritten as a live
 - **Gates remain unchanged:** no live test of `resource` propagation, no signed audience-specific token, no authorized host flow, no DB changes, no user/client creation, no Vercel DNS/share-link/protection bypass and no ChatGPT private plugin upgrade. Requires separate approved authenticated test to advance.
 
 This probe augments the earlier issuer metadata receipt but is **not** an RFC 8707 conformance claim.
+
+## 2026-11-17 — Fresh public HTTPS evidence (read-only, no login)
+
+Fetched the real **public** endpoints via uncached remote HTTP retrieval, with **no credentials, token exchange, consent, login, temporary Vercel share link, or protection bypass**:
+
+| Endpoint | Observed response | Security conclusion |
+|---|---|---|
+| `https://ujhkqfvxpgpkearukvmh.supabase.co/.well-known/oauth-authorization-server/auth/v1` | **200 application/json**: issuer `https://ujhkqfvxpgpkearukvmh.supabase.co/auth/v1`; exact `/oauth/authorize`, `/oauth/token`, `/.well-known/jwks.json`; `authorization_code`, `refresh_token`, PKCE `S256` **and** `plain`; scope list now includes `offline_access` | **Issuer discovery observed**; QRVAI requires **S256** and must not treat advertised `plain` as permission to use it; a listed scope is not tested authorization or token issuance |
+| `https://ujhkqfvxpgpkearukvmh.supabase.co/auth/v1/.well-known/jwks.json` | **200 application/json**; at least one public `kty=EC`, `crv=P-256`, `alg=ES256`, `use=sig` verification key | **Public asymmetric verification key observed**, but no access token was minted or signature validated; actual access-token algorithm / audience remains unproven |
+| `https://qrvai-rf-mcp.vercel.app/.well-known/oauth-protected-resource/api/mcp` | **404 HTML**, `DEPLOYMENT_NOT_FOUND` | **Canonical host not reachable for MCP discovery.** Preview `READY` / `target:null` does not satisfy G1/G7 |
+
+Source observation: uncached public HTTP retrieval 2026-11-17; response/status and JSON shape inspected without relying on cached documents. No full credential or token was obtained or stored. The Auth project read-only SQL still shows **0 users**, and no `qrvai_mcp_grants` table exists.
+
+**Gate interpretation:** G6 stays **PARTIAL** (issuer metadata/JWKS discovered, but DCR/registered client/callback and login are unverified); G1 **BLOCKED** (canonical 404); G2–G5 and G7–G8 **NOT_EXECUTED**. `supabase/auth#2610` remains open, and neither custom `aud` hooks nor the advertised `offline_access` prove that a real `resource` request returns an appropriately bound JWT. **Do not** make `OAUTH_MCP_HTTP_WIRED=true` or lower strict `aud`, issuer, PKCE or per-client-grant requirements.
+
