@@ -1,29 +1,16 @@
 {
+  "phase": "V1_MCP_HOST",
   "status": "NOT_EXECUTED",
   "simulated": false,
   "exactSourceSha": null,
+  "existingPrivatePluginVerified": {
+    "passed": false,
+    "pluginId": "plugins_6acf47f502dc8191bf542fe040d484d8",
+    "visibility": "private"
+  },
   "deployedEndpointVerified": {
     "passed": false
   },
-  "oldCreatorRecordAbsent": {
-    "passed": false
-  },
-  "qrvaiNamespaceAvailable": {
-    "passed": false
-  },
-  "freshPluginCreateAuthorized": {
-    "passed": false
-  },
-  "newPluginIdDistinct": {
-    "passed": false
-  },
-  "hostInvocationObserved": {
-    "passed": false
-  },
-  "observedFollowUp": {
-    "passed": false
-  },
-  "notes": "Template for later Vercel-only HTTPS, auth and ChatGPT host acceptance evidence. No deployment or host invocation has been verified.",
   "vercelPlanVerified": {
     "passed": false
   },
@@ -38,5 +25,21 @@
   },
   "authCompatibilityVerified": {
     "passed": false
-  }
+  },
+  "oauthHostHandshakeObserved": {
+    "passed": false
+  },
+  "mcpToolRegistryObserved": {
+    "passed": false,
+    "toolCount": 0,
+    "source": "not_connected",
+    "academyCatalogExecuted": false
+  },
+  "hostInvocationObserved": {
+    "passed": false
+  },
+  "observedFollowUp": {
+    "passed": false
+  },
+  "notes": "V1 protected MCP host evidence only. V0 8/8 reviewed skills-only responses are separate, not MCP evidence. No live 54-tool ChatGPT connection, OAuth handshake, or academy_catalog execution has been verified. Never fabricate receipts or change the existing private plugin identity."
 }
