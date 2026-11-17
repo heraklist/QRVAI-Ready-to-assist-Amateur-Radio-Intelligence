@@ -32,3 +32,12 @@ test("data-scoped account sees ADIF but not station tools",async()=>fixture({...
  assert.ok(!names.includes("station_get_profile"));
  assert.ok(!names.includes("rf_power_convert"));
 }));
+
+test("verified read-scope MCP client discovers allowed live and Academy tools, without station access",async()=>fixture(principal,async(client)=>{
+ const names=(await client.listTools()).tools.map(t=>t.name);
+ assert.ok(names.includes("space_weather_now"),"source-registered live data tool should survive scoped registration");
+ assert.ok(names.includes("academy_catalog"),"Academy catalog must be exposed to an authorized read-only client");
+ assert.ok(names.includes("regulatory_context"),"international legal research must be visible but not grant transmit permission");
+ assert.ok(!names.includes("station_get_profile"),"station owner-dependent tools remain denied");
+ assert.ok(!names.includes("adif_validate"),"user-data scope remains necessary");
+}));
