@@ -4,6 +4,8 @@ export type OAuthVerifierSettings={
   issuer:string;
   audience:string;
   requiredScope:string;
+  /** Only for issuer-signed, client-bound Supabase OAuth access tokens that omit a JWT scope claim. */
+  allowMissingScopeClaimOnClientBoundToken?:boolean;
   jwksUrl:string;
   /** Asymmetric JWT algorithm must be explicitly pinned. Legacy RS256 is the default; Supabase ES256 is opt-in. */
   acceptedAlgorithm?:"RS256"|"ES256";
@@ -60,7 +62,14 @@ async function validateToken(token:string,settings:OAuthVerifierSettings,require
   // The client identifier is an issuer-signed JWT claim, never a request parameter.
   if(requireClientId&&(typeof claims.client_id!=="string"||!/^[-A-Za-z0-9._:]{1,256}$/.test(claims.client_id)))return reject("OAuth client identity missing");
   const scopes=typeof claims.scope==="string"?claims.scope.split(/\s+/).filter(Boolean):Array.isArray(claims.scp)&&claims.scp.every(s=>typeof s==="string")?claims.scp as string[]:[];
-  if(!scopes.includes(settings.requiredScope))return reject("insufficient scope");
+  // Supabase returns the granted OIDC scope at its token endpoint, but its
+  // documented access JWT can omit scope/scp. This narrow exception applies
+  // ONLY to a strictly signed client_id flow with an independent grant store.
+  // Tokens that expressly contain a wrong/malformed scope still fail closed.
+  const noScopeClaim=claims.scope===undefined&&claims.scp===undefined;
+  if(!scopes.includes(settings.requiredScope)&&!(
+    requireClientId===true&&settings.allowMissingScopeClaimOnClientBoundToken===true&&noScopeClaim
+  ))return reject("insufficient scope");
   const response=await (settings.fetchJwks??fetch)(jwksUrl,{method:"GET",headers:{accept:"application/json"},redirect:"error",signal:AbortSignal.timeout(3000)});
   if(!response.ok)return reject("JWKS retrieval failed");
   const doc:unknown=await response.json();

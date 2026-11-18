@@ -32,7 +32,7 @@ test("signed JWT binds subject, exact MCP resource, and signed OAuth client_id",
  assert.deepEqual(identity,{subject:"user-a",scopes:["openid"],clientId:"client-1"});
  const start=jwksCalls;
  for(const patch of [{client_id:undefined},{client_id:""},{client_id:"client with spaces"},
-                      {aud:"authenticated"},{iss:"https://attacker.example"},{scope:"email"},
+                      {aud:"authenticated"},{iss:"https://attacker.example"},{scope:"email"},{scope:undefined},
                       {exp:now},{nbf:now+1}]){
   await assert.rejects(validateOAuthAccessTokenWithClient(signAccess(patch),settings));
  }

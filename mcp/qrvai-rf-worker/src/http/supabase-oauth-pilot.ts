@@ -49,6 +49,7 @@ export function createSupabaseOAuthPilotHandler(options:SupabaseOAuthPilotOption
   audience:QRVAI_PILOT_RESOURCE,
   jwksUrl,
   requiredScope:"openid",
+  allowMissingScopeClaimOnClientBoundToken:true,
   acceptedAlgorithm:"ES256",
   ...(options.fetchJwks?{fetchJwks:options.fetchJwks}:{}),
   ...(options.nowSeconds!==undefined?{nowSeconds:options.nowSeconds}:{})

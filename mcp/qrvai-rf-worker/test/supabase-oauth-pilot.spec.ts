@@ -73,6 +73,23 @@ test("composed ES256 + client grant + MCP SDK returns only the QRVAI read-author
  assert.equal(grantsCount(),1);
 });
 
+test("Supabase access JWT without embedded OIDC scope still requires a signed client_id and independent DB grant",async()=>{
+ const {handler,jwksCount,grantsCount}=fixture();
+ const res=await handler(request(accessToken({scope:undefined})));
+ assert.equal(res.status,200);
+ const names=(await res.json()).result.tools.map((tool:{name:string})=>tool.name);
+ assert.ok(names.includes("rf_power_convert"));
+ assert.ok(!names.includes("adif_validate"));
+ assert.ok(!names.includes("station_get_profile"));
+ assert.equal(jwksCount(),1);
+ assert.equal(grantsCount(),1);
+ // Optional scope claim is not a license to accept a non-OAuth/unknown client.
+ const noClient=await handler(request(accessToken({scope:undefined,client_id:undefined})));
+ assert.equal(noClient.status,401);
+ const noGrant=fixture({grant:null});
+ assert.equal((await noGrant.handler(request(accessToken({scope:undefined})))).status,401);
+});
+
 test("OIDC openid and synthetic JWT permissions never create QRVAI grants",async()=>{
  const {handler}=fixture({grant:row({permissions:["qrvai:user-data:process"]})});
  const result=await handler(request(accessToken({scope:"openid qrvai:tools:read qrvai:station:read"})));
