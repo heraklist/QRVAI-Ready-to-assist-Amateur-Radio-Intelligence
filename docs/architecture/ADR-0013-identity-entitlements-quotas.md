@@ -75,3 +75,10 @@ node scripts/check-release-gates.mjs --v1 qa/mcp/host-report.example.json
 ```
 
 Both example JSON files intentionally fail closed and must not be changed to PASS without traceable original evidence. Even a successful documentary shape check never confirms URLs, actual authentication, device actions, OAuth trust or a deployment. Independent host review remains mandatory. Keep Vercel SSO, token protections and private plugin visibility unchanged during this stage.
+
+
+## 2026-11-18 — Explicit 54-tool allowlist and deny-by-default registration
+
+PR #53 now uses a **positive classification** for all 54 registered MCP tools (38 deterministic + 16 live). The `public` class requires membership in the explicitly reviewed 26-name public allowlist; the remaining classes are 25 user-supplied-data tools, 2 station tools, and 1 log tool. An unknown, newly registered, typoed or renamed tool returns `null` and is denied by both `authorizeToolCall` and the per-principal SDK registration filter. Previously, the implicit fallback of every registered unknown tool to `public` could silently expose future tools to `qrvai:tools:read` principals.
+
+Offline CI regression tests now assert unique names, full coverage of all 54 descriptors, exact class counts, public live discovery and private-data/station/log denial. **This does not activate OAuth**, create a real user, grant permissions, resolve RFC 8707, deploy to production, or modify the existing private plugin. Any new MCP tool requires an explicit policy review and updated tests before it is exposed.
