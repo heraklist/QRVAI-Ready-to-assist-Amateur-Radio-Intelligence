@@ -1,4 +1,4 @@
--- INERT OAuth Custom Access Token Hook candidate (not configured in Supabase Auth).
+-- INERT OAuth Custom Access Token Hook function (installed in Supabase DB, NOT configured in Supabase Auth).
 -- Registration/consent and RFC 8707 resource binding are independent release gates.
 -- This sets a FIXED, narrowly grant-scoped audience for the ONE canonical QRVAI MCP resource.
 -- It is NOT proof that Supabase honors OAuth's original "resource" parameter.
@@ -27,7 +27,7 @@ BEGIN
  -- Anonymous, password, magic-link, and unrelated third-party sessions stay unchanged.
  IF oauth_method IS NULL OR
     oauth_method NOT IN ('oauth_provider/authorization_code', 'token_refresh') OR
-    oauth_client IS NULL OR oauth_client !~ '^[A-Za-z0-9._:-]{1,256}$' OR
+    oauth_client IS NULL OR (char_length(oauth_client) > 256 OR oauth_client !~ '^[A-Za-z0-9._:-]+$') OR
     oauth_subject IS NULL OR oauth_subject !~ '^[0-9a-fA-F-]{36}$' OR
     event ->> 'user_id' IS DISTINCT FROM oauth_subject OR
     claims ->> 'iss' IS DISTINCT FROM 'https://ujhkqfvxpgpkearukvmh.supabase.co/auth/v1' OR

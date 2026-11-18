@@ -1,11 +1,11 @@
--- Schema APPLIED on 2026-11-18 to dedicated qrvai-auth as Supabase migration 20261118032317.
+-- Schema initially APPLIED on 2026-11-18 as migration 20261118032317; client_id regex fixed in a follow-up migration.
 -- Later production activation remains gated on resource-bound OAuth and host acceptance.
 -- Private QRVAI pilot: single user+OAuth client+issuer grant, revoked by enabled=false.
 -- Do not run automatically as part of Vercel builds or GitHub Actions.
 CREATE TABLE public.qrvai_mcp_grants (
  issuer text NOT NULL CHECK (issuer = 'https://ujhkqfvxpgpkearukvmh.supabase.co/auth/v1'),
  subject uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
- client_id text NOT NULL CHECK (client_id ~ '^[A-Za-z0-9._:-]{1,256}$'),
+ client_id text NOT NULL CHECK (char_length(client_id) BETWEEN 1 AND 256 AND client_id ~ '^[A-Za-z0-9._:-]+$'),
  tenant_id uuid NOT NULL,
  enabled boolean NOT NULL DEFAULT false,
  expires_at timestamptz NOT NULL,
