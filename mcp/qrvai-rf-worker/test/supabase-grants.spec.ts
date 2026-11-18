@@ -70,5 +70,5 @@ test("no anonymous key, wrong host, legacy key or public grants in migration can
  assert.match(sql,/REVOKE ALL ON TABLE public\.qrvai_mcp_grants FROM PUBLIC, anon, authenticated, service_role/);
  assert.match(sql,/GRANT SELECT ON TABLE public\.qrvai_mcp_grants TO service_role/);
  assert.doesNotMatch(sql,/GRANT (INSERT|UPDATE|DELETE|ALL) ON TABLE/i);
- assert.match(sql,/NOT APPLIED/);
+ assert.match(sql,/Schema APPLIED on 2026-11-18/);
 });

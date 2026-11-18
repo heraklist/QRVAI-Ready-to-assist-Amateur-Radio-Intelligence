@@ -1,4 +1,5 @@
--- PROPOSAL ONLY: NOT APPLIED. Manual security review and explicit rollout gate required.
+-- Schema APPLIED on 2026-11-18 to dedicated qrvai-auth as Supabase migration 20261118032317.
+-- Later production activation remains gated on resource-bound OAuth and host acceptance.
 -- Private QRVAI pilot: single user+OAuth client+issuer grant, revoked by enabled=false.
 -- Do not run automatically as part of Vercel builds or GitHub Actions.
 CREATE TABLE public.qrvai_mcp_grants (
