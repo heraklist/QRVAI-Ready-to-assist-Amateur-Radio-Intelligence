@@ -1,0 +1,12 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {stationGetProfile,stationReadStatus,spaceweatherIndices,dxReceptionReports,logAwardProgress} from "../src/rf/wave6.ts";
+test("M03 reports supplied station profile unverified",()=>{const r=stationGetProfile({callsign:"SV1AAA",grid_square:"KM17",antenna_note:"dipole"});assert.equal(r.profile.callsign,"SV1AAA");assert.equal(r.verified,false);assert.equal(r.profile_connected,false)});
+test("M03 rejects malformed callsign",()=>assert.throws(()=>stationGetProfile({callsign:"<SCRIPT>",grid_square:"KM17",antenna_note:"dipole"})));
+test("M21 receives user supplied status without touching device",()=>{const r=stationReadStatus({mode:"RX",frequency_hz:145500000,status_note:"front panel"});assert.equal(r.status.frequency_hz,145500000);assert.equal(r.live_device_connected,false)});
+test("M21 rejects unbounded frequency",()=>assert.throws(()=>stationReadStatus({mode:"RX",frequency_hz:Infinity,status_note:"panel"})));
+test("M23 does not misrepresent supplied Kp as live",()=>{const r=spaceweatherIndices({observed_at:"2026-10-16T00:00:00Z",kp_index:4,source_label:"user note"});assert.equal(r.kp_index,4);assert.equal(r.live_feed,false)});
+test("M27 filters supplied DX reports",()=>{const r=dxReceptionReports({band:"20m",reports:[{id:"one",band:"20m",station:"SV1AAA",report:"599"},{id:"two",band:"40m",station:"SV1BBB",report:"579"}]});assert.deepEqual(r.matches.map(x=>x.id),["one"]);assert.equal(r.provider_authenticated,false)});
+test("M27 rejects duplicate report identifiers",()=>assert.throws(()=>dxReceptionReports({band:"20m",reports:[{id:"same",band:"20m",station:"SV1AAA",report:"599"},{id:"same",band:"20m",station:"SV1BBB",report:"599"}]})));
+test("M32 calculates target entity coverage only from user records",()=>{const r=logAwardProgress({target_entities:["SV","DL","F"],confirmed_entities:["SV","DL"]});assert.equal(r.confirmed_count,2);assert.deepEqual(r.missing_entities,["F"]);assert.equal(r.award_certified,false)});
+test("M32 rejects duplicate targets",()=>assert.throws(()=>logAwardProgress({target_entities:["SV","SV"],confirmed_entities:[]})));

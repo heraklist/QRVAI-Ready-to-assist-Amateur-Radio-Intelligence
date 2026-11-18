@@ -1,0 +1,5 @@
+# Wave6 — bounded user-grounded, read-only tools
+
+Parent draft PR #24. Vercel-only. Implement M03 station_get_profile (explicit supplied profile; no database), M21 station_read_status (explicit supplied device status; **not** live device), M23 spaceweather_indices (explicit supplied timestamped index record; **not** live NOAA), M27 dx_reception_reports (bounded user-provided reports; no authenticated external provider), M32 log_award_progress (user-supplied confirmed entities and target entities; no external award adjudication). Five tools expand draft registry 30→35. Remaining M14 RF exposure, M24 propagation, M26 satellite pass require separately validated physical/ephemeris models in next wave.
+
+Controls: strict typed schemas, small lists and text, no credentials/no network/no storage/no device connectivity, explicit verified:false and source:USER_SUPPLIED_UNVERIFIED; tests red before source, CI green and same-SHA Vercel preview. These are **input-only source implementations**, not fully integrated profile.read, device.read, provider.auth or logs.read.

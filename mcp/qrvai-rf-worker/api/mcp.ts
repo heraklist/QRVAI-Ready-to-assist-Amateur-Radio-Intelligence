@@ -1,0 +1,77 @@
+import { timingSafeEqual } from "node:crypto";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/server";
+import { createServer } from "../src/mcp/register.ts";
+import { limitMcpRequest } from "../src/http/limits.ts";
+import {previewBurstLimiter} from "../src/http/preview-throttle.ts";
+
+const noStore = { "cache-control": "no-store" };
+function deny(status: number, detail: string): Response {
+  return new Response(detail,{status,headers:{"content-type":"text/plain; charset=utf-8",...noStore}});
+}
+function authorized(authorization: string | null, secret: string): boolean {
+  const prefix="Bearer ";
+  if (!authorization?.startsWith(prefix)) return false;
+  const received=Buffer.from(authorization.slice(prefix.length),"utf8");
+  const expected=Buffer.from(secret,"utf8");
+  return received.length===expected.length && timingSafeEqual(received,expected);
+}
+/**
+ * Release gate (ADR-0012): fail closed when no server-side credential exists.
+ * Authenticated preview is not public release approval. The allowPublic switch
+ * exists ONLY for explicit isolated tests and cannot be enabled by env fallback.
+ * Read-only operations still require identity and quota controls before public use.
+ */
+export const PUBLIC_UNAUTHENTICATED = false;
+
+/**
+ * Stateless Streamable HTTP. A configured QRVAI_MCP_BEARER_TOKEN is always enforced;
+ * with no token the endpoint returns 503 by default (fail closed).
+ */
+export async function handleMcpRequest(
+  request: Request,
+  secret: string | undefined = process.env.QRVAI_MCP_BEARER_TOKEN,
+  allowPublic: boolean = PUBLIC_UNAUTHENTICATED
+): Promise<Response> {
+  if (secret) {
+    // A token that is present but weak is a misconfiguration, never a reason to fall back to public.
+    if (secret.length<24) return deny(503,"MCP authentication not configured");
+    if (!authorized(request.headers.get("authorization"),secret)) {
+      return new Response("Unauthorized",{status:401,headers:{...noStore,"www-authenticate":"Bearer"}});
+    }
+  } else if (!allowPublic) {
+    return deny(503,"MCP authentication not configured");
+  }
+  const url=new URL(request.url);
+  if (url.pathname!=="/api/mcp") return deny(404,"Not found");
+  const origin=request.headers.get("origin");
+  if (origin!==null && origin!==url.origin) return deny(403,"Invalid Origin");
+  if (request.method!=="POST") return deny(405,"Method not allowed");
+  // Per-isolate preview abuse guard; a durable distributed quota still blocks public launch.
+  // Never count unconfigured/open test-mode requests as authenticated usage.
+  if(secret){
+    const burst=previewBurstLimiter.check(secret);
+    if(!burst.allowed)return new Response("Preview request budget exhausted",{
+      status:429,headers:{"cache-control":"no-store","retry-after":String(burst.retry_after_seconds)}
+    });
+  }
+  const checked=await limitMcpRequest(request);
+  if (checked instanceof Response) return checked;
+  const transport=new WebStandardStreamableHTTPServerTransport({
+    sessionIdGenerator:undefined,
+    enableJsonResponse:true
+  });
+  const server=createServer();
+  try {
+    await server.connect(transport);
+    return await transport.handleRequest(checked);
+  } finally {
+    await server.close();
+  }
+}
+
+/** Vercel Web Standard Function contract; unlike the legacy Node handler it receives Request. */
+export default {
+  fetch(request: Request): Promise<Response> {
+    return handleMcpRequest(request);
+  }
+};

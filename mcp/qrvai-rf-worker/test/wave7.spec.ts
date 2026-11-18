@@ -1,0 +1,11 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {rfExposureScreen,propagationPath,satellitePass} from "../src/rf/wave7.ts";
+test("M14 free-space sample flux and user reference comparison (not compliance)",()=>{const r=rfExposureScreen({mean_power_w:100,linear_gain:1,distance_m:10,reference_flux_w_m2:1});assert.ok(Math.abs(r.estimated_flux_w_m2-100/(400*Math.PI))<1e-12);assert.equal(r.below_user_reference,true);assert.equal(r.compliance_established,false)});
+test("M14 never claims safety or accepts distance zero",()=>assert.throws(()=>rfExposureScreen({mean_power_w:100,linear_gain:1,distance_m:0,reference_flux_w_m2:1})));
+test("M14 rejects nonfinite and unreasonable input",()=>assert.throws(()=>rfExposureScreen({mean_power_w:Infinity,linear_gain:1,distance_m:10,reference_flux_w_m2:1})));
+test("M24 FSPL known one-kilometer equatorial path at 1000 MHz",()=>{const d=180/(Math.PI*6371.0088);const r=propagationPath({frequency_mhz:1000,from_lat_deg:0,from_lon_deg:0,to_lat_deg:0,to_lon_deg:d});assert.ok(Math.abs(r.distance_km-1)<0.00001);assert.ok(Math.abs(r.free_space_path_loss_db-92.44)<0.005);assert.equal(r.real_world_prediction,false)});
+test("M24 refuses coincident points",()=>assert.throws(()=>propagationPath({frequency_mhz:14,from_lat_deg:0,from_lon_deg:0,to_lat_deg:0,to_lon_deg:0})));
+test("M26 summarizes supplied above-horizon samples only",()=>{const r=satellitePass({samples:[{observed_at:"2026-10-16T00:00:00Z",elevation_deg:-10},{observed_at:"2026-10-16T00:01:00Z",elevation_deg:20},{observed_at:"2026-10-16T00:02:00Z",elevation_deg:40},{observed_at:"2026-10-16T00:03:00Z",elevation_deg:-1}]});assert.equal(r.above_horizon_sample_count,2);assert.equal(r.peak_sample_elevation_deg,40);assert.equal(r.window_start,"2026-10-16T00:01:00Z");assert.equal(r.window_end,"2026-10-16T00:02:00Z");assert.equal(r.orbit_computed,false)});
+test("M26 no above horizon samples means no pass claim",()=>{const r=satellitePass({samples:[{observed_at:"2026-10-16T00:00:00Z",elevation_deg:-1}]});assert.equal(r.window_start,null);assert.equal(r.orbit_computed,false)});
+test("M26 rejects unsorted timestamps",()=>assert.throws(()=>satellitePass({samples:[{observed_at:"2026-10-16T00:01:00Z",elevation_deg:5},{observed_at:"2026-10-16T00:00:00Z",elevation_deg:10}]})));

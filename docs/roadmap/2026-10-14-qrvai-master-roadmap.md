@@ -4,9 +4,13 @@
 **Status:** PROPOSED; **not** a detailed engineering implementation plan. Milestones and dependencies are estimates of scope, not delivery dates.  
 **Inputs:** [Master Capability Design](../superpowers/specs/2026-10-14-qrvai-capability-design.md), [Domain & Orchestration Design v0.4](../superpowers/specs/2026-10-14-qrvai-domain-orchestration-design.md), [Interactive Catalog](../architecture/interactive-tools-catalog.md).
 
+> **2026-10-17 development coordination (addendum, not a replacement for this proposed roadmap):** [Master Roadmap ↔ P0 Crosswalk](2026-10-17-qrvai-master-plan-p0-crosswalk.md) distinguishes M0–M8 milestones from the current P0 GitHub-source consolidation, maps them to V0–V8, and documents draft-only evidence gates. The original M0–M8 priority order and owner-approval requirements remain unchanged.
+
+> **2026-11-16 international scope decision:** [ADR-0012](../architecture/ADR-0012-international-first-regulation-and-academy.md) supersedes Greece-first positioning and licence-exam-centered Academy assumptions below. One international QRVAI plugin; country-specific law lives in independently verified jurisdiction packs; hobby education is global. Source-listed Greece/USA tools are limited initial adapters, not evidence of worldwide coverage. Subscription/usage credits are future options, not approved or implemented payments.
+
 ## Mission
 
-Build an accurate, accessible and highly specialized amateur-radio plugin that supports knowledge and measured decisions across **24 domain capabilities** and exposes selected **interactive, deterministic and source-based workbenches**. Start in Greek and English; Greece is the first jurisdiction for regulatory research. Do not mistake a capable demo for a legally authoritative service.
+Build an accurate, accessible and highly specialized amateur-radio plugin that supports knowledge and measured decisions across **24 domain capabilities** and exposes selected **interactive, deterministic and source-based workbenches**. Design for international audiences with English as a neutral baseline and Greek as a first-class language. Greece and USA are limited initial regulatory **source** adapters, not the product's geographic identity or a globally complete legal service. Do not mistake a capable demo for a legally authoritative service.
 
 ## Sequencing logic
 
@@ -28,7 +32,7 @@ Prioritize **small, independently verifiable value slices**. UI is a first-class
 
 **Exit evidence:** typed contract tests, analytical reference calculations with tolerances, range/unit checks, accessible fallback, UI tests on actual target client. No acceptance claim without observed test run.
 
-### M2 — Regulatory & Frequency Intelligence (Greek-first)
+### M2 — Regulatory & Frequency Intelligence (international framework + optional jurisdiction packs)
 
 **Domains served:** A03 frequency, A04 law, A05 RF safety guidance.
 
@@ -36,7 +40,7 @@ Prioritize **small, independently verifiable value slices**. UI is a first-class
 
 **Example workbenches:** UI-17, UI-18 and locator/frequency data model.
 
-**Dependencies:** primary authority texts, legal review for interpretation, source register with version and effective dates, discrepancy tests, rule-engine fixtures.
+**Dependencies:** ITU international principles, IARU regional recommendations, official country-specific regulator sources, travel/visitor-recognition rules, legal-force classification, country-pack review and effective dates, discrepancy tests and rule-engine fixtures. No permission is inferred from a band plan alone.
 
 **Exit evidence:** verified sample cases including boundary frequency, missing license, temporary exceptions, version conflicts and 'do not transmit until verified' response.
 
@@ -84,7 +88,7 @@ Prioritize **small, independently verifiable value slices**. UI is a first-class
 
 **Example workbenches:** UI-26–28 (simulated), link/failure tabletop.
 
-**Dependencies:** relevant ITU/IARU recommendations, Greek Civil Protection verified procedures, local authority confirmation for any operational deployment, clear training-only labels.
+**Dependencies:** relevant ITU/IARU recommendations, jurisdiction-specific verified public-safety procedures, local authority confirmation for any operational deployment, clear training-only labels.
 
 **Exit evidence:** simulation isolation, explicit human authority, no live dispatch, no transmit/PTT actions, correct fallback guidance.
 
@@ -104,11 +108,11 @@ Prioritize **small, independently verifiable value slices**. UI is a first-class
 
 **Domains served:** D22–D24, with cross-domain learning activities.
 
-**User outcomes:** personalized guided instruction, CW practice, club workflows and transparent DIY educational help.
+**User outcomes:** accessible global hobby education: RF/electronics, antennas, propagation, station operation and QSO practice, CW, digital modes, SDR, satellites, logging, field operations, clubs and safe DIY experiments. Core Academy deliberately excludes country-specific licensing exams or licence-application courses.
 
 **Example workbenches:** UI-34–36.
 
-**Dependencies:** question-bank licensing, consent on club data, safe electrical demonstrations and localized curriculum.
+**Dependencies:** educational source/copyright rights, consent on club data, safe electrical demonstrations, international English/Greek curriculum and future multilingual localization. Optional national licence/exam modules, if ever added, require separate country-pack governance and rights.
 
 **Exit evidence:** pedagogical QA, copyright compliance, accessibility and consent.
 
@@ -130,7 +134,7 @@ A domain can participate in several milestones. This map is a target coverage pl
 - **API adaptation:** adapters isolate network failure, rate limit, freshness and terms of service.
 - **UX library:** units, charts, provenance panel, text fallback, screen reader and mobile support.
 - **Validation:** authoritative golden cases; regressions; seeded synthetic test data; security tests and user workflows.
-- **Localization:** Greek-first wording with English equivalents; consistent callsigns, SI and RF units.
+- **Localization:** global English baseline, Greek first-class support and additional languages staged by QA; no assumptions about jurisdiction from language/callsign/IP; consistent callsigns, SI and RF units.
 
 ## Risks, mitigations and explicit non-goals
 
@@ -153,7 +157,8 @@ A domain can participate in several milestones. This map is a target coverage pl
 2. Priority M1 RF Workbench versus M2 source-backed frequency compliance for the first live slice.
 3. Manual ingestion rights and vendor coverage policy.
 4. Test device families, platforms and target MCP-host compatibility.
-5. Jurisdiction rules review process and update cadence.
+5. Country-pack source governance, reviewer responsibility, legal-force classification, source freshness and cross-border visitor-rights tests.
+6. Optional commercial model: account identity, server-side subscriptions/usage credits, API authentication, quotas, privacy and provider rights; no billing implementation or public access until separately approved.
 
 ## Process from here
 

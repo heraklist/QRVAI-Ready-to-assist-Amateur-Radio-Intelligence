@@ -1,0 +1,33 @@
+name: QRVAI Offline RF Workbench Test
+on:
+  pull_request:
+    paths:
+      - 'ui/rf-workbench/**'
+      - 'ui/academy/**'
+      - 'ui/regulations/**'
+      - 'mcp/qrvai-rf-worker/src/live/country-packs.ts'
+      - 'mcp/qrvai-rf-worker/src/academy/**'
+      - '.github/workflows/qrvai-rf-workbench-ci.yml'
+  push:
+    branches:
+      - main
+jobs:
+  calculator-regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify deterministic offline RF workbench calculations
+        run: node --test ui/rf-workbench/test/calculations.test.mjs
+      - name: Verify generated offline Academy bundle is source-synchronized
+        run: node ui/academy/build-data.mjs --check
+      - name: Verify bilingual Academy UI data parity, safety and accessibility markup
+        run: node --experimental-strip-types --test ui/academy/test/*.test.mjs
+      - name: Verify generated official-source browser bundle is source-synchronized
+        run: node ui/regulations/build-data.mjs --check
+      - name: Verify national source browser parity, safe official links and abstention
+        run: node --experimental-strip-types --test ui/regulations/test/*.test.mjs

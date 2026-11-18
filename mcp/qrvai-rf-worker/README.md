@@ -1,32 +1,28 @@
-# QRVAI RF MCP — Merged source, Cloudflare deployment not yet verified
+# QRVAI RF MCP — Vercel-only backend
 
-First slice of a **private personal QRVAI plugin's proposed tooling**: four **potentially publicly reachable**, read-only RF calculators (including the M09 review candidate) exposed by a stateless Cloudflare Workers Streamable HTTP MCP server at `/mcp`.
+The single supported runtime is a Node.js Vercel Function at `/api/mcp`. There is **no Cloudflare deployment, fallback, or dependency**. It contains read-only RF/core and live-source tools in the source tree, but source registration is not evidence of tools connected to the ChatGPT host. Providers, terms and limits: [live data and legal sources](../../docs/architecture/live-data-sources.md).
 
-**NOT INSTALLED. NOT DEPLOYED. NO HOST E2E.** The source was merged through [PR #9](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/pull/9). User-approved [spec](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/specs/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp-design.md) and [plan](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/blob/docs/qrvai-cloudflare-free-authless-mcp-design-20261015/docs/superpowers/plans/2026-10-15-qrvai-cloudflare-free-authless-rf-mcp.md).
+**Runtime compatibility:** Pin **Node.js 24.x** in `package.json`, lockfile and MCP CI because `unpdf@2.1.0` requires Node >=24. Vercel honors `engines.node` for function runtime selection, overriding an older project UI setting; exact deployed runtime and real Greek PDF extraction still need live verification.
 
-## Development checks
-
-Node.js 22 and npm required. At repository root:
+## Local verification
 
 ```sh
-cd mcp/qrvai-rf-worker
 npm ci --ignore-scripts
 npm run typecheck
-npm test
-npm run test:worker
-npm run build:check
+npm test            # unit tests, network mocked
+npm run smoke:live  # calls every live provider for real; needs outbound HTTPS
 ```
 
-`npm run build:check` uses **`wrangler deploy --dry-run` only** and must not upload any Worker or secrets. The test/CI scripts do not call the Cloudflare API or Plugin Creator.
+Behind an HTTPS proxy (for example a sandbox), run the smoke test with `NODE_USE_ENV_PROXY=1` so Node's `fetch` uses it.
 
-`rf_feedline_loss` (M09 candidate) accepts `{profile:{id,revision,points:[{frequency_hz,loss_db_per_100m},...]},frequency_hz,length_m,connector_loss_db,interpolation_method:"log_frequency"}`. It interpolates user-supplied, **unverified** dB/100 m samples inside their frequency limits, returning cable/connector attenuation, delivered-power ratio and the exact supporting series. There is **no** manufacturer profile lookup, external cable database, frequency extrapolation or automatic verification of data rights. Use only data you are entitled to provide. Synthetic test fixtures are not commercial cable specifications.
+## Access mode — private preview, NOT public release
 
-`rf_impedance` accepts {r_ohm, x_ohm, z0_ohm} and calculates complex Gamma, VSWR and return loss for a passive load. Perfect-match return loss and total-reflection VSWR use typed null/status instead of Infinity in JSON. No VNA hardware data is accessed.\n\n`rf_link_budget` requires all seven explicit link quantities (TX W, TX/RX gains dBi, three loss components dB, receiver sensitivity dBm), returns a stage-by-stage received power and margin. It does not predict propagation, estimate path loss, or certify station performance.\n\n`rf_power_convert` takes `{value,unit}` (units: `W`, `mW`, `dBm`, `dBW`) and returns bounded finite unit conversions, **-270 ≤ dBm ≤ 270**. No callsign, QTH, station details, logs, CAT/PTT, live data, authorization judgement, third-party APIs, storage, OAuth or device access.
+The active Vercel `/api/mcp` handler is **fail-closed**: `PUBLIC_UNAUTHENTICATED=false`. If `QRVAI_MCP_BEARER_TOKEN` is absent or has fewer than 24 characters, the handler returns 503; a configured strong secret is required on each request. This is a **shared deployment credential**, not a verified user account, OAuth client grant, tenant identity, or completed ChatGPT MCP authentication.
 
-## Privacy and plan limits
+The RFC 9728 metadata helper has offline unit tests; its deployed Vercel adapter intentionally returns **503 even when issuer/resource environment values are present** because the real MCP endpoint has not yet been wired to resource-bound OAuth. Its compile-time `OAUTH_MCP_HTTP_WIRED=false` must remain false until the same reviewed change integrates and verifies the HTTP OAuth authorization boundary. Do not claim the OAuth server/host is available or switch to public/anonymous mode as a workaround.
 
-A **private ChatGPT plugin does NOT make its unauthenticated Cloudflare MCP endpoint private**. Anonymous clients can call any later deployed public endpoint and consume its shared Workers Free quota. Use no personal data. Current Cloudflare Workers Free limits are **100,000 requests/day per account**, **10ms CPU per request**, and **50 external subrequests/invocation**; actual plan/quotas, runtime CPU, rate limiting and abuse controls must be observed in an **authorized** real staging environment before rollout.
+The handler denies invalid Origins, non-POST methods, unknown paths, and oversize request bodies. The preview throttle is per warm instance, not a distributed production quota. See [OAuth compatibility decision](../../docs/architecture/ADR-0014-supabase-oauth-mcp-compatibility.md) and [resource binding gate](../../qa/mcp/RESOURCE-PARAMETER-GATE-2026-11-17.md).
 
-No `qrvai/mcp.json` is committed in this slice; the old creator-record identity issue and skills-only→MCP lifecycle compatibility remain [gated](https://github.com/heraklist/QRVAI-Ready-to-assist-Amateur-Radio-Intelligence/issues/6).
+`rf_feedline_loss` interpolates (`log_log` power-law, recommended for coax, or the original `log_frequency`) exclusively user-supplied, unverified cable profiles within their supplied frequency domain; no manufacturer certification, cable database, or extrapolation is implied. RF calculations are mathematical tools, not live radio hardware integrations. No CAT/PTT, devices or personal logbooks.
 
-Source tests are not actual Cloudflare measurements and do not prove working `@QRVAI` host invocation.
+See [Vercel release gates](../../docs/runbooks/qrvai-rf-mcp-vercel.md). **Deployment/host invocation are NOT VERIFIED** until separately observed.

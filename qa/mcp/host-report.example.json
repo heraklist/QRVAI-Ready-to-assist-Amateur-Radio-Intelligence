@@ -1,30 +1,39 @@
 {
+  "phase": "V1_MCP_HOST",
   "status": "NOT_EXECUTED",
   "simulated": false,
   "exactSourceSha": null,
-  "accountFreePlanVerified": {
-    "passed": false
-  },
-  "quotaVerified": {
-    "passed": false
-  },
-  "measuredWorkerCpu": {
-    "passed": false
+  "existingPrivatePluginVerified": {
+    "passed": false,
+    "pluginId": "plugins_6acf47f502dc8191bf542fe040d484d8",
+    "visibility": "private"
   },
   "deployedEndpointVerified": {
     "passed": false
   },
-  "oldCreatorRecordAbsent": {
+  "vercelPlanVerified": {
     "passed": false
   },
-  "qrvaiNamespaceAvailable": {
+  "vercelQuotaVerified": {
     "passed": false
   },
-  "freshPluginCreateAuthorized": {
+  "vercelFunctionObserved": {
     "passed": false
   },
-  "newPluginIdDistinct": {
+  "vercelPreviewTargetVerified": {
     "passed": false
+  },
+  "authCompatibilityVerified": {
+    "passed": false
+  },
+  "oauthHostHandshakeObserved": {
+    "passed": false
+  },
+  "mcpToolRegistryObserved": {
+    "passed": false,
+    "toolCount": 0,
+    "source": "not_connected",
+    "academyCatalogExecuted": false
   },
   "hostInvocationObserved": {
     "passed": false
@@ -32,5 +41,5 @@
   "observedFollowUp": {
     "passed": false
   },
-  "notes": "Template for later owner-authorized real Cloudflare/host evidence. Never claim observed results without links."
+  "notes": "V1 protected MCP host evidence only. V0 8/8 reviewed skills-only responses are separate, not MCP evidence. No live 54-tool ChatGPT connection, OAuth handshake, or academy_catalog execution has been verified. Never fabricate receipts or change the existing private plugin identity."
 }

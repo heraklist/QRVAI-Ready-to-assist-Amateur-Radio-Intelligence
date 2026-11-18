@@ -2,7 +2,7 @@ const MAX_BODY_BYTES = 64 * 1024;
 const response = (status: number, message: string): Response =>
   new Response(message,{status,headers:{"content-type":"text/plain; charset=utf-8","cache-control":"no-store"}});
 
-/** No auth, but fail closed on spoofed Host, invalid lengths and body abuse. */
+/** Transport-level body and Host guard used after Vercel Bearer authentication. */
 export async function limitMcpRequest(request: Request): Promise<Request | Response> {
   const expectedHost = new URL(request.url).host.toLowerCase();
   const suppliedHost = request.headers.get("host");

@@ -2,6 +2,8 @@
 
 **Original date:** 2026-10-14. **Status update 2026-10-15:** This remains a **future program-level roadmap**, while the separate owner-approved V0 plan was executed as Skills-only GitHub source and tested via CI. The V0 account plugin is **not created/installed**; host E2E remains NOT_EXECUTED.
 
+> **2026-10-17 source-plan reconciliation:** Use the [Master Roadmap ↔ P0 Crosswalk](2026-10-17-qrvai-master-plan-p0-crosswalk.md) for the relationship among this V0–V8 delivery plan, the existing M0–M8 strategic roadmap, and the source-consolidation P0 Draft PR #37. **P0 source consolidation is not V0 installation or the P0 risk-priority label below.** All past source progress entries remain dated historical snapshots.
+
 ## Primary mission
 
 Build a ChatGPT-first QRVAI plugin, discoverable and usable through the host's supported plugin @ selection, serving Greek and English amateur radio needs with progressively validated technical tools, authoritative source lookup and meaningful interactive MCP Apps. The product retains **24 domain-capability IDs across four families** without claiming all 24 are present in the initial install.

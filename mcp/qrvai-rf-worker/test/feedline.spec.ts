@@ -105,3 +105,24 @@ test("M09 rejects accessor, additional and inherited point-array properties",()=
     assert.throws(()=>calculateFeedlineLoss({...args,profile:{...profile,points}}),FeedlineInputError);
   }
 });
+
+test("M09-v2 log_log interpolation reproduces a sqrt(f) coax law that log_frequency overestimates",()=>{
+  const k=(hz:number)=>0.4*Math.sqrt(hz/1e6);
+  const request=(interpolation_method:string)=>({
+    profile:{id:"synthetic-sqrt",revision:"fixture-1",points:[
+      {frequency_hz:1e8,loss_db_per_100m:k(1e8)},{frequency_hz:1e9,loss_db_per_100m:k(1e9)}]},
+    frequency_hz:3e8,length_m:100,connector_loss_db:0,interpolation_method});
+  const powerLaw=calculateFeedlineLoss(request("log_log"));
+  assert.ok(Math.abs(powerLaw.attenuation_db-k(3e8))<1e-9);
+  assert.equal(powerLaw.formula_revision,"M09-v2");
+  assert.equal(powerLaw.interpolation_method,"log_log");
+  const legacy=calculateFeedlineLoss(request("log_frequency"));
+  assert.equal(legacy.formula_revision,"M09-v1");
+  assert.ok(legacy.attenuation_db>powerLaw.attenuation_db*1.1);
+});
+test("M09-v2 log_log refuses a zero-loss knot instead of taking log of zero",()=>{
+  assert.throws(()=>calculateFeedlineLoss({
+    profile:{id:"synthetic-zero",revision:"fixture-1",points:[
+      {frequency_hz:1e6,loss_db_per_100m:0},{frequency_hz:1e9,loss_db_per_100m:8}]},
+    frequency_hz:1e8,length_m:10,connector_loss_db:0,interpolation_method:"log_log"}),FeedlineInputError);
+});

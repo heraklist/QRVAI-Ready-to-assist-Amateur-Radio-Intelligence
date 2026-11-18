@@ -1,0 +1,62 @@
+[
+  {
+    "id": "IBIS-TOUCHSTONE-21",
+    "kind": "FORMAT_SPEC",
+    "canonical_url": "https://ibis.org/touchstone_ver2.1/",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": "2.1",
+    "checked_at": "2026-10-17T12:15:00Z",
+    "rights_status": "UNVERIFIED",
+    "review_state": "UNREVIEWED",
+    "capability_available": false,
+    "use_boundary": "Reference describes format syntax only; not an installed full Touchstone parser."
+  },
+  {
+    "id": "SIGMF-FORMAT",
+    "kind": "FORMAT_SPEC",
+    "canonical_url": "https://github.com/sigmf/SigMF",
+    "source_type": "PUBLIC_REFERENCE",
+    "version": null,
+    "checked_at": "2026-10-17T12:15:00Z",
+    "rights_status": "UNVERIFIED",
+    "review_state": "UNREVIEWED",
+    "capability_available": false,
+    "use_boundary": "Data/metadata format reference only; no IQ file parsing, interception or FFT runtime."
+  },
+  {
+    "id": "MANUAL-OWNER-UPLOAD",
+    "kind": "MANUAL_ENTRYPOINT",
+    "canonical_url": null,
+    "source_type": "USER_SUPPLIED",
+    "version": null,
+    "checked_at": "2026-10-17T12:15:00Z",
+    "rights_status": "UNVERIFIED",
+    "review_state": "UNREVIEWED",
+    "capability_available": false,
+    "use_boundary": "Model and firmware matching/rights must be verified; do not copy or distribute manuals."
+  },
+  {
+    "id": "COMPONENT-DATASHEET-OWNER",
+    "kind": "USER_DATASHEET",
+    "canonical_url": null,
+    "source_type": "USER_SUPPLIED",
+    "version": null,
+    "checked_at": "2026-10-17T12:15:00Z",
+    "rights_status": "UNVERIFIED",
+    "review_state": "UNREVIEWED",
+    "capability_available": false,
+    "use_boundary": "Component ratings and physical protection are not verified from a user statement."
+  },
+  {
+    "id": "INSTRUMENT-CALIBRATION-OWNER",
+    "kind": "INSTRUMENT_DATASHEET",
+    "canonical_url": null,
+    "source_type": "USER_SUPPLIED",
+    "version": null,
+    "checked_at": "2026-10-17T12:15:00Z",
+    "rights_status": "UNVERIFIED",
+    "review_state": "UNREVIEWED",
+    "capability_available": false,
+    "use_boundary": "No calibrated measurement or verified analyzer power limits from a user claim."
+  }
+]

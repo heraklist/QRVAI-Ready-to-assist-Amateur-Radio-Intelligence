@@ -1,0 +1,30 @@
+name: QRVAI V1 Plugin Package
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'qrvai-v1/**'
+      - 'staging/p1-domain-skills/**'
+      - 'scripts/v1/**'
+      - 'scripts/p1/**'
+      - 'tests/v1/**'
+      - 'mcp/qrvai-rf-worker/src/rf/wave1.ts'
+      - 'docs/architecture/**'
+      - 'requirements-v0-dev.txt'
+      - '.github/workflows/v1-plugin-ci.yml'
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 verified official tag
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5 verified official tag
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements-v0-dev.txt
+      - run: python -m unittest discover -s tests/v1 -p 'test_*.py' -v
+      - name: Build skills-only draft (no endpoint is packaged in CI)
+        run: python -m scripts.v1.build_plugin --skills-only

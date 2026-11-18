@@ -1,0 +1,8 @@
+# SS-B08-3 — Feedline Performance
+
+**Owner:** SK-B08
+**Responsibility:** calculate attenuation, delivered power and mismatch assumptions
+**Required input:** Frequency Hz, coax length in metres, nonnegative connector loss dB, and user-provided versioned cable profile `{"id":"example_curve","revision":"user-v1","points":[{"frequency_hz":10000000,"loss_db_per_100m":2},{"frequency_hz":20000000,"loss_db_per_100m":4}]}`; positive monotonic frequency points. No profile is manufacturer verified.
+**Procedure:** The source-registered `rf_feedline_loss` requires exactly `{"profile":{...},"frequency_hz":...,"length_m":...,"connector_loss_db":...,"interpolation_method":"log_frequency"}`. Interpolate attenuation in **log frequency only within the supplied 2–16 curve points**; cable loss = interpolated dB/100m × length_m/100, total attenuation = cable loss + connector loss (dB). Delivered power fraction under matched assumption is 10^(−total_loss_db/10); the actual power requires supplied input watts and separately accounted mismatches. A measured VSWR, actual power transfer and cable-manufacturer provenance cannot be deduced from the curve.
+**Output:** Ideal explicit 3 dB total loss delivers approximately 0.501187 of the *matched* input power, excluding separate mismatch effects. Label the profile `USER_SUPPLIED_UNVERIFIED`, provide version/points/coverage, never advertise certified cable performance.
+**Error/stop:** No guessed vendor curves, extrapolation outside supplied frequency range, unsupported interpolation, missing length/units, NaN, negative losses or unordered points: OUT_OF_RANGE, MISSING_CONTEXT or INDETERMINATE. No station control, live analyzer data, automatic TX, or real-world gain guarantee.

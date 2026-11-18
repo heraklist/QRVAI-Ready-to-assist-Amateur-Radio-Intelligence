@@ -11,7 +11,7 @@ QRVAI shall be a ChatGPT-centered, Greek/English **Amateur Radio Intelligence & 
 
 Success means a user can solve a concrete operating or engineering problem with traceable evidence and correct units, without relying on fabricated frequency permissions, propagation claims or undocumented radio settings.
 
-**Initial geographic policy:** Greece-first regulatory coverage with International Telecommunication Union / IARU / CEPT context; technical calculators are international. Every jurisdiction-specific answer must identify the operating location, license class and effective date or clearly state that a legal conclusion cannot be made.
+**International-first policy (ADR-0012, 2026-11-16):** One global QRVAI for technical/operating knowledge and worldwide hobby education. ITU international framework, IARU regional guidance and official national rules must be separated. Greece and USA provide limited early legal-source adapters, not universal permission engines. National law and visitor rights are evaluated from explicit operating jurisdiction, applicable licence and effective date; unsupported cases return INDETERMINATE. English is the global baseline and Greek remains first-class. See [ADR-0012](../../architecture/ADR-0012-international-first-regulation-and-academy.md).
 
 ## 2. Delivery approach (architecture decision for review)
 
@@ -31,7 +31,7 @@ Adopt **option 2 as proposed direction**, with an independent read-only local st
 | A01 | Civil Protection & Disaster Preparedness | Preparedness plans, go-bags, backup power, volunteer-team roles, training exercises and after-action templates; use officially published guidance. | Readiness checklist, station-availability board, drill timeline |
 | A02 | Emergency Communications & Traffic Handling | Net-control training, structured message forms, acknowledgements, exercise logs, resilience and authorized communications planning. No dispatch or autonomous public alerts. | Offline-style message form, traffic flow view, network resilience scenario |
 | A03 | Frequency & Spectrum Intelligence | National allocation, operator-specific band limits, IARU recommendations, repeater channels, beacons and verified frequency memories, with provenance. | Frequency/band-plan explorer, compliance boundary view, repeater filter |
-| A04 | Regulatory & Licensing Intelligence | Greek licensing and lawful station operation, CEPT/HAREC, portability, RF limits and jurisdiction-specific evidence. | Jurisdiction comparator, license-permission matrix, source timeline |
+| A04 | Regulatory & Licensing Intelligence | International ITU framework and IARU/CEPT guidance distinguished from binding official national licence/operating privileges, cross-border visitor rules and jurisdiction-specific evidence. Country packs are optional and source-reviewed; missing coverage yields INDETERMINATE. | Jurisdiction comparator, licence-permission matrix, source timeline |
 | A05 | RF Safety, EMC & Interference | RF exposure education, RFI/EMC diagnosis, grounding and risk-aware troubleshooting; calibrated assumptions, no certification by chatbot. | Exposure input worksheet, interference symptom tree, EMC checklist |
 
 ### B. Engineering, equipment and technical support
@@ -64,7 +64,7 @@ Adopt **option 2 as proposed direction**, with an independent read-only local st
 
 | ID | Capability | Scope and intended outputs | Interactive candidates |
 |---|---|---|---|
-| D22 | Amateur Radio Academy & CW | License learning, quizzes, adaptive explanations, practice QSOs and Morse training. | CW trainer, interactive quiz, progress matrix |
+| D22 | Amateur Radio Academy & CW | Worldwide hobby curriculum, RF and operating fundamentals, quizzes, adaptive explanations, QSO practice, Morse/CW, digital modes, SDR, satellites and maker activities; no core national licensing/exam preparation. | CW trainer, interactive quiz, progress matrix |
 | D23 | Maker, Research & Software Development | Arduino/ESP32/Raspberry Pi, DIY RF, station software, open-source tooling and repeatable project guides. | BOM estimator, wiring view, experiment notebook |
 | D24 | Clubs, Community & Mentoring | Clubs, workshops, onboarding, mentoring, resource indexes, non-sensitive volunteer coordination and educational events. | Event/calendar view, club equipment inventory, mentor curriculum |
 

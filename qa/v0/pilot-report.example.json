@@ -1,0 +1,82 @@
+{
+  "phase": "V0_SKILLS_ONLY",
+  "status": "NOT_EXECUTED",
+  "simulated": false,
+  "pluginId": "plugins_6acf47f502dc8191bf542fe040d484d8",
+  "pluginVersion": "0.1.0-preview.4",
+  "smokeTests": [
+    {
+      "id": 1,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 2,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 3,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 4,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 5,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 6,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 7,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    },
+    {
+      "id": 8,
+      "status": "PENDING_EVIDENCE",
+      "evidence": {
+        "kind": "user_supplied_response",
+        "reference": null,
+        "reviewedAt": null
+      }
+    }
+  ],
+  "notes": "V0 reviewed response provenance template. The eight QRVAI answers were assessed in the project conversation; complete references and review timestamps before using the offline documentary gate. This does NOT prove tool invocations or authorize an MCP/public release."
+}

@@ -1,13 +1,18 @@
 /** Deterministic feedline attenuation for a USER-SUPPLIED unverified cable curve.
  * No vendor library, network, device access, identity, or implied source authentication.
  */
+/** log_frequency: loss linear in log10(f) (M09-v1, overestimates coax between knots).
+ * log_log: power-law, log10(loss) linear in log10(f) (M09-v2); exact for the sqrt(f)
+ * conductor-loss law that dominates coax, and requires positive loss at both knots.
+ */
+export type FeedlineInterpolation = "log_frequency" | "log_log";
 export type FeedlinePoint = {frequency_hz:number;loss_db_per_100m:number};
 export type FeedlineResult = {
   attenuation_db:number; cable_loss_db:number; connector_loss_db:number;
   delivered_ratio:number; interpolated_loss_db_per_100m:number;
   series:FeedlinePoint[]; profile_id:string; profile_revision:string;
   profile_trust:"USER_SUPPLIED_UNVERIFIED";
-  interpolation_method:"log_frequency"; formula_revision:"M09-v1";
+  interpolation_method:FeedlineInterpolation; formula_revision:"M09-v1"|"M09-v2";
   assumptions:string;
 };
 export class FeedlineInputError extends Error {
@@ -54,8 +59,9 @@ function identifier(value:unknown,name:string,re:RegExp):string{
 
 export function calculateFeedlineLoss(input:unknown):FeedlineResult{
   const data=record(input,["profile","frequency_hz","length_m","connector_loss_db","interpolation_method"],"request");
-  if(data.interpolation_method!=="log_frequency"){
-    throw new FeedlineInputError("interpolation_method must be log_frequency");
+  const method=data.interpolation_method;
+  if(method!=="log_frequency"&&method!=="log_log"){
+    throw new FeedlineInputError("interpolation_method must be log_frequency or log_log");
   }
   const frequency=num(data.frequency_hz,"frequency_hz",0,true);
   const length=num(data.length_m,"length_m",0);
@@ -103,7 +109,15 @@ export function calculateFeedlineLoss(input:unknown):FeedlineResult{
       const divisor=high-low;
       if(!(divisor>0))throw new FeedlineInputError("frequency knots indistinguishable in log precision","OUT_OF_RANGE");
       const weight=(Math.log10(frequency)-low)/divisor;
-      attenuationPer100=a.loss_db_per_100m+weight*(b.loss_db_per_100m-a.loss_db_per_100m);
+      if(method==="log_log"){
+        if(!(a.loss_db_per_100m>0)||!(b.loss_db_per_100m>0)){
+          throw new FeedlineInputError("log_log interpolation requires positive attenuation at both knots","OUT_OF_RANGE");
+        }
+        const la=Math.log10(a.loss_db_per_100m),lb=Math.log10(b.loss_db_per_100m);
+        attenuationPer100=10**(la+weight*(lb-la));
+      }else{
+        attenuationPer100=a.loss_db_per_100m+weight*(b.loss_db_per_100m-a.loss_db_per_100m);
+      }
       series=[a,b];break;
     }
   }
@@ -122,8 +136,8 @@ export function calculateFeedlineLoss(input:unknown):FeedlineResult{
     attenuation_db:total,cable_loss_db:cable,connector_loss_db:connector,
     delivered_ratio:ratio,interpolated_loss_db_per_100m:attenuationPer100,
     series:series.map(p=>({...p})),profile_id:id,profile_revision:revision,
-    profile_trust:"USER_SUPPLIED_UNVERIFIED",interpolation_method:"log_frequency",
-    formula_revision:"M09-v1",
-    assumptions:"User-supplied unverified attenuation in dB/100m; log-frequency interpolation inside profile knots; specified connector loss in dB. No cable identification, measurement or certification."
+    profile_trust:"USER_SUPPLIED_UNVERIFIED",interpolation_method:method,
+    formula_revision:method==="log_log"?"M09-v2":"M09-v1",
+    assumptions:"User-supplied unverified attenuation in dB/100m; "+(method==="log_log"?"power-law (log-log)":"log-frequency")+" interpolation inside profile knots; specified connector loss in dB. No cable identification, measurement or certification."
   };
 }
