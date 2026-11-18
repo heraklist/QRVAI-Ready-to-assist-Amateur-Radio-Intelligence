@@ -7,7 +7,9 @@ test("proposed audience hook is explicit inert, client-bound and grant-dependent
  assert.match(sql,/INERT OAuth Custom Access Token Hook/);
  assert.match(sql,/SECURITY DEFINER/);
  assert.match(sql,/SET search_path = ''/);
+ assert.match(sql,/oauth_method IS NULL OR/);
  assert.match(sql,/oauth_method NOT IN/);
+ assert.match(sql,/event ->> 'user_id' IS DISTINCT FROM oauth_subject/);
  assert.match(sql,/claims ->> 'client_id'/);
  assert.match(sql,/claims ->> 'is_anonymous'/);
  assert.match(sql,/FROM public\.qrvai_mcp_grants g/);
