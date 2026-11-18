@@ -8,6 +8,9 @@ test("proposed audience hook is explicit inert, client-bound and grant-dependent
  assert.match(sql,/SECURITY DEFINER/);
  assert.match(sql,/SET search_path = ''/);
  assert.match(sql,/oauth_method IS NULL OR/);
+ assert.equal((sql.match(/CREATE OR REPLACE FUNCTION/g)||[]).length,1);
+ assert.equal((sql.match(/\\$qrvai\\$/g)||[]).length,2);
+ assert.match(sql,/oauth_subject IS NULL OR oauth_subject/);
  assert.match(sql,/oauth_method NOT IN/);
  assert.match(sql,/event ->> 'user_id' IS DISTINCT FROM oauth_subject/);
  assert.match(sql,/claims ->> 'client_id'/);
